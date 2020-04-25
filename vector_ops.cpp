@@ -15,7 +15,7 @@ int main(){
 	unsigned int i=0;
   int *op;
 	std::string input;
-	std::cout << "How many numbers will you be adding?\r\n";
+	std::cout << "How many numbers will you be operating on?\r\n";
 	getline(std::cin,input);
 	(input.empty())?numbers=0:numbers=std::atoi(input.c_str());
 	if(numbers==0){
