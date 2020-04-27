@@ -2,7 +2,7 @@
 
 typedef unsigned int uint32;
 
-int bin_search(int arr[],int l,int h,int x){
+int bin_search(int *arr,int l=0,int h,int x){
 	if(l<=h){
 	  int m=(l+h)/2;  
 	  int cur=arr[m];
@@ -29,7 +29,7 @@ void swap(int *a, int *b) {
     *b = t; 
 } 
   
-int part (int *arr, int low, int high){ 
+int part (int *arr, int low = 0, int high){ 
     int pivot = arr[high];    // pivot 
     int i = (low - 1);  // Index of smaller element 
 	int j=0;
@@ -43,7 +43,7 @@ int part (int *arr, int low, int high){
 }
   
 
-void quick_sort(int *arr, int low, int high){ 
+void quick_sort(int *arr, int low=0, int high){ 
     if (low < high){ 
         int pi = part(arr, low, high); 
         quick_sort(arr, low, pi - 1); 
@@ -59,7 +59,7 @@ int main(){
 	for(uint32 x:arr){
 		if(i>=1)
 			std::cout << ",";
-    i++;
+		i++;
 		std::cout << x;
 	}
 	quick_sort(arr,0,12);
