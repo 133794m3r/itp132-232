@@ -54,7 +54,8 @@ void quick_sort(int *arr, int low=0, int high){
 
 int main(){
 	int arr[13]={2,3,4,5,6,7,10,8,9,0,1,70,75};
-	uint32 i=0;	
+	uint32 i=0;
+	
 	std::cout << "Unsorted Array: [";
 	for(uint32 x:arr){
 		if(i>=1)
@@ -62,10 +63,12 @@ int main(){
 		i++;
 		std::cout << x;
 	}
+	
 	quick_sort(arr,0,12);
 	std::cout << "]" << std::endl;
+	
 	std::cout << "Sorted Array: [";
-  i=0;
+	i=0;
 	for(uint32 x:arr){
 		if(i>=1)
 			std::cout << ",";
@@ -85,5 +88,6 @@ int main(){
 		else
 			std::cout << " not found." << std::endl;
 	}
+	
 	return 0;
 }

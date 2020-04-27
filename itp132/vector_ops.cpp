@@ -20,6 +20,7 @@ int main(){
 	std::string input;
 	//prompt the user.
 	std::cout << "How many numbers will you be operating on?\r\n";
+	
 	/*
 	* get a line of input. Tell getline to ignore any leading whitespace.
 	* then put that value into the input string.
@@ -27,15 +28,18 @@ int main(){
 	getline(std::cin >> std::ws,input);
 	//if empty set numbers to be 0. Otherwise cast to integer.
 	(input.empty())?numbers=0:numbers=std::atoi(input.c_str());
+	
 	//if it's zero then warn them and return error code.
 	if(numbers==0){
 		std::cout << "You have to enter at least 1 number for this to work.";
     return -1;
 	}
+	
 	//create a new vector that's intialized to the size of the number.s
 	std::vector <float> third_numbers(numbers);  
 	//tell them to enter their vectors.
 	std::cout << "Enter your first set of numbers one at a time.\r\n";
+	
 	//do while loop to get them one by one.
 	do{
 		//read it into the value.
@@ -91,6 +95,7 @@ int main(){
 			return -1;
 		}
 	}
+	
 	//print the full list of results.
 	for(i=0;i<numbers;i++){
 		//if i is 1 or higher then add a "," to the end of the line.
