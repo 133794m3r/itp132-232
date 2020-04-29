@@ -4,14 +4,14 @@
 */
 #include <iostream>
 //to do the typedef requirement.
-typdef unsigned char uint8;
+typedef unsigned char uint8;
 
 int main() {
 	//intialize strings(also requirement)
 	std::string input="";
 	std::string out="";
 	//the shift.
-	char shift = 0;
+	int shift = 0;
 	//chosen mode.
 	uint8 mode=0;
 	
@@ -25,7 +25,7 @@ int main() {
 	std::cin >> shift;
 	//enter the string.
 	std::cout << "\r\nEnter the string to encrypt/decrypt: ";	
-	std::getline(std::cin >> std::ws, input);
+	std::getline(std::cin >> std::ws,input);
 	//if the shift is greater than we get the absolute value.
 	shift=(shift>26 || shift < 0)?shift%26:shift;
 	
@@ -43,7 +43,7 @@ int main() {
 		//if it's greater than 'Z'.
 		if(x>=90)
 			//handle overflows.
-			x=(x-90)+65;
+			x=(x-90)+64;
 	}
 	//else if it's lowercase ascii.
 	else if(x>=97 && x<=122){
@@ -52,7 +52,7 @@ int main() {
 		//same if it's greater than 'z'.
 		if(x>=122)
 			//handle overflow.
-			x=(x-122)+65;
+			x=(x-122)+96;
 	}
 	//add the value to the out string.
 	out+=x;
