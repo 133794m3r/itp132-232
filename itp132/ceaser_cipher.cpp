@@ -1,11 +1,69 @@
 /*
 * Super simple Ceaser Cipher using the for each operator in C++.
+* plus it shows functional overloading, pass by reference, address, and value.
 * Macarthur Inbody 2020-04-25
 */
 #include <iostream>
 //to do the typedef requirement.
 typedef unsigned char uint8;
 
+void transform(char *input, unsigned int length, int shift){
+	unsigned int i=0;
+	char x=0;
+	while(i<length){
+		x=input[i];
+		//if the value is printable uppercase ASCII
+		if(x>=65 && x<=90){
+			//add the shift.
+			x+=shift;
+			//if it's greater than 'Z'.
+			if(x>=90)
+				//handle overflows.
+				x=(x-90)+64;
+		}
+		//else if it's lowercase ascii.
+		else if(x>=97 && x<=122){
+			//same thing again.
+			x+=shift;
+			//same if it's greater than 'z'.
+			if(x>=122)
+				//handle overflow.
+				x=(x-122)+96;
+		}
+		//add the value to the out string.
+		input[i++]=x;
+	}	
+
+}
+
+void transform(std::string &input, unsigned int length, int shift){
+	unsigned int i=0;
+	
+	for(char x:input){
+		x=input[i];
+		//if the value is printable uppercase ASCII
+		if(x>=65 && x<=90){
+			//add the shift.
+			x+=shift;
+			//if it's greater than 'Z'.
+			if(x>=90)
+				//handle overflows.
+				x=(x-90)+64;
+		}
+		//else if it's lowercase ascii.
+		else if(x>=97 && x<=122){
+			//same thing again.
+			x+=shift;
+			//same if it's greater than 'z'.
+			if(x>=122)
+				//handle overflow.
+				x=(x-122)+96;
+		}
+		//add the value to the out string.
+		input[i++]=x;
+	}	
+
+}
 int main() {
 	//intialize strings(also requirement)
 	std::string input="";
@@ -31,32 +89,11 @@ int main() {
 	
 	//if it's decyrption then make the shift negative.
 	shift*=((mode == '1')?1:-1);
+	
 	//output the input string.
 	std::cout << input << std::endl;
 	
-	//for each loop.
-	for(char x:input){
-	//if the value is printable uppercase ASCII
-	if(x>=65 && x<=90){
-		//add the shift.
-		x+=shift;
-		//if it's greater than 'Z'.
-		if(x>=90)
-			//handle overflows.
-			x=(x-90)+64;
-	}
-	//else if it's lowercase ascii.
-	else if(x>=97 && x<=122){
-		//same thing again.
-		x+=shift;
-		//same if it's greater than 'z'.
-		if(x>=122)
-			//handle overflow.
-			x=(x-122)+96;
-	}
-	//add the value to the out string.
-	out+=x;
-	}
+	transform(input,input.length(),shift);
 	//output the final encrypted string.
-	std::cout << std::endl << out << std::endl;
+	std::cout "Transformed" << std::endl << input << std::endl;
 }
