@@ -41,7 +41,7 @@ bool opt_exists(char **start, char **end, const std::string opt){
 
 void print_help(char *prog_name){
 	std::cout << prog_name << " is used to do a full shift encoding/decoding on a file." << std::endl;
-	std::cout << "Usage: \e[1m" << prog_name;
+	std::cout << "Usage: \x1b" << prog_name;
 	std::cout << "\e[0m -i {INPUT_FILE_NAME} -o {OUTPUT_FILE_NAME} -k {SHIFT_TO_USE} -e|d Encode/Decode the input file." << std::endl;
 	std::cout << "You must have a space between the flag and option as unix style options are not supported. Also only encoding or decoding is allowed. You can also only encrypt or decrypt the input file." << std::endl;
 }
