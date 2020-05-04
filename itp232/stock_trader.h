@@ -52,8 +52,8 @@ class Inventory{
 		std::vector<int> total_owned;
 		std::vector<Item*> Items;
 	public:
-		Inventory(int total_items,std::vector<Item *>itms){
-			int i=0;
+		Inventory(unsigned int total_items,std::vector<Item *>itms){
+			unsigned int i=0;
 			for(i=0;i<total_items;i++){
 				Items.push_back(itms[i]);
 				total_owned.push_back(0);
@@ -74,7 +74,7 @@ class Inventory{
 			}
 		}
 		int purchase_item(Account &usr,Item &itm);
-		int sell_item(Account &usr, Item &itm, int amount);
+		int sell_item(Account &usr, Item &itm);
 		void print_items(){
 			for(Item *item:Items){
 				std::cout << "name: " << item->get_name() << " ";
@@ -118,7 +118,7 @@ class Account{
 			}
 		}
 		friend int Inventory::purchase_item(Account &usr,Item &itm);
-		friend int Inventory::sell_item(Account &usr,Item &itm, int amount);
+		friend int Inventory::sell_item(Account &usr,Item &itm);
 };
 	int Inventory::purchase_item(Account &usr,Item &itm){
 			int amount=0;
@@ -144,7 +144,8 @@ class Account{
 				return -1;
 	}
 		
-	int Inventory::sell_item(Account &usr, Item &itm, int amount){
+	int Inventory::sell_item(Account &usr, Item &itm){
+			unsigned int amount =0;
 			unsigned int owned=total_owned[itm.get_id()];
 			double price = itm.get_price();
 			if(owned >= amount){
