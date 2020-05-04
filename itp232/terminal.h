@@ -13,4 +13,7 @@ BLACK_TXT = 30,RED_TXT,GREEN_TXT,YELLOW_TXT,BLUE_TXT,MAGENTA_TXT,CYAN_TXT,WHITE_
 //background colors.
 BLACK_BG = 40,RED_BG,GREEN_BG,YELLOW_BG,BLUE_BG,MAGENTA_BG,CYAN_BG,WHITE_BG
 };
+void move_and_clear_terminal(unsigned int up_amount,unsigned int total_items){
+	printf("\x1b[%dF\x1b[0J",up_amount+total_items);
+}
 #endif
