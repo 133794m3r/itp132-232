@@ -24,7 +24,7 @@ template <typename T> T xorshift128(T low=0, T high=1){
 	s1 ^= s1 << 23;
 	XOR_SHIFT_128_STATE[1]=s1;
 	XOR_SHIFT_128_STATE[1]=s1 ^ s0 ^ (s1 >> 17) ^ (s0 >> 26);
-	if(low == 0 && high == UINT64_MAX){
+	if(low == 0 && high == 1){
 		return result;
 	}
 	else{

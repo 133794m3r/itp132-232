@@ -5,8 +5,6 @@
 #include <memory>
 #include <chrono>
 #include "random.h"
-//template <typename T> T rand_range_real(T L, T H){ return L+((H-L)*(xorshift128()/UINT64_MAX));}
-//template <typename T> T rand_range(T L, T H){return rand_range_real(L,H);}
 
 double rand_double(double L,double H){return L+(rand()/(RAND_MAX /(H-L)));}
 
@@ -59,11 +57,11 @@ class Account;
 class Inventory{
 	private:
 		bool owns_nothing=false;
-		std::vector<int> total_owned;
+		std::vector<unsigned int> total_owned;
 		std::vector<Item*> Items;
 	public:
-		Inventory(unsigned int total_items,std::vector<Item *>itms){
-			unsigned int i=0;
+		Inventory(int total_items,std::vector<Item *>itms){
+			int i=0;
 			for(i=0;i<total_items;i++){
 				Items.push_back(itms[i]);
 				total_owned.push_back(0);
@@ -84,8 +82,8 @@ class Inventory{
 			}
 		}
 		
-		int purchase_item(Account &usr,Item &itm,unsigned int);
-		int sell_item(Account &usr, Item &itm,unsigned int);
+		int purchase_item(Account &usr,Item &itm, int total_items);
+		int sell_item(Account &usr, Item &itm, int total_items);
 		void sell_all_items(Account &usr);
 		
 		bool print_items(){
@@ -158,11 +156,11 @@ class Account{
 				return false; 
 			}
 		}
-		friend int Inventory::purchase_item(Account &usr,Item &item,unsigned int);
-		friend int Inventory::sell_item(Account &usr,Item &item,unsigned int);
+		friend int Inventory::purchase_item(Account &usr,Item &item,int total_items);
+		friend int Inventory::sell_item(Account &usr,Item &item,int total_items);
 		friend void Inventory::sell_all_items(Account &usr);
 };
-	int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
+	int Inventory::purchase_item(Account &usr,Item &item,int total_items){
 			int amount=0;
 			double available_funds = usr.get_balance();
 			double total_cost = 0;
@@ -187,7 +185,7 @@ class Account{
 			else
 				return -1;
 	}
-	int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
+	int Inventory::sell_item(Account &usr, Item &item,int total_items){
 			unsigned int amount =0;
 			unsigned int owned=total_owned[item.get_id()];
 			double price = item.get_price();

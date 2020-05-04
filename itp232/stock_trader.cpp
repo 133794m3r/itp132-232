@@ -10,9 +10,9 @@ typedef std::vector<Item*> vector_ptr_item;
 typedef std::vector<int*> vector_ptr_int;
 
 void print_items(vector_ptr_item &Items){
-	int i=0;
-		std::cout.precision(2);
-		std::cout.setf( std::ios::fixed, std:: ios::floatfield );
+
+	std::cout.precision(2);
+	std::cout.setf( std::ios::fixed, std:: ios::floatfield );
 	for(Item *current:Items){
 		printf("\x1b[%dm%d\x1b[22m:",1,current->get_id());
 		switch(current->get_flag()){
@@ -36,7 +36,7 @@ void update_prices(vector_ptr_item &Items){
 	double current_price=0.0f;
 	double modifier=0.0f;
 	double new_price=0.0f;
-	int flag=0;
+	char flag=0;
 	for(Item *current_item:Items){
 		current_price=current_item->get_price();
 		modifier=xorshift128(0.85,1.15);
@@ -75,7 +75,7 @@ int main(){
 	new Item("Barrel of Oil", 100.35), new Item("Wuhan Bat Soup",66.6), new Item("Shiny Water Charizard",37.51),
 	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)
 	};
-	unsigned int total_items=items.size();
+	int total_items=items.size();
 
 	std::cout << "Please enter your name: ";
 	getline(std::cin, username);
@@ -106,7 +106,6 @@ int main(){
 			}
 			else if(selection < total_items){
 				tx_success=user_inventory->purchase_item(*user,*items[selection],total_items);
-				//std::cout << tx_success << std::endl;
 				if(tx_success == 1){
 				std::cout << "You have successfully purchased your items." << std::endl;
 				}
@@ -118,12 +117,9 @@ int main(){
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
 			system("pause");
 			move_and_clear_terminal(5,total_items);
-			//user_inventory->print_items();
-			//std::cout << "\x1b[12F\x1b[0J";
 	
 		}
 		move_and_clear_terminal(7,total_items);	
-		//std::cout << "\x1b[14F\x1b[0J";		
 		while(selection != -1){
 			std::cout << "Welcome to the end of day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;24m!";
 			std::cout << " You currently have: $" << user->get_balance() << std::endl;
@@ -136,30 +132,24 @@ int main(){
 			if(selection == -1){
 				selection=0;
 				if(!owns_something)
-					//std::cout << "\x1b[6F\x1b[0J";
 					move_and_clear_terminal(6,0);
 				else
 					move_and_clear_terminal(5,total_items);
-					//std::cout << "\x1b[12F\x1b[0J";
 				break;
 			}
 			else if(selection < total_items){
 				tx_success=user_inventory->sell_item(*user,*items[selection],total_items);
-				//std::cout << tx_success << std::endl;
 				if(tx_success == 1){
 					std::cout << "You have successfully sold your items." << std::endl;
 				}
 				else if(tx_success == -1){
 					std::cout << "You tried to sell more than you own!" << std::endl;
 				}
-				//user_inventory->print_owned();			
 				system("pause");
 				if(!owns_something)
-					//std::cout << "\x1b[6F\x1b[0J";
 					move_and_clear_terminal(6,0);
 				else
 					move_and_clear_terminal(5,total_items);
-					//std::cout << "\x1b[12F\x1b[0J";
 				}
 			else
 				std::cout << "Your selection: '" << selection << "' wasn't valid. Please try again." << std::endl;			
