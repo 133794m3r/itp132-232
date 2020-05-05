@@ -2,6 +2,11 @@
 #include "terminal.h"
 #include "stock_trader.h"
 #include <stdio.h>
+/*
+* Stock Trader CLI Application
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 //this'll be a simple trading game. Buy an item for a price, then see if you want to seell it. 
 //costs'll be randomized each day. Goal is to have the maximum amount of money in the end.
 

@@ -1,9 +1,15 @@
 #ifndef TERMINAL_SETUP
 #ifdef _WIN32
 #include <windows.h>
+/*
+* Stock Trader CLI Application
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 //complained that I wasn't capturing the output. So this is just here for that.
 bool test = SetConsoleMode(GetStdHandle(-11),7);
 #endif
+
 //text styles.
 enum TEXT_STYLES{RESET,BOLD,ITALIC,UNDERLINE,UNBOLD=21,UN_ITALIC,UN_UNDERLINE};
 //the colors.

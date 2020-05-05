@@ -5,6 +5,11 @@
 #include <memory>
 #include <chrono>
 #include "random.h"
+/*
+* Stock Trader CLI Application
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 //simple precision rounder.
 template <typename F,typename P> F to_fixed(F num,P precision){P modifier=pow(10,precision); return round(num*modifier)/modifier;}
 //simple typedef

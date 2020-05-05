@@ -3,6 +3,11 @@
 #ifndef uint64
 typedef unsigned long long uint64;
 #endif
+/*
+* Stock Trader CLI Application
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 uint64 XOR_SHIFT_128_STATE[2]={0LL,0LL};
 //not going to explain the math behind this. It's up to you figure out on your own.
 //i'm done commenting.
