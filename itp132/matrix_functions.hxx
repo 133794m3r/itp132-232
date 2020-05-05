@@ -1,5 +1,10 @@
 #ifndef MATRIX_FUNC
 #define MATRIX_FUNC
+/*
+* Just showing templates that's all.
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 //this is only just for a 2x2 matrix.
 //this is the non-operator overloaded version showing templates.
 

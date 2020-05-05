@@ -1,7 +1,8 @@
 /*
 * Super simple Ceaser Cipher using the for each operator in C++.
 * plus it shows functional overloading, pass by reference, address, and value.
-* Macarthur Inbody 2020-04-25
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
 */
 #include <iostream>
 //to do the typedef requirement.

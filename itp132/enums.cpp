@@ -1,6 +1,12 @@
 #include <iostream>
 #include <cmath>
 #include <type_traits>
+/*
+* Enums demo.
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
+
 //this'll give me a real round function the way that I want.
 //basically I overloaded the round fucntion if it's got 2 params I call this one
 //otherwise I do standard round.

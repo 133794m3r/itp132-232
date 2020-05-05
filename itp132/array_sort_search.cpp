@@ -1,5 +1,10 @@
 #include <iostream>
 /*
+* Array Sorting and Searching Demo
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
+/*
 * Binary Search algorithm utilizing a super power(recursion).
 * takes array as input, starting point, max point, and the key to find.
 * template overuse shows that I am a real C++ programmer.

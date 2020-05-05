@@ -1,8 +1,9 @@
 #include <iostream>
 #include "matrix_functions.h"
 /*
-* Just a simple templated function showing overloaded functions.
-* By Macarhtur Inbody.
+* Just showing templates that's all.
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
 */
 typdef unsigned int uint32;
 

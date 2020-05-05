@@ -1,7 +1,11 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-
+/*
+* Full Shift Cipher CLI Applications
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+*/
 //since by default windows doesn't like ANSI escape sequences have to enable all that.
 #ifdef _WIN32
 #include <windows.h>

@@ -1,6 +1,8 @@
 #include <iostream>
 /*
-* Macarthur Inbody 2020-04-25
+* Cleaning service thing.
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
 */
 int main(){
 	const char small_rooms_price=25;

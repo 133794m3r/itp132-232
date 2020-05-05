@@ -2,8 +2,9 @@
 #include <vector>
 #include <algorithm>
 /*
-
-* Simple vector program. Will add,subtract, or multiply 2 lists of numbers.
+* Just showing vectors that's all.
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
 */
 
 int main(){
