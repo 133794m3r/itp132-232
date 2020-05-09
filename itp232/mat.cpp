@@ -64,5 +64,20 @@ matrix_int result(2,2,0);
 		std::cout << ",";	
   }
   std::cout << "];" << std::endl;
+  result=result+10;
+  std::cout << "result=[";
+  for(i=0;i<row;i++){
+    std::cout << "[";
+    for(j=0;j<col;j++){
+      std::cout << result(i,j);
+	  if(j < col-1)
+		  std::cout << ",";
+    }
+    std::cout << "]";
+	if(i < row-1)
+		std::cout << ",";	
+  }
+  std::cout << "];" << std::endl;  
+  std::cout << result << std::endl;
   return 0;
 }
