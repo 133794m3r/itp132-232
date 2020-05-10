@@ -1,7 +1,13 @@
 #ifndef CRYPTO_MATH_HEADER
 #define CRYPTO_MATH_HEADER
 #include <cmath>
-template <typename T> gcd_fast(T a, T b, T *x, T *y){
+#include <limits>
+template <class T> inline T epsilon (const T& v) {
+	 T e = std::numeric_limits<T>::epsilon() * 100;
+	 return v > T(1) ? v * e : e;
+}
+using std::abs;
+template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	if(a == 0){
 		*x=0;
 		*y=1;
@@ -15,7 +21,7 @@ template <typename T> gcd_fast(T a, T b, T *x, T *y){
 	return gcd;
 }
 
-template <typename T> mod_inv(T a, T mod){
+template <typename T> T mod_inv(T a, T mod){
 	T gcd=0;
 	T x=0;
 	T y=0;
@@ -37,11 +43,11 @@ template <typename T> mod_inv(T a, T mod){
 
 
 }
-template <typename T> *small_prime_factor(T n){
+template <typename T> T *small_prime_factor(T n){
 		//the first 20 primes is more than enough for the demo we're doing.
 		//as one of the primes from n has to be one of these primes since NCL likes
 		//small numbers.
-		int primes[20]={2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71}
+		int primes[20]={2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71};
 		int remainder=0;
 		int i=0;
 		T p=0;
@@ -60,7 +66,7 @@ template <typename T> *small_prime_factor(T n){
 		return two_factors;
 }
 
-template <typename T> fast_lcm(T a,T b){
+template <typename T> T fast_lcm(T a,T b){
 	T lcm=0;
 	T gcd=0;
 	T x=0;
@@ -75,5 +81,4 @@ template <typename T> fast_lcm(T a,T b){
 	lcm=(a/gcd)*b;
 	return lcm;
 }
-template <typename T> factor
 #endif

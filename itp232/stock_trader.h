@@ -237,7 +237,7 @@ int Inventory::purchase_item(Account &usr,Item &item,int total_items){
 	double total_cost = 0;
 	double price=item.get_price();
 	//figure out how many they can buy.
-	int can_buy = available_funds / price;
+	int can_buy = floor(available_funds / price);
 	//get ready to print our stuff.
 	move_and_clear_terminal(4,total_items);
 	//show the menu to them.

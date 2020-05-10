@@ -13,7 +13,7 @@ int main(void){
 	int d=7;
 	
 	
-	gcd=egcd(a,b,&x,&y);
+	gcd=gcd_fast(a,b,&x,&y);
 	lcm=fast_lcm(c,d);
 	modular_inverse=mod_inv(c,d);
 
@@ -23,7 +23,7 @@ int main(void){
 	
 	c=-7;
 	d=-31;	
-	gcd=egcd(c,d,&x,&y);	
+	gcd=gcd_fast(c,d,&x,&y);
 	std::cout << "The GCD between " << c << " and " << d << " is " << gcd << std::endl;
 	
 	modular_inverse=mod_inv(c,d);		
