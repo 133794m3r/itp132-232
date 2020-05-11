@@ -11,6 +11,8 @@
 //costs'll be randomized each day. Goal is to have the maximum amount of money in the end.
 
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnreachableCode"
 typedef std::vector<Item*> vector_ptr_item;
 typedef std::vector<int*> vector_ptr_int;
 
@@ -202,7 +204,6 @@ int main(){
 			
 			//if it's -1 then it's time to end the day.
 			if(selection == -1){
-				
 				selection=0;
 				//if they don't own anything then we have less to do.
 				if(!owns_something)
@@ -270,3 +271,4 @@ int main(){
 	items.clear();
 	return 0;
 }
+#pragma clang diagnostic pop

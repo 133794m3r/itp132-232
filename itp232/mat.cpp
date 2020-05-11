@@ -1,5 +1,10 @@
 #include <iostream>
 #include "matrix.hxx"
+/*
+* By Macarthur Inbody <admin-contact@transcendental.us> 2020
+* Licensed AGPLv3
+* Matrix Class Module Test Program
+*/
 int main() {
 	int row=2;
 	int col=2;
@@ -33,8 +38,7 @@ int main() {
 	
 	row=2;
 	col=2;
-	//Matrix mat2(col,row,5);
-	//Matrix result(2,2,0);
+
 	matrix_int mat2(col,row,5);
 	matrix_int result(2,2,0);
 
@@ -83,8 +87,8 @@ int main() {
 	}
 	std::cout << "];" << std::endl;	
 	std::cout << result << std::endl;
-	
-	Matrix<double> det_mat(2,2,0);
+
+	matrix_double det_mat(2,2,0);
 	k=1;
 	for(i=0;i<2;i++){
 		for(j=0;j<2;j++){
@@ -92,7 +96,12 @@ int main() {
 		}
 	}
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
-	int the_determinant=det(det_mat);
+	double the_determinant=det_mat.det();
+	std::cout << the_determinant << std::endl;
+	double arr[4]={7,11,8,11};
+	matrix_double hill2(arr,2,2);
+	std::cout << "hill2" << std::endl << hill2 << std::endl;
+	the_determinant=hill2.det();
 	std::cout << the_determinant << std::endl;
 	return 0;
 }

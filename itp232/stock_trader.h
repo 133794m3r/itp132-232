@@ -17,12 +17,15 @@ typedef unsigned int uint32;
 
 //item class.
 class Item{
-	private:
-		std::string name;
+		private:
+		//all fixed sized elements should be allocated first to keep memory better aligned.
 		double price;
 		unsigned int id = 0;
 		static unsigned int current_id;
 		int flag = 0;
+		//then we do items that are variable size.
+		std::string name;
+
 		
 	public:
 		//constructor.

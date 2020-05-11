@@ -15,7 +15,6 @@ template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	}
 	T x1,y1;
 	T gcd = gcd_fast((a+b)%a, a, &x1, &y1);
-	//std::cout <<"gcd:" << gcd << " a:" << a << " b:" << b << " x:" << *x << " y:" << *y << std::endl;
 	*x=y1-(b/a) * x1;
 	*y=x1;
 	return gcd;
