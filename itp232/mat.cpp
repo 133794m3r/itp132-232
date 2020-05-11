@@ -68,7 +68,7 @@ int main() {
 		std::cout << "]";
 
 		if(i < row-1)
-		std::cout << ",";	
+		std::cout << ",";
 	}
 	std::cout << "];" << std::endl;
 	
@@ -88,16 +88,21 @@ int main() {
 	std::cout << "];" << std::endl;	
 	std::cout << result << std::endl;
 
-	matrix_double det_mat(2,2,0);
+	matrix_int det_mat(3,2,0);
 	k=1;
 	for(i=0;i<2;i++){
-		for(j=0;j<2;j++){
-			det_mat(i,j)=(k+=2);
+		for(j=0;j<3;j++){
+			det_mat(i,j)=(k++);
 		}
 	}
 	std::cout << "det = " << std::endl << mat2 << std::endl;
 	std::cout << "det*result=" << std::endl << mat2*result << std::endl;
 	std::cout << "det*5=" << std::endl << mat2*5 << std::endl;
+	std::cout << "result " << std::endl << result << std::endl;
+	mat2*=result;
+	std::cout << "mat2 " << mat2 << std::endl;
+	std::cout << det_mat << std::endl;
+	std::cout << "det_mat*result=" << std::endl << mat2*det_mat << std::endl;
 	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();

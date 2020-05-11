@@ -149,7 +149,7 @@ template <class T> class Matrix{
 	void _invalid_dim(const std::string &op, const Matrix &other_matrix) const{
 		throw std::invalid_argument("For " + op + " Matrix 1's columns and rows must match Matrix 2's columns and rows.\r\nM1.cols="+std::to_string(cols)+" M1.rows="+std::to_string(rows)+" M2.cols="+std::to_string(other_matrix.rows)+" M2.rows="+std::to_string(other_matrix.cols)+"\r\n");
 	}
-	
+
 	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
@@ -213,14 +213,16 @@ template <class T> class Matrix{
 
 	Matrix<T> operator*(const Matrix<T> &other_matrix) const{
 		if((this->cols != other_matrix.rows)){
-			_invalid_dim("multiplication",other_matrix);
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(other_matrix.rows)+"\r\n");
 		}
 		size_t i=0,j=0,k=0;
-		Matrix result(this->cols,other_matrix.rows,0);
-		for(i=0;i<cols;++i){
+		Matrix<T> result(other_matrix.cols,this->rows,0);
+
+		for(i=0;i<this->rows;++i){
 			for(j=0;j<other_matrix.cols;j++){
 				for(k=0;k<this->cols;k++){
-					result.array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
+					result.array[i+(j*this->rows)]+=this->array[i+(k*this->rows)]*other_matrix.array[k+(j*other_matrix.rows)];
+
 				}
 			}
 		}
@@ -307,6 +309,25 @@ template <class T> class Matrix{
 		}
 
 		return *this;
+	}
+
+	Matrix<T> &operator*=(const Matrix<T> &other_matrix) const{
+		if((this->cols != other_matrix.rows)){
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
+		}
+		size_t i=0,j=0,k=0;
+		//have to allocate another matrix for _whatever_ reason.
+		Matrix<T> *result=new Matrix<T>(this->cols,other_matrix.rows,0);
+		std::vector<T> result2(this->cols * other_matrix.rows);
+		for(i=0;i<this->rows;++i){
+			for(j=0;j<other_matrix.cols;j++){
+				//result.array[(i*other_matrix.cols)+j]=T(0);
+				for(k=0;k<this->cols;k++){
+					result->array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
+				}
+			}
+		}
+		return *result;
 	}
 
 	Matrix<T> &operator%=(const T &scalar) {
