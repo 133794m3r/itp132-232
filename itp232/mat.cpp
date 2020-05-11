@@ -95,6 +95,10 @@ int main() {
 			det_mat(i,j)=(k+=2);
 		}
 	}
+	std::cout << "det = " << std::endl << mat2 << std::endl;
+	std::cout << "det*result=" << std::endl << mat2*result << std::endl;
+	std::cout << "det*5=" << std::endl << mat2*5 << std::endl;
+	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
@@ -108,6 +112,6 @@ int main() {
 	std::cout << hill2.adj() << std::endl << std::endl;
 	std::cout << "[K]^-1 = [d]^-1 * adj(K) == " << std::endl;
 	std::cout << hill2.inv_mod(26) << std::endl;
-
+*/
 	return 0;
 }

@@ -138,19 +138,19 @@ template <class T> class Matrix{
 		return el;
 	}
 	
-	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x, const size_t y){
+	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x, const size_t y) const{
 		throw std::out_of_range("Error: Chosen index is out of bounds. Matrix<T>"+left_item+std::to_string(x)+","+std::to_string(y)+right_item);
 	}
 	
-	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x){
+	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x) const{
 		throw std::out_of_range("Error: Chosen index is out of bounds. Matrix<T>"+left_item+std::to_string(x)+right_item);
 	}
 	
-	void _invalid_dim(const std::string &op, const Matrix &other_matrix){
+	void _invalid_dim(const std::string &op, const Matrix &other_matrix) const{
 		throw std::invalid_argument("For " + op + " Matrix 1's columns and rows must match Matrix 2's columns and rows.\r\nM1.cols="+std::to_string(cols)+" M1.rows="+std::to_string(rows)+" M2.cols="+std::to_string(other_matrix.rows)+" M2.rows="+std::to_string(other_matrix.cols)+"\r\n");
 	}
 	
-	Matrix<T> operator+(const T &scalar){
+	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
 		for(i=0;i<cols;i++){
@@ -160,8 +160,19 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
-	
-	Matrix<T> operator-(const T &scalar){
+
+	Matrix<T> operator*(const T scalar) const{
+		size_t i=0,j=0;
+		Matrix<T> result(cols,rows,0);
+		for(i=0;i<cols;++i){
+			for(j=0;j<rows;j++){
+				result.array[i+(rows*j)]=this->array[i+(rows*j)]*scalar;
+			}
+		}
+		return result;
+	}
+
+	Matrix<T> operator-(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
 		for(i=0;i<cols;i++){
@@ -172,7 +183,7 @@ template <class T> class Matrix{
 		return result;
 	}					
 
-	Matrix<T> operator+(Matrix<T> &other_matrix){
+	Matrix<T> operator+(Matrix<T> const &other_matrix) const{
 		if((cols != other_matrix.cols)||(rows != other_matrix.rows)){
 			_invalid_dim("addition",other_matrix);
 		}
@@ -186,7 +197,7 @@ template <class T> class Matrix{
 		return result;
 	}	
 	
-	Matrix<T> operator-(Matrix<T> &other_matrix){
+	Matrix<T> operator-(const Matrix<T> &other_matrix) const{
 		if((cols != other_matrix.cols)||(rows != other_matrix.rows)){
 			_invalid_dim("subtraction",other_matrix);
 		}
@@ -200,7 +211,23 @@ template <class T> class Matrix{
 		return result;
 	}
 
-	Matrix<T> operator%(T scalar){
+	Matrix<T> operator*(const Matrix<T> &other_matrix) const{
+		if((this->cols != other_matrix.rows)){
+			_invalid_dim("multiplication",other_matrix);
+		}
+		size_t i=0,j=0,k=0;
+		Matrix result(this->cols,other_matrix.rows,0);
+		for(i=0;i<cols;++i){
+			for(j=0;j<other_matrix.cols;j++){
+				for(k=0;k<this->cols;k++){
+					result.array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
+				}
+			}
+		}
+		return result;
+	}
+
+	Matrix<T> operator%(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
 
@@ -212,9 +239,7 @@ template <class T> class Matrix{
 		return result;
 	}
 
-	Matrix<T> &operator+=(const T &scalar) {
-		size_t rows=this->rows;
-		size_t cols=this->cols;
+	Matrix<T> &operator+=(const T scalar) {
 		size_t i=0;
 		size_t j=0;
 
@@ -227,9 +252,7 @@ template <class T> class Matrix{
 		return *this;
 	}
 	
-	Matrix<T> &operator-=(const T &scalar) {
-		size_t rows=this->rows;
-		size_t cols=this->cols;
+	Matrix<T> &operator-=(const T scalar) {
 		size_t i=0;
 		size_t j=0;
 
@@ -241,10 +264,18 @@ template <class T> class Matrix{
 
 		return *this;
 	}
-	
+
+	Matrix<T> &operator*=(const T &scalar){
+		size_t i=0,j=0;
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				this-array[i+(rows*j)]*=scalar;
+			}
+		}
+		return *this;
+	};
+
 	Matrix<T> &operator+=(const Matrix<T> &other_matrix) {
-		size_t rows=this->rows;
-		size_t cols=this->cols;
 		size_t i=0;
 		size_t j=0;
 
@@ -262,8 +293,6 @@ template <class T> class Matrix{
 	}
 	
 	Matrix<T> &operator-=(const Matrix<T> &other_matrix) {
-		size_t rows=this->rows;
-		size_t cols=this->cols;
 		size_t i=0;
 		size_t j=0;
 
@@ -281,8 +310,6 @@ template <class T> class Matrix{
 	}
 
 	Matrix<T> &operator%=(const T &scalar) {
-		size_t rows=this->rows;
-		size_t cols=this->cols;
 		size_t i=0;
 		size_t j=0;
 		for (i=0; i<rows; i++) {
