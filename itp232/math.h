@@ -6,6 +6,18 @@ template <class T> inline T epsilon (const T& v) {
 	 T e = std::numeric_limits<T>::epsilon() * 100;
 	 return v > T(1) ? v * e : e;
 }
+double mod(double a, double b){
+	double m = fmod(a,b);
+	return m < 0?m+b:m;
+}
+double mod(float a, float b){
+	double m = fmod(a,b);
+	return m < 0?m+b:m;
+}
+template <typename T> T mod(T a, T b){
+	T m = a % b;
+	return m < 0?m+b:m;
+}
 using std::abs;
 template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	if(a == 0){
@@ -24,22 +36,45 @@ template <typename T> T mod_inv(T a, T mod){
 	T gcd=0;
 	T x=0;
 	T y=0;
-	
+	/*
+	 * Sadly the code below was too good to be true. It didn't work for reasons beyond my understanding at this time.
+	 *
+	 */
+	/*
 	int sign_a = (a < 0)?-1:1;
 	int sign_mod = (mod < 0)?-1:1;
 	a*=sign_a;
 	mod*=sign_mod;
-	
+	*/
+	if(mod < 0){
+		x=-mod;
+	}
+	else
+		x=mod;
+	if(a<0)
+		a+=x;
 	gcd=gcd_fast(a,mod,&x,&y);
 	if((gcd != 1) && (gcd != -1)){
 		throw std::invalid_argument("The gcd between a and the modulus must be either 1 or -1");
 	}
-	
-	if((sign_a < 0) && (sign_mod < 0))
-		return -1*((x+mod)%mod);
+	if(gcd == -1)
+		if(x < 0)
+			return mod - x;
+		else
+			return x + mod;
 	else
 		return x % mod;
-
+	/*
+	 * Same with this code. I think it's something with to do with the modulus operator or something.
+	 */
+	/*
+	if((sign_a < 0) && (sign_mod < 0))
+		return -1*((x+mod)%mod);
+	else if(x < 0)
+		return (x+mod) % mod;
+	else
+		return x % mod;
+	*/
 
 }
 template <typename T> T *small_prime_factor(T n){

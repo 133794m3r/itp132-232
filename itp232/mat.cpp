@@ -99,9 +99,15 @@ int main() {
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
 	double arr[4]={7,11,8,11};
+	std::cout << "Hill Cipher Tests" << std::endl;
 	matrix_double hill2(arr,2,2);
-	std::cout << "hill2" << std::endl << hill2 << std::endl;
-	the_determinant=hill2.det();
-	std::cout << the_determinant << std::endl;
+	std::cout << "K == "<< std::endl << hill2 << std::endl << std::endl;
+	std::cout << "det(K) = ";
+	std::cout << hill2.det() << std::endl << std::endl;
+	std::cout << "adj(K) == " << std::endl;
+	std::cout << hill2.adj() << std::endl << std::endl;
+	std::cout << "[K]^-1 = [d]^-1 * adj(K) == " << std::endl;
+	std::cout << hill2.inv_mod(26) << std::endl;
+
 	return 0;
 }
