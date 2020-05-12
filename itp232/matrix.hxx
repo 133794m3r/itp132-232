@@ -149,7 +149,9 @@ template <class T> class Matrix{
 	void _invalid_dim(const std::string &op, const Matrix &other_matrix) const{
 		throw std::invalid_argument("For " + op + " Matrix 1's columns and rows must match Matrix 2's columns and rows.\r\nM1.cols="+std::to_string(cols)+" M1.rows="+std::to_string(rows)+" M2.cols="+std::to_string(other_matrix.rows)+" M2.rows="+std::to_string(other_matrix.cols)+"\r\n");
 	}
-
+	/**
+	 * Arithematic operators.
+	 */
 	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
@@ -213,16 +215,14 @@ template <class T> class Matrix{
 
 	Matrix<T> operator*(const Matrix<T> &other_matrix) const{
 		if((this->cols != other_matrix.rows)){
-			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(other_matrix.rows)+"\r\n");
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
 		}
 		size_t i=0,j=0,k=0;
-		Matrix<T> result(other_matrix.cols,this->rows,0);
-
-		for(i=0;i<this->rows;++i){
+		Matrix result(this->cols,other_matrix.rows,0);
+		for(i=0;i<cols;++i){
 			for(j=0;j<other_matrix.cols;j++){
 				for(k=0;k<this->cols;k++){
-					result.array[i+(j*this->rows)]+=this->array[i+(k*this->rows)]*other_matrix.array[k+(j*other_matrix.rows)];
-
+					result.array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
 				}
 			}
 		}
@@ -241,6 +241,10 @@ template <class T> class Matrix{
 		return result;
 	}
 
+	/**
+	 * The arith&&= operators.
+	 *
+	 */
 	Matrix<T> &operator+=(const T scalar) {
 		size_t i=0;
 		size_t j=0;
@@ -310,24 +314,20 @@ template <class T> class Matrix{
 
 		return *this;
 	}
-
-	Matrix<T> &operator*=(const Matrix<T> &other_matrix) const{
+	Matrix<T> &operator*=(const Matrix<T> &other_matrix){
 		if((this->cols != other_matrix.rows)){
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
 		}
 		size_t i=0,j=0,k=0;
-		//have to allocate another matrix for _whatever_ reason.
-		Matrix<T> *result=new Matrix<T>(this->cols,other_matrix.rows,0);
-		std::vector<T> result2(this->cols * other_matrix.rows);
-		for(i=0;i<this->rows;++i){
+
+		for(i=0;i<cols;++i){
 			for(j=0;j<other_matrix.cols;j++){
-				//result.array[(i*other_matrix.cols)+j]=T(0);
 				for(k=0;k<this->cols;k++){
-					result->array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
+					this->array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k]*other_matrix.array[(k*other_matrix.cols)+j];
 				}
 			}
 		}
-		return *result;
+		return *this;
 	}
 
 	Matrix<T> &operator%=(const T &scalar) {
@@ -340,11 +340,64 @@ template <class T> class Matrix{
 		}
 		return *this;
 	}
+
 	//division is actually undefined so this is going to be hard to do.
-	Matrix<T> operator/(const Matrix<T> &other_matrix){
+	Matrix<T> operator/(const Matrix<T> &other_matrix) const{
 
 	}
-	
+	/**
+	 * Comparison Operators are below here.
+	 *
+	 */
+
+	bool operator==(const Matrix<T> &other_matrix) const{
+		if((this->cols != other_matrix.cols)||(this->rows != other_matrix.rows)){
+			return false;
+		}
+		size_t i=0,j=0;
+		for(i=0;i<this->rows;i++){
+			for(j=0;j<this->cols;j++){
+				if(abs(this->array[i+(rows*j)] - other_matrix.array[i+(rows*j)]) > epsilon(this->array[i+(rows*j)])){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool operator!=(const Matrix<T> &other_matrix) const{
+		return !( *this == other_matrix );
+	}
+	bool operator<(const Matrix<T> &other_matrix) const{
+		if((this->cols != other_matrix.cols)||(this->rows != other_matrix.rows)){
+			_invalid_dim(">",other_matrix);
+		}
+		size_t i=0,j=0;
+		for(i=0;i<this->rows;i++){
+			for(j=0;j<this->cols;j++){
+				if(this->array[i+(rows*j)]>other_matrix.array[i+(rows*j)]){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool operator<=(const Matrix<T> &other_matrix) const{
+		return (*this < other_matrix);
+	}
+	bool operator>(const Matrix<T> &other_matrix) const{
+		return !(*this < other_matrix);
+	}
+	bool operator>=(const Matrix<T> &other_matrix) const{
+		return !(*this < other_matrix);
+	}
+	bool operator==(const T &rhs) const{
+		return false;
+	}
+
+	bool operator !=(const T &rhs) const{
+		return true;
+	}
+
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 
@@ -467,6 +520,7 @@ template <class T> class Matrix{
 		}
 		return tmp_matrix;
 	}
+
 	template <typename U> Matrix<T> inv_mod(U m) const{
 		double det_M=this->det();
 		Matrix<T> inversed(cols,rows,0);
@@ -492,6 +546,7 @@ template <class T> class Matrix{
 		}
 		return inversed;
 	}
+
 	~Matrix();
 	
 };

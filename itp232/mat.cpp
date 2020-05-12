@@ -5,6 +5,9 @@
 * Licensed AGPLv3
 * Matrix Class Module Test Program
 */
+std::string equality(bool test){
+	return (test)?"true":"false";
+}
 int main() {
 	int row=2;
 	int col=2;
@@ -14,6 +17,7 @@ int main() {
 	int i=0;
 	int j=0;
 	int k=0;
+	/*
 	matrix_int mat1(col,row,0);
 
 	for(i=0;i<row;i++){
@@ -103,6 +107,25 @@ int main() {
 	std::cout << "mat2 " << mat2 << std::endl;
 	std::cout << det_mat << std::endl;
 	std::cout << "det_mat*result=" << std::endl << mat2*det_mat << std::endl;
+	 */
+	matrix_int a(2,2,1);
+	matrix_int b(2,2,1);
+	matrix_double c_1(2,2,2);
+	matrix_double c_2(2,2,3);
+	std::cout << "a \r\n" << a << std::endl;
+	std::cout << "b \r\n" << b << std::endl;
+	std::cout <<"(a  == b) => " <<  equality(a == b) << std::endl;
+	std::cout <<"(a  != b) => " << equality(a != b) << std::endl;
+	std::cout << "(a  > b) =>" << equality(a > b) << std::endl;
+	std::cout << "(a  < b) => " << equality(a < b ) << std::endl << std::endl;
+	std::cout << "c1 \r\n" << c_1 << std::endl;
+	std::cout << "c2 \r\n" << c_2 << std::endl;
+	std::cout << "(c1 == c2) => " <<  equality(c_1 == c_2) << std::endl;
+	std::cout << "(c2 != c2) => " << equality(c_1 != c_2) << std::endl;
+	std::cout << "(c2 >  c2) => " << equality(c_1 > c_2) << std::endl;
+	std::cout << "(c2 <  c2) => " << equality(c_1 < c_2) << std::endl;
+	std::cout << "(c2 >= c2) => " << equality(c_1 >= c_2) << std::endl;
+	std::cout << "(c2 <= c2) => " << equality(c_1 <= c_2) << std::endl;
 	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();
