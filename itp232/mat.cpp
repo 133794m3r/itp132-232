@@ -9,15 +9,16 @@ std::string equality(bool test){
 	return (test)?"true":"false";
 }
 int main() {
+	int i=0;
+	int j=0;
+	/*
 	int row=2;
 	int col=2;
 	//Matrix mat1(2,2,1);
 	//std::cout << "mat1" << std::endl;
 	//Matrix<int> result(row,col,0);
-	int i=0;
-	int j=0;
 	int k=0;
-	/*
+	
 	matrix_int mat1(col,row,0);
 
 	for(i=0;i<row;i++){
@@ -126,13 +127,36 @@ int main() {
 	std::cout << "(c2 <  c2) => " << equality(c_1 < c_2) << std::endl;
 	std::cout << "(c2 >= c2) => " << equality(c_1 >= c_2) << std::endl;
 	std::cout << "(c2 <= c2) => " << equality(c_1 <= c_2) << std::endl;
+	for(i=0;i<2;i++){
+		for(j=0;j<2;j++){
+			c_1(i,j)=((i+1)<<2)+((j+1) << 3);
+		}
+	}
+	for(i=0;i<2;i++){
+		for(j=0;j<2;j++){
+			a(i,j)=((i+1)<<2)+((j+1) << 3);
+		}
+	}
+	std::cout << a << std::endl;
+	//bool res=a.inv();
+	bool res=true;
+
+	std::cout << "c1.inv() => \r\n" << res << std::endl;
+	std::cout << "a\r\n" << a << std::endl;
+	std::cout << "c\r\n" << c_1 << std::endl;
+	double det_a=a.det();
+	std::cout << "det a " << det_a << std::endl;
+
+	double det_c1=c_1.det();
+	std::cout << "det c_1" << det_c1 << std::endl;
 	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
-	double arr[4]={7,11,8,11};
+	 */
+	int arr[4]={7,11,8,11};
 	std::cout << "Hill Cipher Tests" << std::endl;
-	matrix_double hill2(arr,2,2);
+	matrix_int hill2(arr,2,2);
 	std::cout << "K == "<< std::endl << hill2 << std::endl << std::endl;
 	std::cout << "det(K) = ";
 	std::cout << hill2.det() << std::endl << std::endl;
@@ -140,6 +164,8 @@ int main() {
 	std::cout << hill2.adj() << std::endl << std::endl;
 	std::cout << "[K]^-1 = [d]^-1 * adj(K) == " << std::endl;
 	std::cout << hill2.inv_mod(26) << std::endl;
-*/
+	std::cout << hill2.gae() << std::endl;
+	std::cout << hill2 << std::endl;
+
 	return 0;
 }

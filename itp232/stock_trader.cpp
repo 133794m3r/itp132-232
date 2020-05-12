@@ -2,6 +2,7 @@
 #include "terminal.h"
 #include "stock_trader.h"
 #include <stdio.h>
+#include <string>
 /*
 * Stock Trader CLI Application
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -10,9 +11,6 @@
 //this'll be a simple trading game. Buy an item for a price, then see if you want to seell it. 
 //costs'll be randomized each day. Goal is to have the maximum amount of money in the end.
 
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
 typedef std::vector<Item*> vector_ptr_item;
 typedef std::vector<int*> vector_ptr_int;
 
@@ -271,4 +269,3 @@ int main(){
 	items.clear();
 	return 0;
 }
-#pragma clang diagnostic pop

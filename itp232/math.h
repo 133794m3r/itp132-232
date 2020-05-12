@@ -6,19 +6,22 @@ template <class T> inline T epsilon (const T& v) {
 	 T e = std::numeric_limits<T>::epsilon() * 100;
 	 return v > T(1) ? v * e : e;
 }
+
 double mod(double a, double b){
 	double m = fmod(a,b);
 	return m < 0?m+b:m;
 }
+
 double mod(float a, float b){
 	double m = fmod(a,b);
 	return m < 0?m+b:m;
 }
+
 template <typename T> T mod(T a, T b){
 	T m = a % b;
 	return m < 0?m+b:m;
 }
-using std::abs;
+
 template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	if(a == 0){
 		*x=0;

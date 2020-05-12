@@ -2,6 +2,7 @@
 #define MATRIX_CLASS_DEMO
 #include <vector>
 #include <valarray>
+#include <stdexcept>
 #include "math.h"
 template <class T> class Matrix;
 template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& );
@@ -11,7 +12,9 @@ template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& 
  * Matrix Class Module
  *
  */
-
+//uncomment line below to do out of range checking. This costs perf and since I know i'm within ranges always
+//I have it undefined.
+//#define _CHECK_RANGE_
 template <class T> class Matrix{
 	
  private:
@@ -59,7 +62,7 @@ template <class T> class Matrix{
 			array.push_back(input_array[i]);
 		}
 	}
-
+	//allow assignment operator.
 	Matrix<T> operator=(const Matrix<T> &input){
 		//self referential assignment.
 		//if(this == &input) {
@@ -75,15 +78,16 @@ template <class T> class Matrix{
 		return *this;
 	}
 
-
+	//get columns.
 	size_t get_cols() {
 		return this->cols;
 	}
-	
+	//get columns constantly.
 	size_t get_cols() const{
 		return this->cols;
 	}
-	
+
+	//same with rows.
 	size_t get_rows() const{
 		return this->rows;
 	}
@@ -91,11 +95,16 @@ template <class T> class Matrix{
 	size_t get_rows() {
 		return this->rows;
 	}
-	
+
+	//get the value at an index.
 	size_t index(size_t x, size_t y) const{
-		return x+(rows*y);
+		#ifdef _CHECK_RANGE_
+		if(x >= rows || y >= cols)
+			_index_out_of_bounds("(",")",x,y);
+		#endif
+		return this->array[x+(rows*y)];
 	}
-	
+	//overload function operator to allow them to call it via matrix(i,j). Where i = row, and j = column.
 	T &operator()(const size_t x, const size_t y){
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
@@ -111,7 +120,8 @@ template <class T> class Matrix{
 		#endif			
 		return array[x+(rows*y)];
 	}
-	
+
+	//subscript operator.
 	T &operator[](const size_t x){
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
@@ -127,7 +137,7 @@ template <class T> class Matrix{
 		#endif			
 		return this->array[x];
 	}
-
+	/*
 	T *get_elem(T x,T y){
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
@@ -137,18 +147,21 @@ template <class T> class Matrix{
 		el=&array[x+(rows*y)];
 		return el;
 	}
-	
+	*/
+
+	//index out of bounds error when doing x,y form.
 	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x, const size_t y) const{
 		throw std::out_of_range("Error: Chosen index is out of bounds. Matrix<T>"+left_item+std::to_string(x)+","+std::to_string(y)+right_item);
 	}
-	
+	//index out of bounds when doing direct access.
 	void _index_out_of_bounds(const std::string  &left_item, const std::string &right_item, const size_t x) const{
 		throw std::out_of_range("Error: Chosen index is out of bounds. Matrix<T>"+left_item+std::to_string(x)+right_item);
 	}
-	
+	//invalid dimensions error.
 	void _invalid_dim(const std::string &op, const Matrix &other_matrix) const{
 		throw std::invalid_argument("For " + op + " Matrix 1's columns and rows must match Matrix 2's columns and rows.\r\nM1.cols="+std::to_string(cols)+" M1.rows="+std::to_string(rows)+" M2.cols="+std::to_string(other_matrix.rows)+" M2.rows="+std::to_string(other_matrix.cols)+"\r\n");
 	}
+
 	/**
 	 * Arithematic operators.
 	 */
@@ -183,8 +196,34 @@ template <class T> class Matrix{
 			}
 		}
 		return result;
-	}					
+	}
 
+	Matrix<T> operator/(const T scalar) const{
+		Matrix<T> result(cols,rows,0);
+		size_t i=0,j=0;
+		for(i=0;i<cols;i++){
+			for(j=0;j<rows;j++){
+				result.array[i+(rows*j)]=this->array[i+(rows*j)]/scalar;
+			}
+		}
+		return result;
+	}
+
+	Matrix<T> operator%(const T scalar) const{
+		Matrix<T> result(cols,rows,0);
+		size_t i=0,j=0;
+
+		for(i=0;i<cols;i++){
+			for(j=0;j<rows;j++){
+				result.array[i+(rows*j)]=mod(this->array[i+(rows*j)],scalar);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Below here are the same operators but with matrices.
+	 */
 	Matrix<T> operator+(Matrix<T> const &other_matrix) const{
 		if((cols != other_matrix.cols)||(rows != other_matrix.rows)){
 			_invalid_dim("addition",other_matrix);
@@ -228,18 +267,12 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
+	//division is actually undefined so this is going to be hard to do.
+	Matrix<T> operator/(const Matrix<T> &other_matrix) const{
 
-	Matrix<T> operator%(const T scalar) const{
-		Matrix<T> result(cols,rows,0);
-		size_t i=0,j=0;
-
-		for(i=0;i<cols;i++){
-			for(j=0;j<rows;j++){
-				result.array[i+(rows*j)]=this->array[i+(rows*j)]%scalar;
-			}
-		}
-		return result;
 	}
+
+
 
 	/**
 	 * The arith&&= operators.
@@ -314,6 +347,7 @@ template <class T> class Matrix{
 
 		return *this;
 	}
+
 	Matrix<T> &operator*=(const Matrix<T> &other_matrix){
 		if((this->cols != other_matrix.rows)){
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
@@ -341,10 +375,6 @@ template <class T> class Matrix{
 		return *this;
 	}
 
-	//division is actually undefined so this is going to be hard to do.
-	Matrix<T> operator/(const Matrix<T> &other_matrix) const{
-
-	}
 	/**
 	 * Comparison Operators are below here.
 	 *
@@ -357,16 +387,18 @@ template <class T> class Matrix{
 		size_t i=0,j=0;
 		for(i=0;i<this->rows;i++){
 			for(j=0;j<this->cols;j++){
-				if(abs(this->array[i+(rows*j)] - other_matrix.array[i+(rows*j)]) > epsilon(this->array[i+(rows*j)])){
+				if(std::abs(this->array[i+(rows*j)] - other_matrix.array[i+(rows*j)]) > epsilon(this->array[i+(rows*j)])){
 					return false;
 				}
 			}
 		}
 		return true;
 	}
+
 	bool operator!=(const Matrix<T> &other_matrix) const{
 		return !( *this == other_matrix );
 	}
+	
 	bool operator<(const Matrix<T> &other_matrix) const{
 		if((this->cols != other_matrix.cols)||(this->rows != other_matrix.rows)){
 			_invalid_dim(">",other_matrix);
@@ -381,15 +413,19 @@ template <class T> class Matrix{
 		}
 		return true;
 	}
+
 	bool operator<=(const Matrix<T> &other_matrix) const{
 		return (*this < other_matrix);
 	}
+
 	bool operator>(const Matrix<T> &other_matrix) const{
 		return !(*this < other_matrix);
 	}
+
 	bool operator>=(const Matrix<T> &other_matrix) const{
 		return !(*this < other_matrix);
 	}
+
 	bool operator==(const T &rhs) const{
 		return false;
 	}
@@ -403,22 +439,22 @@ template <class T> class Matrix{
 
 	bool lud(double &determinant)const{
 		Matrix<T> A=Matrix<T>(*this);
-		size_t i, j, k;
+		long long int i, j, k,n=cols;
 		std::vector<T> tmp_row;
 		double max_matrix, absolute_matrix;
 		std::vector<T> P;
-		P.reserve(cols-1);
-		determinant = T(1);
+		P.reserve(n-1);
+		determinant = static_cast<T>(1);
 		
-		for (i = 0; i < cols; i++) {
+		for (i = 0; i < n; i++) {
 			P.push_back(i);
 		}
 
-		for (i = 0; i < cols - 1; i++) {
-			max_matrix = abs(A[P[i] * cols + i]);
-			size_t i_max = i;
-			for (j = i + 1; j < cols; j++) {
-				if ((absolute_matrix = abs(A[j] * cols + i)) > max_matrix) {
+		for (i = 0; i < n - 1; i++) {
+			max_matrix = std::abs(A[P[i] * n + i]);
+			long long int i_max = i;
+			for (j = i + 1; j < n; j++) {
+				if ((absolute_matrix = std::abs(A[j] * n + i)) > max_matrix) {
 					max_matrix = absolute_matrix;
 					i_max = j;
 				}
@@ -428,51 +464,75 @@ template <class T> class Matrix{
 				determinant = -determinant;
 			}
 
-			size_t i_pos = P[i] * cols;
+			size_t i_pos = P[i] * n;
 			size_t i_pos_i = i_pos+i;
-			if (abs(A[i_pos_i]) < epsilon(A[i_pos_i])) {
+			if (std::abs(A[i_pos_i]) < epsilon(A[i_pos_i])) {
 				return false;
 			}
 			determinant *= A[i_pos_i];
-			for (j = i + 1; j < cols; j++) {
-				size_t j_pos = P[j] * cols;
+			for (j = i + 1; j < n; j++) {
+				size_t j_pos = P[j] * n;
 				T a = A[j_pos + i] /= A[i_pos_i];
 
-				for (k = i + 1; k < cols; k++) {
+				for (k = i + 1; k < n; k++) {
 					A[j_pos + k] -= a * A[i_pos + k];
 				}
 			}
 		}
 
-		determinant*= A[P[i]*cols+i];
+		determinant*= A[P[i]*n+i];
 		return true;
 	}
 	
-	double _det(Matrix<T> &mat)const{
-		return (mat.array[0]*mat.array[3])-(mat.array[1]*mat.array[2]);
+	T _det()const{
+		return (array[0]*array[3])-(array[1]*array[2]);
 	}
-	
-	//TODO: Going to have a hard-coded version for when I have a 1x1 or 2x2 matrix as it's easy enough to hard code.
-	double det(void)const{
-		if(this->cols != this->rows){
-			throw std::invalid_argument( "Matrix<T>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+
+	T gae(void){
+		size_t i,j,k;
+		size_t swaps=0;
+		for(i=0;i<rows-1;i++){
+			for(j= i + 1; j < rows; j++){
+				if(std::abs(array[i+(i*rows)]) < std::abs(array[j+(i*rows)])){
+					swaps++;
+					for(k=0;k<cols;k++){
+						std::swap(array[i+(k*rows)],array[j+(k*rows)]);
+					}
+				}
+			}
+			for(j=i+1;j<rows;j++){
+				double tmp=array[j+(i*rows)]/array[i+(i*rows)];
+				for(k=0;k<cols;k++){
+					array[j+(k*rows)]=array[j+(k*rows)]-tmp*array[i+(k*rows)];
+				}
+			}
 		}
-		Matrix<T> tmp_matrix=Matrix<T>(*this);
-		double determinant=0;
-		//if it's 2x2 I can simply do it w/o having do LUD or any other
-		//expensive operations. No reason do all of those extra operations.
-		if(cols == 2 && rows == 2)
-			determinant=_det(tmp_matrix);
-		if(!lud(determinant))
-			determinant=0;
-
-		return determinant;
+		return swaps;
 	}
 
-	void _adj(Matrix<T> &matrix)const{
-		std::swap(matrix.array[0],matrix.array[3]);
-		matrix.array[1]*=-1;
-		matrix.array[2]*=-1;
+	T gae(void)const{
+		size_t i,j,k;
+		size_t swaps=0;
+		std::vector<T> vec=this->array;
+
+		for(i=0;i<rows-1;i++){
+			for(j=i+1;j<rows;j++){
+				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
+					swaps++;
+					for(k=0;k<cols;k++){
+						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
+					}
+				}
+			}
+
+			for(j=i+1;j<rows;j++){
+				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
+				for(k=0;k<cols;k++){
+					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
+				}
+			}
+		}
+		return swaps;
 	}
 
 	T cofactor(size_t max_row, size_t max_col) const{
@@ -501,6 +561,12 @@ template <class T> class Matrix{
 		return cofact;
 	}
 
+	void _adj(Matrix<T> &mat)const{
+		std::swap(mat.array[0],mat.array[3]);
+		mat.array[1]*=-1;
+		mat.array[2]*=-1;
+	}
+
 	Matrix<T> adj()const{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
@@ -519,6 +585,22 @@ template <class T> class Matrix{
 			}
 		}
 		return tmp_matrix;
+	}
+
+	bool inv(){
+		T det_m=this->det();
+		if(det_m == 0) {
+			throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
+		}
+		Matrix<T> adj_mat(cols,rows,1);
+		adj_mat=this->adj();
+		size_t i=0,j=0;
+		for(i=0;i<cols;i++){
+			for(j=0;j<cols;j++){
+				this->array[(j*cols)+i] = adj_mat[(j*cols)+i]/det_m;
+			}
+		}
+		return true;
 	}
 
 	template <typename U> Matrix<T> inv_mod(U m) const{
@@ -548,8 +630,9 @@ template <class T> class Matrix{
 	}
 
 	~Matrix();
-	
+	T det(void) const;
 };
+
 template <class T> Matrix<T>::~Matrix(){
 	array.clear();
 }
@@ -558,18 +641,74 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 	//int w = os.width();
 	size_t rows=m.rows;
 	size_t cols=m.cols;
-	os << '[';
+	os << "[";
 	for (size_t i=0; i < rows; i++) {
-		os << '[';
+		os << "[";
 		for (size_t j = 0; j < cols; j++) {
 			os << m(i, j) << (j == cols - 1 ? "]" : "\t,");
 		}
-		os << ((i < rows -1)?",":"]");
-		os << "\n";
+		os << ((i < rows -1)? "," : "]");
+		os << '\n';
 	}
 	return os;
 }
+//I have to break these templates out because the way that I'm going to do integer types.
+template <> float Matrix<float>::det(void) const{
+	//it has to be a square matrix for this to work.
+	if(this->cols != this->rows){
+		throw std::invalid_argument( "Matrix<float>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+	}
+	//if it's 2x2 I can simply do it w/o having do LUD or any other
+	//expensive operations. No reason do all of those extra operations.
+	if(cols == 2 && rows == 2)
+		return _det();
+	//otherwise we create our variables to use later.
+	//this'll reduce memory used when it can be easily done with some simple math.
+	Matrix<float> tmp_matrix=Matrix<float>(*this);
+	double determinant=0;
+	if(!lud(determinant))
+		determinant=0;
 
+	return determinant;
+}
+
+template <> double Matrix<double>::det(void) const{
+	if(this->cols != this->rows){
+		throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+	}
+
+	//if it's 2x2 I can simply do it w/o having do LUD or any other
+	//expensive operations. No reason do all of those extra operations.
+	if(cols == 2 && rows == 2)
+		return _det();
+
+	Matrix<double> tmp_matrix=Matrix<double>(*this);
+	double determinant=0;
+	if(!lud(determinant))
+		determinant=0;
+
+	return determinant;
+}
+//the normal template type is here. I'm going to use gaussian elimination for every other type than double or float.
+template <typename T> T Matrix<T>::det(void)const{
+	if(this->cols != this->rows){
+		throw std::invalid_argument( "Matrix<T>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+	}
+	Matrix<T> tmp_matrix=Matrix<T>(*this);
+	T determinant=0;
+	//if it's 2x2 I can simply do it w/o having do LUD or any other
+	//expensive operations. No reason do all of those extra operations.
+	if(cols == 2 && rows == 2)
+		return _det();
+	//otherwise we have to gaussian elimination.
+	size_t swaps=this->gae();
+	size_t i=0;
+	for(i=0;i<rows;i++){
+		determinant*=array[i+(i*rows)];
+	}
+	//then we cast it to the type T.
+	return static_cast<T>(determinant*pow(-1,swaps));
+}
 typedef Matrix<int> matrix_int;
 typedef Matrix<double> matrix_double;
 #endif
