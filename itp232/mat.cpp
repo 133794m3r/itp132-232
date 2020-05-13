@@ -134,27 +134,34 @@ int main() {
 	}
 	for(i=0;i<2;i++){
 		for(j=0;j<2;j++){
+			c_2(i,j)=((i+1)<<2)+((j+1) << 4);
+		}
+	}
+	for(i=0;i<2;i++){
+		for(j=0;j<2;j++){
 			a(i,j)=((i+1)<<2)+((j+1) << 3);
 		}
 	}
 	std::cout << a << std::endl;
+	//std::vector<double> A={-0.625,0.5625,0.375,-0.3125};
+	std::vector<double> A={1,2,3,4};
+	matrix_double AA(A,2,2);
 	//bool res=a.inv();
-	bool res=true;
-
-	std::cout << "c1.inv() => \r\n" << res << std::endl;
-	std::cout << "a\r\n" << a << std::endl;
-	std::cout << "c\r\n" << c_1 << std::endl;
-	double det_a=a.det();
-	std::cout << "det a " << det_a << std::endl;
-
-	double det_c1=c_1.det();
-	std::cout << "det c_1" << det_c1 << std::endl;
+	std::cout << AA << std::endl;
+	std::cout << "c1 " << c_1 << std::endl;
+	std::cout << "c2 " << c_2 << std::endl;
+	std::cout << "c_1 * AA" << std::endl;
+	std::cout << c_1 * AA << std::endl;
+	//c_1/=c_2;
+	//std::cout << "c_1/=c2" << std::endl;
+	//std::cout << c_1 << std::endl;
 	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
 	 */
-	int arr[4]={7,11,8,11};
+
+	int arr[4]={7,8,11,11};
 	std::cout << "Hill Cipher Tests" << std::endl;
 	matrix_int hill2(arr,2,2);
 	std::cout << "K == "<< std::endl << hill2 << std::endl << std::endl;
@@ -166,6 +173,19 @@ int main() {
 	std::cout << hill2.inv_mod(26) << std::endl;
 	std::cout << hill2.gae() << std::endl;
 	std::cout << hill2 << std::endl;
+	std::cout << hill2(0,1) << std::endl;
 
+//	int k=1;
+//	for(i=0;i<2;i++){
+//		for(j=0;j<2;j++){
+//			a(i,j)=k+((i+1)<<2)+((j+1) << 3);
+//		}
+//	}
+//	std::cout << a << std::endl;
+//	for(i=0;i<2;i++){
+//		for(j=0;j<2;j++){
+//			std::cout << "a(" << i+1 << "," << j+1 << ")=" << a[i+(j*2)] << std::endl;
+//		}
+//	}
 	return 0;
 }
