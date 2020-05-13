@@ -174,6 +174,23 @@ int main() {
 	std::cout << hill2.gae() << std::endl;
 	std::cout << hill2 << std::endl;
 	std::cout << hill2(0,1) << std::endl;
+	std::vector<int> arr2={3,2,5,2,3,-3,-4,3,1,3,15,14};
+	matrix_int gaec1(arr2,4,3);
+	matrix_double gaec(3,2,1);
+	gaec(0,0)=3;gaec(0,1)=1;gaec(0,2)=15;
+	gaec(1,0)=5;gaec(1,1)=1;gaec(1,2)=20;
+	std::cout << "Solve for x and y in the following equation. \r\n3x + y = 15\r\n5x + y = 20\r\n";
+	//std::cout << gaec << std::endl;
+	matrix_double result(2,1,0); result=gaec.gae_solve();
+	std::cout << "x=" << result(0,0) << std::endl;
+	std::cout << "y=" << result(0,1) << std::endl;
+	std::cout << "solve again but this time for x, y and z." << std::endl;
+	std::cout <<"3x+2y-4z=3\r\n2x+3y+3z=15\r\n5x-3y+z=14\r\n";
+	matrix_int result2(3,1,0);result2=gaec1.gae_solve();
+	std::cout << "x=" << result2(0,0) << std::endl;
+	std::cout << "y=" << result2(0,1) << std::endl;
+	std::cout << "z=" << result2(0,2) << std::endl;
+	//std::cout << gaec.gae(1) << std::endl;
 
 //	int k=1;
 //	for(i=0;i<2;i++){

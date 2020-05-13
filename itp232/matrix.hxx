@@ -391,6 +391,7 @@ template <class T> class Matrix{
 		*this *= !other_matrix;
 		return *this;
 	}
+	
 	/**
 	 * Comparison Operators are below here.
 	 *
@@ -508,25 +509,29 @@ template <class T> class Matrix{
 	T gae(void){
 		size_t i,j,k;
 		size_t swaps=0;
+		std::vector<T> vec=this->array;
+
 		for(i=0;i<rows-1;i++){
-			for(j= i + 1; j < rows; j++){
-				if(std::abs(array[i+(i*rows)]) < std::abs(array[j+(i*rows)])){
+			for(j=i+1;j<rows;j++){
+				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
 					swaps++;
 					for(k=0;k<cols;k++){
-						std::swap(array[i+(k*rows)],array[j+(k*rows)]);
+						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
 					}
 				}
 			}
+
 			for(j=i+1;j<rows;j++){
-				double tmp=array[j+(i*rows)]/array[i+(i*rows)];
+				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
 				for(k=0;k<cols;k++){
-					array[j+(k*rows)]=array[j+(k*rows)]-tmp*array[i+(k*rows)];
+					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
 				}
 			}
 		}
+		this->array=vec;
 		return swaps;
 	}
-
+	
 	T gae(void)const{
 		size_t i,j,k;
 		size_t swaps=0;
@@ -648,6 +653,7 @@ template <class T> class Matrix{
 
 	~Matrix();
 	T det(void) const;
+	Matrix<T> gae_solve() const;	
 };
 
 template <class T> Matrix<T>::~Matrix(){
@@ -668,6 +674,106 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 		os << '\n';
 	}
 	return os;
+}
+template<>Matrix<double> Matrix<double>::gae_solve() const{
+		int i,j,k;
+		std::vector<double> vec(this->array);
+		std::vector<double> tmp_vars(this->rows);
+		for(i=0;i<rows-1;i++){
+			for(j=i+1;j<rows;j++){
+				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
+					for(k=0;k<cols;k++){
+						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
+					}
+				}
+			}
+			for(j=i+1;j<rows;j++){
+				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
+				for(k=0;k<cols;k++){
+					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
+				}
+			}
+		}
+		
+		for(i=rows-1;0<=i;i--){
+			tmp_vars[i] = vec[i+(rows*this->rows)];
+			for(j=i+1;j<rows;j++){
+				tmp_vars[i] -= vec[i+(j*rows)] * tmp_vars[j];
+			}
+			
+			tmp_vars[i] = tmp_vars[i]/vec[i+(i*rows)];			
+		}
+		
+		return Matrix<double>(tmp_vars,rows,1);
+	}
+	
+template<>Matrix<float>	Matrix<float>::gae_solve()const{
+		int i,j,k;
+		std::vector<float> vec(this->array);
+		std::vector<float> tmp_vars(this->rows);
+		for(i=0;i<rows-1;i++){
+			for(j=i+1;j<rows;j++){
+				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
+					for(k=0;k<cols;k++){
+						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
+					}
+				}
+			}
+			for(j=i+1;j<rows;j++){
+				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
+				for(k=0;k<cols;k++){
+					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
+				}
+			}
+		}
+		
+		for(i=rows-1;0<=i;i--){
+			tmp_vars[i] = vec[i+(rows*this->rows)];
+			for(j=i+1;j<rows;j++){
+				tmp_vars[i] -= vec[i+(j*rows)] * tmp_vars[j];
+			}
+			
+			tmp_vars[i] = tmp_vars[i]/vec[i+(i*rows)];			
+		}
+		
+		return Matrix<float>(tmp_vars,rows,1);
+}
+
+template<typename T> Matrix<T> Matrix<T>::gae_solve()const{
+		int i,j,k;
+		std::vector<double> vec(this->array.begin(), this->array.end());
+		std::vector<double> tmp_vars(this->rows);
+		for(i=0;i<rows-1;i++){
+			for(j=i+1;j<rows;j++){
+				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
+					for(k=0;k<cols;k++){
+						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
+					}
+				}
+			}
+			for(j=i+1;j<rows;j++){
+				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
+				for(k=0;k<cols;k++){
+					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
+				}
+			}
+		}
+		
+		for(i=rows-1;0<=i;i--){
+			tmp_vars[i] = vec[i+(rows*this->rows)];
+			for(j=i+1;j<rows;j++){
+				tmp_vars[i] -= vec[i+(j*rows)] * tmp_vars[j];
+			}
+			
+			tmp_vars[i] = tmp_vars[i]/vec[i+(i*rows)];			
+		}
+		
+		std::vector<T> vars(this->rows);
+		
+		for(i=0;i<rows;i++){
+			vars[i]=round(tmp_vars[i]);		
+		}
+		return Matrix<T>(vars,rows,1);
 }
 //I have to break these templates out because the way that I'm going to do integer types.
 template <> float Matrix<float>::det(void) const{
@@ -711,7 +817,7 @@ template <typename T> T Matrix<T>::det(void)const{
 	if(this->cols != this->rows){
 		throw std::invalid_argument( "Matrix<T>::det() Error: Cannot calculate the determinant of a non-square matrix!");
 	}
-	Matrix<T> tmp_matrix=Matrix<T>(*this);
+	//Matrix<T> tmp_matrix=Matrix<T>(*this);
 	T determinant=0;
 	//if it's 2x2 I can simply do it w/o having do LUD or any other
 	//expensive operations. No reason do all of those extra operations.
