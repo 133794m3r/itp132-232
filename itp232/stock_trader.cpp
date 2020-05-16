@@ -1,7 +1,7 @@
 #include <iostream>
 #include "terminal.h"
 #include "stock_trader.h"
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 /*
 * Stock Trader CLI Application
@@ -157,7 +157,7 @@ int main(){
 			std::cout << "\x1b[0m";
 			//if it's -1 we're done.
 			if(selection == -1){
-				selection=0;		
+				selection=0;
 				break;
 			}
 			//if it's less than the total items it's a valid number.
@@ -173,9 +173,10 @@ int main(){
 					std::cout << "You tried to buy more than you could afford!" << std::endl;
 				}
 			}
-			else
+			else {
 				//they tried to do something other than what's valid.
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
+			}
 			//evil pause thing since I don't want to prompt for something else during the loop.
 			system("pause");
 			//move the terminal back up and clear the old stuff.
@@ -183,9 +184,9 @@ int main(){
 	
 		}
 		//we're done with the day so move it up and clear it.
-		move_and_clear_terminal(7,total_items);	
+		move_and_clear_terminal(7,total_items);
 		
-		//next seleection.
+		//next selection.
 		while(selection != -1){
 			//end of day is when they sell things.
 			std::cout << "Welcome to the end of day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;24m!";

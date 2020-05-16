@@ -111,9 +111,9 @@ class Inventory{
 		* when I declare the account class.
 		*/
 		//purchase an item.
-		int purchase_item(Account &usr,Item &itm, int total_items);
+		int purchase_item(Account &usr,Item &itm, unsigned int total_items);
 		//sell the item.
-		int sell_item(Account &usr, Item &itm, int total_items);
+		int sell_item(Account &usr, Item &itm, unsigned int total_items);
 		//sell all of the items.
 		void sell_all_items(Account &usr);
 		
@@ -169,7 +169,8 @@ class Inventory{
 		}
 		
 		std::cout << std::endl;
-	}		
+	}
+
 };
 //Account class.
 class Account{
@@ -219,8 +220,8 @@ class Account{
 		
 		//friend functions fully defined as a method of another class not available
 		//to anything else.
-		friend int Inventory::purchase_item(Account &usr,Item &item,int total_items);
-		friend int Inventory::sell_item(Account &usr,Item &item,int total_items);
+		friend int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items);
+		friend int Inventory::sell_item(Account &usr,Item &item,unsigned int total_items);
 		friend void Inventory::sell_all_items(Account &usr);
 };
 
@@ -232,7 +233,7 @@ class Account{
 * Item &item is an Item pointer to the current item.
 * returns a status code.
 */
-int Inventory::purchase_item(Account &usr,Item &item,int total_items){
+int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	int amount=0;
 	//get their current balance.
 	double available_funds = usr.get_balance();
@@ -240,7 +241,7 @@ int Inventory::purchase_item(Account &usr,Item &item,int total_items){
 	double total_cost = 0;
 	double price=item.get_price();
 	//figure out how many they can buy.
-	int can_buy = floor(available_funds / price);
+	double can_buy = floor(available_funds / price);
 	//get ready to print our stuff.
 	move_and_clear_terminal(4,total_items);
 	//show the menu to them.
@@ -281,7 +282,7 @@ int Inventory::purchase_item(Account &usr,Item &item,int total_items){
 * Returns:
 	Int < Status code> 0 == Nothing happened. 1 == success. -1 == failure.
 */
-int Inventory::sell_item(Account &usr, Item &item,int total_items){
+int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
 	unsigned int amount =0;
 	//figure out how many they own.
 	unsigned int owned=total_owned[item.get_id()];

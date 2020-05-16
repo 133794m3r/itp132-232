@@ -114,7 +114,7 @@ template <typename T> T fast_lcm(T a,T b){
 		return b;
 	else if(b == 1)
 		return a;
-	gcd=egcd(a,b,&x,&y);
+	gcd=gcd_fast(a,b,&x,&y);
 	lcm=(a/gcd)*b;
 	return lcm;
 }

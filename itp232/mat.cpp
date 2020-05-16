@@ -160,10 +160,11 @@ int main() {
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
 	 */
-
+	double hill3_arr[4]={7.0,8.0,11.0,11.0};
 	int arr[4]={7,8,11,11};
 	std::cout << "Hill Cipher Tests" << std::endl;
 	matrix_int hill2(arr,2,2);
+	matrix_double hill3(hill3_arr,2,2);
 	std::cout << "K == "<< std::endl << hill2 << std::endl << std::endl;
 	std::cout << "det(K) = ";
 	std::cout << hill2.det() << std::endl << std::endl;
@@ -190,8 +191,16 @@ int main() {
 	std::cout << "x=" << result2(0,0) << std::endl;
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;
+	//double det=1;
 	//std::cout << gaec.gae(1) << std::endl;
+	//std::cout << "gaec1.lud" << std::endl;
 
+	hill2=matrix_int(arr,2,2);
+	std::cout << hill3 << std::endl;
+	std::cout << hill2 << std::endl;
+	std::cout << hill3.det() << std::endl;
+	std::cout << hill3.inv() << std::endl;
+	std::cout << hill3 << std::endl;
 //	int k=1;
 //	for(i=0;i<2;i++){
 //		for(j=0;j<2;j++){
