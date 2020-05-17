@@ -507,12 +507,12 @@ template <class T> class Matrix{
 					continue;
 				tmp.array[z*(rows-1)+y] = array[i*rows+j];
 				y++;
-			}
-			z++;
+			};
 		}
 		T cofact=tmp.det();
 		if((max_row+max_col) & 1u )
 			cofact = -cofact;
+		
 		return cofact;
 	}
 
@@ -525,13 +525,12 @@ template <class T> class Matrix{
 	Matrix<T> adj()const{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
-
 		Matrix<T> tmp_matrix=Matrix<T>(*this);
+		
 		if(tmp_matrix.cols == 2 && tmp_matrix.rows == 2) {
 			_adj(tmp_matrix);
 		}
 		else {
-
 			size_t i = 0, j = 0;
 			for (i = 0; i < rows; i++) {
 				for (j = 0; j < rows; j++) {
@@ -574,11 +573,13 @@ template <class T> class Matrix{
 	Matrix<T> gae_solve() const;
 	bool lud(double &determinate);
 	bool lud(float &determinant);
+	bool lud(std::vector<float> &P, float *determinant);
+	bool lud(std::vector<T> &P, double *determinant);
 	bool inv(void);
+	bool inv_slow();
 };
 
 template <class T> Matrix<T>::~Matrix(){
-	//std::cout << "cleared" << std::endl;
 	this->array.clear();
 }
 
@@ -703,20 +704,18 @@ template<typename T> Matrix<T> Matrix<T>::gae_solve()const{
 	}
 	return Matrix<T>(vars,rows,1);
 }
-
+//this one is for calculating the determinant. Thus the decomposied 
 template <> bool Matrix<double>::lud(double &determinant){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::lud(): LUD doesn't work on a  non-square matrix!");
 	}
 
 	long long int i, j, k,n=static_cast<long long int>(this->cols);
-	std::vector<double> tmp_row;
 	double max_matrix, absolute_matrix;
 	std::vector<double> P(cols);
 	determinant = 1.0;
-
 	for (i = 0; i < n; i++) {
-		P.push_back(i);
+		P[i]=i;
 	}
 
 	for (i = 0; i < n; i++) {
@@ -741,17 +740,72 @@ template <> bool Matrix<double>::lud(double &determinant){
 		for (j = i + 1; j < n; j++) {
 			size_t j_pos = static_cast<size_t>(P[j] * n);
 			double a = this->array[j_pos + i] /= this->array[i_pos+i];
-
 			for (k = i + 1; k < n; k++) {
 				this->array[j_pos + k] -= a * this->array[i_pos + k];
 			}
 		}
 	}
-
+	i--;
 	determinant*= this->array[P[i]*n+i];
+
 	return true;
 }
+//this one still lets you maybe calculate the determinant
+template <> bool Matrix<double>::lud(std::vector<double> &P,double *ptr_det){
+	if(this->rows != this->cols){
+		throw std::invalid_argument("matrix<double>::lud(): LUD doesn't work on a  non-square matrix!");
+	}
 
+	long long int i, j, k,n=static_cast<long long int>(this->cols);
+	double max_matrix, absolute_matrix;
+	if(P.size() != this->cols)
+		P.resize(cols);
+	
+	if(ptr_det != NULL)
+		*ptr_det = 1.0;
+	
+	for (i = 0; i < n; i++) {
+		P[i]=i;
+	}
+
+	for (i = 0; i < n; i++) {
+		max_matrix = std::abs(this->array[P[i] * n + i]);
+		long long int i_max = i;
+		for (j = i + 1; j < n; j++) {
+			if ((absolute_matrix = std::abs(this->array[j] * n + i)) > max_matrix) {
+				max_matrix = absolute_matrix;
+				i_max = j;
+			}
+		}
+		if (i_max != i) {
+			std::swap(P[i], P[i_max]);
+			if(ptr_det != NULL)			
+				*ptr_det = -(*ptr_det);
+		}
+
+		size_t i_pos = static_cast<size_t>(P[i] * n);
+		if (std::abs(this->array[i_pos+i]) < epsilon(this->array[i_pos+i])) {
+			return false;
+		}
+		if(ptr_det != NULL)
+			*ptr_det *= this->array[i_pos+i];
+		
+		for (j = i + 1; j < n; j++) {
+			size_t j_pos = static_cast<size_t>(P[j] * n);
+			double a = this->array[j_pos + i] /= this->array[i_pos+i];
+			for (k = i + 1; k < n; k++) {
+				this->array[j_pos + k] -= a * this->array[i_pos + k];
+			}
+		}
+	}
+	
+
+	i--;
+	if(ptr_det != NULL)
+		*ptr_det *= this->array[P[i]*n+i];
+
+	return true;
+}
 template <> bool Matrix<float>::lud(float &determinant){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
@@ -761,7 +815,6 @@ template <> bool Matrix<float>::lud(float &determinant){
 	float max_matrix, absolute_matrix;
 	std::vector<float> P(cols);
 	determinant = 1.0f;
-
 	for (i = 0; i < n; i++) {
 		P.push_back(i);
 	}
@@ -788,7 +841,6 @@ template <> bool Matrix<float>::lud(float &determinant){
 		for (j = i + 1; j < n; j++) {
 			size_t j_pos = static_cast<size_t>(P[j] * n);
 			float a = this->array[j_pos + i] /= this->array[i_pos+i];
-
 			for (k = i + 1; k < n; k++) {
 				this->array[j_pos + k] -= a * this->array[i_pos + k];
 			}
@@ -798,7 +850,60 @@ template <> bool Matrix<float>::lud(float &determinant){
 	determinant*= this->array[P[i]*n+i];
 	return true;
 }
+template <> bool Matrix<float>::lud(std::vector<float> &P,float *ptr_det){
+	if(this->rows != this->cols){
+		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
+	}
 
+	long long int i, j, k,n=static_cast<long long int>(this->cols);
+	float max_matrix, absolute_matrix;
+	if(P.size() != this->cols)
+		P.resize(this->cols);
+	
+	if(ptr_det != NULL)
+		*ptr_det = 1.0;
+	
+	for (i = 0; i < n; i++) {
+		P[i]=i;
+	}
+
+	for (i = 0; i < n; i++) {
+		max_matrix = std::abs(this->array[P[i] * n + i]);
+		long long int i_max = i;
+		for (j = i + 1; j < n; j++) {
+			if ((absolute_matrix = std::abs(this->array[j] * n + i)) > max_matrix) {
+				max_matrix = absolute_matrix;
+				i_max = j;
+			}
+		}
+		
+		if (i_max != i) {
+			std::swap(P[i], P[i_max]);
+			if(ptr_det != NULL)			
+				*ptr_det = -(*ptr_det);
+		}
+
+		size_t i_pos = static_cast<size_t>(P[i] * n);
+		if (std::abs(this->array[i_pos+i]) < epsilon(this->array[i_pos+i])) {
+			return false;
+		}
+		if(ptr_det != NULL)
+			*ptr_det *= this->array[i_pos+i];
+		
+		for (j = i + 1; j < n; j++) {
+			size_t j_pos = static_cast<size_t>(P[j] * n);
+			double a = this->array[j_pos + i] /= this->array[i_pos+i];
+			for (k = i + 1; k < n; k++) {
+				this->array[j_pos + k] -= a * this->array[i_pos + k];
+			}
+		}
+	}
+	i--;
+	if(ptr_det != NULL)
+		*ptr_det *= this->array[P[i]*n+i];
+	
+	return true;
+}
 template <typename T> bool Matrix<T>::lud(double &determinant){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<T>::lud(): LUD doesn't work on a  non-square matrix!");
@@ -809,7 +914,22 @@ template <typename T> bool Matrix<T>::lud(double &determinant){
 	tmp_matrix.lud(determinant);
 	size_t i=0;
 	size_t max=(this->cols);
-	std::cout << tmp_matrix << std::endl;
+	for(i=0;i<(max*max);i++){
+		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
+
+	}
+	return true;
+}
+template <typename T> bool Matrix<T>::lud(std::vector<T> &P,double *ptr_det){
+	if(this->rows != this->cols){
+		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
+	}
+	
+	std::vector<double> vec(this->array.begin(),this->array.end());
+	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	size_t i=0;
+	tmp_matrix.lud(P,ptr_det);
+	size_t max=(this->cols);
 	for(i=0;i<(max*max);i++){
 		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
 
@@ -836,6 +956,7 @@ template <> float Matrix<float>::det(void) const{
 	return determinant;
 }
 
+//this inversion takes ~O(2/3(n**3)+(1.709*(n**3))) iterations.
 template <> bool Matrix<double>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::inv(): Can't invert a non-square matrix.");
@@ -844,59 +965,62 @@ template <> bool Matrix<double>::inv(){
 	long long int i_max=0;
 	std::vector<double> P(cols);
 	//size_t j_pos,i_pos;
-
 	for (i=0; i < n; i++)
 		P[i] = i;
 
 	for (i=0; i < n; i++){
 		double ta,tb;
 		double a(0);
-
 		i_pos = i * n;
 		i_max = i;
 		ta = std::abs( this->array[i_pos + i]);
-		for (j=i + 1; j < n; j++)
+		for (j=i + 1; j < n; j++){;
 			if ((tb = std::abs(this->array[j * n + i])) > ta){
 				ta = tb;
 				i_max = j;
 			}
-
+		}
 		if (ta < epsilon( a))
 			return false;
 
 		if (i_max != i){
 			std::swap(P[i], P[i_max]);
-			for (j_pos=i_max*n, j=0; j < n; j++)
-				std::swap(this->array[i_pos + j], this->array[j_pos + j]);
+			for (j_pos=i_max*n, j=0; j < n; j++){
+				std::swap(this->array[i_pos + j], this->array[j_pos + j]);;
+			}
 		}
 
 		a = double(1) / this->array[i_pos + i];
 		this->array[i_pos + i] = double(1);
 
-		for (j=0; j < n; j++)
+		for (j=0; j < n; j++){;
 			this->array[i_pos+j] *= a;
+		}
 
-		for (j=0; j < n; j++){
+		for (j=0; j < n; j++){;
 			if (j != i){
 				j_pos = j * n;
 				a = this->array[j_pos + i];
 				this->array[j_pos + i] = double(0);
-				for (k=0; k < n; k++)
+				for (k=0; k < n; k++){;
 					this->array[j_pos+k] -= a * this->array[i_pos+k];
+				}
 			}
 		}
 	}
 
-	for (i=0; i < n; i++){
+	for (i=0; i < n; i++){;
 		if (i != P[i]){
 			k = i + 1;
 			while (i != P[k])
 				k++;
-			for (j=0; j < n; j++)
+			for (j=0; j < n; j++){
 				std::swap(this->array[j * n + i], this->array[j * n + k]);
+			}
 			std::swap(P[i], P[k]);
 		}
 	}
+	
 	return true;
 }
 
@@ -905,15 +1029,95 @@ template <> bool Matrix<float>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
 	}
+	
+	long long int i, j, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
+	long long int i_max=0;
+	std::vector<float> P(cols);
+	for (i=0; i < n; i++)
+		P[i] = i;
 
+	for (i=0; i < n; i++){
+		double ta,tb;
+		double a(0);
+		i_pos = i * n;
+		i_max = i;
+		
+		ta = std::abs( this->array[i_pos + i]);
+		for (j=i + 1; j < n; j++){;
+			if ((tb = std::abs(this->array[j * n + i])) > ta){
+				ta = tb;
+				i_max = j;
+			}
+		}
+		if (ta < epsilon( a))
+			return false;
+
+		if (i_max != i){
+			std::swap(P[i], P[i_max]);
+			for (j_pos=i_max*n, j=0; j < n; j++){
+				std::swap(this->array[i_pos + j], this->array[j_pos + j]);;
+			}
+		}
+
+		a = double(1) / this->array[i_pos + i];
+		this->array[i_pos + i] = double(1);
+
+		for (j=0; j < n; j++){;
+			this->array[i_pos+j] *= a;
+		}
+
+		for (j=0; j < n; j++){;
+			if (j != i){
+				j_pos = j * n;
+				a = this->array[j_pos + i];
+				this->array[j_pos + i] = double(0);
+				for (k=0; k < n; k++){;
+					this->array[j_pos+k] -= a * this->array[i_pos+k];
+				}
+			}
+		}
+	}
+
+	for (i=0; i < n; i++){;
+		if (i != P[i]){
+			k = i + 1;
+			while (i != P[k])
+				k++;
+			for (j=0; j < n; j++){
+				std::swap(this->array[j * n + i], this->array[j * n + k]);
+			}
+			std::swap(P[i], P[k]);
+		}
+	}
+	
 	return true;
 }
+//for all other types we have to first cast to a double then we can use that version.
 template <typename T> bool Matrix<T>::inv(){
+	if(this->rows != this->cols){
+		throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
+	}	
+	//we create a vector so that we can then cast to a double.
+	//to keep precision this has to be done.
+	std::vector<double> vec(this->array.begin(),this->array.end());
+	//then we allocate the matrix.
+	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	tmp_matrix.inv();
+	size_t max=this->cols*this->rows;
+	size_t i=0;
+	for(i=0;i<max;i++){
+		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
+
+	}
+	return true;
+}
+
+//this inversion takes O((2/3(n**3))+(2*(n**3))) operations or so.
+template <typename T> bool Matrix<T>::inv_slow(){
 	T det_m=this->det();
 	if(det_m == 0) {
 		throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
 	}
-	std::cout << "det_m" << det_m << std::endl;
 	Matrix<T> adj_mat(cols,rows,1);
 	adj_mat=this->adj();
 	size_t i=0,j=0;
@@ -931,8 +1135,8 @@ template <> double Matrix<double>::det(void) const{
 
 	//if it's 2x2 I can simply do it w/o having do LUD or any other
 	//expensive operations. No reason do all of those extra operations.
-	if(cols == 2 && rows == 2)
-		return _det();
+	//if(cols == 2 && rows == 2)
+	//	return _det();
 	//since it's a const we have to create a matrix to modify.
 	Matrix<double> tmp_matrix=Matrix<double>(*this);
 	double determinant=0;
@@ -950,14 +1154,15 @@ template <typename T> T Matrix<T>::det(void)const{
 
 	//if it's 2x2 I can simply do it w/o having do LUD or any other
 	//expensive operations. No reason do all of those extra operations.
+	
 	if(cols == 2 && rows == 2)
 		return _det();
+	
 	//we create a vector so that we can then cast to a double.
 	//to keep precision this has to be done.
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	//then we allocate the matrix.
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
-	//vec.clear();
 	double determinant=0;
 	if(!tmp_matrix.lud(determinant))
 		determinant=0;
@@ -966,5 +1171,9 @@ template <typename T> T Matrix<T>::det(void)const{
 }
 
 typedef Matrix<int> matrix_int;
+typedef Matrix<unsigned int> matrix_uint;
 typedef Matrix<double> matrix_double;
+typedef Matrix<float> matrix_float;
+typedef Matrix<long long int> matrix_long;
+typedef Matrix<unsigned long long> matrix_ulong;
 #endif

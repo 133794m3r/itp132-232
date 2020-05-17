@@ -1,16 +1,22 @@
 #include <iostream>
 #include "matrix.hxx"
+#include <chrono>
 /*
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
 * Licensed AGPLv3
 * Matrix Class Module Test Program
 */
+double microtime(void){
+	return std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1);
+}
 std::string equality(bool test){
 	return (test)?"true":"false";
 }
 int main() {
 	int i=0;
 	int j=0;
+	double start,end;
+	start=microtime();
 	/*
 	int row=2;
 	int col=2;
@@ -191,16 +197,29 @@ int main() {
 	std::cout << "x=" << result2(0,0) << std::endl;
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;
-	//double det=1;
+	double deta=0.0;
 	//std::cout << gaec.gae(1) << std::endl;
 	//std::cout << "gaec1.lud" << std::endl;
 
 	hill2=matrix_int(arr,2,2);
+	std::vector<double> P={0,0};
+	matrix_double hill3_a=hill3;
+	matrix_double hill3_b=hill3;
 	std::cout << hill3 << std::endl;
 	std::cout << hill2 << std::endl;
-	std::cout << hill3.det() << std::endl;
-	std::cout << hill3.inv() << std::endl;
-	std::cout << hill3 << std::endl;
+	std::cout <<"det "<< hill3.det() << std::endl;
+	std::cout <<"inv "<<  hill3.inv() << std::endl;
+	std::cout <<"h3" << hill3 << std::endl;
+	std::cout << "h2.inv()" << hill2.inv() << std::endl;
+	std::cout << "h2" << hill2 << std::endl;
+	std::cout << "h3d " << hill3.det() << std::endl;
+	hill3_a.lud(deta);
+	std::cout << "3a det " << deta << std::endl;
+	std::cout << "hill3_a.lud() " << hill3_a << std::endl;
+	deta=1.0;
+	hill3_b.lud(P,&deta);
+	std::cout << "3b det" << deta << std::endl;
+	std::cout << "hil3_b.lud(P,det) " << hill3_b << std::endl;
 //	int k=1;
 //	for(i=0;i<2;i++){
 //		for(j=0;j<2;j++){
@@ -213,5 +232,7 @@ int main() {
 //			std::cout << "a(" << i+1 << "," << j+1 << ")=" << a[i+(j*2)] << std::endl;
 //		}
 //	}
+	end=microtime();
+	std::cout <<std::endl <<  "total time" << end-start << std::endl;
 	return 0;
 }
