@@ -127,7 +127,7 @@ class Inventory{
 			//for each loop.
 			for(Item *item:Items){
 				//see how many they own of every item and increment i.
-				if(total_owned[i++] != 0){
+				if(total_owned[++i] != 0){
 					owns_something=true;
 					//print the item based upon it's id and bolded.
 					printf("\x1b[%dm%d\x1b[22m:",1,item->get_id());
@@ -245,10 +245,11 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	//get ready to print our stuff.
 	move_and_clear_terminal(4,total_items);
 	//show the menu to them.
-	std::cout << "To exit enter zero as the amount.\r\nYou have selected " << item.get_name() << std::endl;
+	std::cout << "To exit enter zero as the amount.\r\nYou have selected ";
+	printf("\x1b[%dm%s\x1b[22m\r\n",1,item.get_name().c_str());
 	std::cout << "You currently have $" << available_funds << std::endl;
 	std::cout << "You can buy: " << can_buy <<" at $" << item.get_price() << "each.";
-	std::cout << "How many would you like to buy?";
+	std::cout << "How many would you like to buy? \r\nAmount: ";
 	//get how many they want.
 	std::cin >> amount;
 	
@@ -260,7 +261,7 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	//if they can afford it we buy it.
 	if(total_cost <= available_funds){
 		//tell them they bought however many of the item.
-		std::cout << "bought " << amount << " " << item.get_id() << std::endl;
+		std::cout << "bought " << amount << std::endl;
 		//increment the total that they own.
 		total_owned[item.get_id()]+=amount;
 		//decrease their balance by the total cost.
@@ -291,9 +292,10 @@ int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
 	//clear the screen.
 	move_and_clear_terminal(4,total_items);
 	//give them the menu.
-	std::cout << "To exit enter zero as the amount.\r\nYou have selected " << item.get_name().c_str() << std::endl;
+	std::cout << "To exit enter zero as the amount.\r\nYou have selected ";
+	printf("\x1b[%dm%s\x1b[22m\r\n",1,item.get_name().c_str());	
 	std::cout << "You have " << owned <<".";
-	std::cout << "How many would you like to sell?";
+	std::cout << "How many would you like to sell?\r\nAmount: ";
 	//get the amount that they want to sell.
 	std::cin >> amount;
 	//if they select 0 it's time to return as they didn't care.
@@ -308,7 +310,7 @@ int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
 		total_owned[item.get_id()]-=amount;
 		//tell them what they did.
 		std::cout << "You have sold " << amount << std::endl;
-		std::cout << item.get_id() << std::endl;
+		//std::cout << item.get_id() << std::endl;
 		//return success.
 		return 1;
 	}

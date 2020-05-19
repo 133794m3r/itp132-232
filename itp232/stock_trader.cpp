@@ -99,8 +99,8 @@ int main(){
 	std::string username;
 	//all of the variables getting setup.
 	unsigned int current_day=0;
-	unsigned int max_days=9;
-	double starting_balance=1000.0f;
+	unsigned int max_days=2;
+	double starting_balance=1000.00f;
 	double final_balance=0.0f;
 	int selection=0;
 	int tx_success=0;	
@@ -154,6 +154,7 @@ int main(){
 			//prompt for selection.
 			std::cout << "\x1b[1mSelection:";
 			std::cin >> selection;
+			std::cout << selection << std::endl;
 			std::cout << "\x1b[0m";
 			//if it's -1 we're done.
 			if(selection == -1){
@@ -161,7 +162,7 @@ int main(){
 				break;
 			}
 			//if it's less than the total items it's a valid number.
-			else if(selection < total_items){
+			else if(selection < total_items && selection >= 0){
 				//try to purchase the item.
 				tx_success=user_inventory->purchase_item(*user,*items[selection],total_items);
 				//it succeeded tell them they bought it.
@@ -180,7 +181,7 @@ int main(){
 			//evil pause thing since I don't want to prompt for something else during the loop.
 			system("pause");
 			//move the terminal back up and clear the old stuff.
-			move_and_clear_terminal(5,total_items);
+			move_and_clear_terminal(9,total_items);
 	
 		}
 		//we're done with the day so move it up and clear it.
@@ -213,7 +214,7 @@ int main(){
 				break;
 			}
 			//once again it's a valid selection
-			else if(selection < total_items){
+			else if(selection < total_items && selection >= 0){
 				//see if they can sell an item from inventory.
 				tx_success=user_inventory->sell_item(*user,*items[selection],total_items);
 				//yes they could.
