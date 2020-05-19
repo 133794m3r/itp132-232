@@ -188,19 +188,19 @@ int main() {
 	gaec(1,0)=5;gaec(1,1)=1;gaec(1,2)=20;
 	std::cout << "Solve for x and y in the following equation. \r\n3x + y = 15\r\n5x + y = 20\r\n";
 	//std::cout << gaec << std::endl;
-	matrix_double result(2,1,0); result=gaec.gae_solve();
+	matrix_double result(2,1,0); result=gaec.solve_gae();
 	std::cout << "x=" << result(0,0) << std::endl;
 	std::cout << "y=" << result(0,1) << std::endl;
 	std::cout << "solve again but this time for x, y and z." << std::endl;
 	std::cout <<"3x+2y-4z=3\r\n2x+3y+3z=15\r\n5x-3y+z=14\r\n";
-	matrix_int result2(3,1,0);result2=gaec1.gae_solve();
+	matrix_int result2(3,1,0);result2=gaec1.solve_gae();
 	std::cout << "x=" << result2(0,0) << std::endl;
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;
 	double deta=0.0;
 	//std::cout << gaec.gae(1) << std::endl;
 	//std::cout << "gaec1.lud" << std::endl;
-
+/*
 	hill2=matrix_int(arr,2,2);
 	std::vector<double> P={0,0};
 	matrix_double hill3_a=hill3;
@@ -217,9 +217,36 @@ int main() {
 	std::cout << "3a det " << deta << std::endl;
 	std::cout << "hill3_a.lud() " << hill3_a << std::endl;
 	deta=1.0;
-	hill3_b.lud(P,&deta);
+	hill3_b.lud(P);
 	std::cout << "3b det" << deta << std::endl;
 	std::cout << "hil3_b.lud(P,det) " << hill3_b << std::endl;
+	matrix_double gaec2(2,2,1);
+	gaec2(0,0)=3;gaec2(0,1)=1;
+	gaec2(1,0)=5;gaec2(1,1)=1;
+	std::vector<double> rhs={15,20};
+	std::vector<double> Solution(2);
+	std::cout << gaec2.solve(rhs,Solution) << std::endl;
+
+	gaec(0,0)=3;gaec(0,1)=1;gaec(0,2)=15;
+	gaec(1,0)=5;gaec(1,1)=1;gaec(1,2)=20;
+	std::cout << "gaec2" << gaec2 << std::endl;
+	matrix_double gaec_inv=gaec2;
+	gaec_inv.inv();
+	matrix_double solution(1,2,1);
+	solution(0,0)=15;
+	solution(1,0)=20;
+	std::cout << "g" << gaec.solve_gae() << std::endl;
+	std::cout << "s" << solution << std::endl;
+	std::cout << "g_inv" << gaec_inv << std::endl;
+	std::cout << "g*g" << gaec_inv * solution << std::endl;
+	std::cout << Solution[0] << std::endl;
+	std::cout << Solution[1] << std::endl;
+	gaec2.lud(P);
+	gaec2.lud_backsub(P,rhs,Solution);
+	std::cout << "s2" << std::endl;
+	std::cout << Solution[0] << std::endl;
+	std::cout << Solution[1] << std::endl;
+ */
 //	int k=1;
 //	for(i=0;i<2;i++){
 //		for(j=0;j<2;j++){

@@ -238,7 +238,7 @@ template <class T> class Matrix{
 
 	Matrix<T> operator*(const Matrix<T> &other_matrix) const{
 		if((this->cols != other_matrix.rows)){
-			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(other_matrix.rows)+"\r\n");
 		}
 		size_t i=0,j=0,k=0;
 		Matrix result(other_matrix.cols,this->rows,0);
@@ -570,13 +570,16 @@ template <class T> class Matrix{
 
 	~Matrix();
 	T det(void) const;
-	Matrix<T> gae_solve() const;
+	Matrix<T> solve_gae() const;
 	bool lud(double &determinate);
-	bool lud(float &determinant);
-	bool lud(std::vector<float> &P, float *determinant);
-	bool lud(std::vector<T> &P, double *determinant);
+	bool lud(std::vector<T> &P);
 	bool inv(void);
 	bool inv_slow();
+	bool solve(const std::vector<T> &right_side,std::vector<T> &solution) const;
+	bool solve(const Matrix<T> &right_side, Matrix<T> &solution) const;
+	bool solve_lud(const std::vector<T> &right_side,std::vector<T> &solution) const;
+	bool solve_lud(const Matrix<T> &right_side, Matrix<T> &solution) const;
+	void lud_backsub(const std::vector<T> &partition, const std::vector<T> &right_side,std::vector<T> &solution) const;
 };
 
 template <class T> Matrix<T>::~Matrix(){
@@ -599,102 +602,79 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 	return os;
 }
 
-template<>Matrix<double> Matrix<double>::gae_solve() const{
-		size_t i,j,k;
-		long long l;
-		std::vector<double> vec(this->array);
-		std::vector<double> tmp_vars(this->rows);
-		for(i=0;i<rows-1;i++){
-			for(j=i+1;j<rows;j++){
-				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
-					for(k=0;k<cols;k++){
-						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
-					}
-				}
-			}
-			for(j=i+1;j<rows;j++){
-				double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
-				for(k=0;k<cols;k++){
-					vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
-				}
-			}
-		}
 
-	for(l=rows-1;0<=l;l--){
-		tmp_vars[l] = vec[l+(rows*this->rows)];
+template<>Matrix<double> Matrix<double>::solve_gae() const{
+	size_t i,j,k;
+	std::vector<double> vec(this->array);
+	std::vector<double> tmp_vars(this->rows);
+
+	for(i=0;i<this->rows;i++){
 		for(j=i+1;j<rows;j++){
-			tmp_vars[l] -= vec[l+(j*rows)] * tmp_vars[j];
+			if(std::abs(vec[i+(i*this->rows)]) < std::abs(vec[j+(i*this->rows)])){
+				for(k=0;k<=cols;k++){
+				//for(j=0;j<=this->rows;j++){
+					std::swap(vec[i+(k*this->rows)],vec[j+(k*this->rows)]);
+				}
+			}
 		}
-
-		tmp_vars[l] = tmp_vars[l]/vec[l+(l*rows)];
 	}
-		
+
+	for(i=0;i<this->rows-1;i++){
+		for(j=i+1;j<this->rows;j++){
+			double tmp=vec[j+(i*this->rows)]/vec[i+(i*this->rows)];
+			for(k=0;k<=this->rows;k++){
+				vec[j+(k*this->rows)]-=tmp*vec[i+(k*this->rows)];
+			}
+		}
+	}
+
+	for(i=this->rows-1;;i--){
+		tmp_vars[i]=vec[i+(this->rows*this->rows)];
+		for(j=i+1;j<this->rows;j++) {
+			if (j != i) {
+				tmp_vars[i] -= vec[i + (j *this->rows)] * tmp_vars[j];
+			}
+		}
+		tmp_vars[i] = tmp_vars[i] / vec[i + (i * this->rows)];
+		if(i==0) break;
+	}
+
+
 	return Matrix<double>(tmp_vars,rows,1);
 }
-
-template<>Matrix<float>	Matrix<float>::gae_solve()const{
+template<typename T> Matrix<T> Matrix<T>::solve_gae()const{
 	size_t i,j,k;
-	long long l;
-
-		std::vector<float> vec(this->array);
-		std::vector<float> tmp_vars(this->rows);
-
-		for(i=0;i<rows-1;i++){
-			for(j=i+1;j<rows;j++){
-				if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
-					for(k=0;k<cols;k++){
-						std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
-					}
-				}
-			}
-			for(j=i+1;j<rows;j++){
-				float tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
-				for(k=0;k<cols;k++){
-					vec[j+(k*rows)]= vec[j + (k * rows)] - tmp * vec[i + (k * rows)];
-				}
-			}
-		}
-
-	for(l=rows-1;0<=l;l--){
-		tmp_vars[l] = vec[l+(rows*this->rows)];
-		for(j=i+1;j<rows;j++){
-			tmp_vars[l] -= vec[l+(j*rows)] * tmp_vars[j];
-		}
-
-		tmp_vars[l] = tmp_vars[l]/vec[l+(l*rows)];
-	}
-		
-		return Matrix<float>(tmp_vars,rows,1);
-}
-
-template<typename T> Matrix<T> Matrix<T>::gae_solve()const{
-	size_t i,j,k;
-	long long l;
 	std::vector<double> vec(this->array.begin(), this->array.end());
 	std::vector<double> tmp_vars(this->rows);
-	for(i=0;i<rows-1;i++){
+
+	for(i=0;i<this->rows;i++){
 		for(j=i+1;j<rows;j++){
-			if(std::abs(vec[i+(i*rows)]) < std::abs(vec[j+(i*rows)])){
-				for(k=0;k<cols;k++){
-					std::swap(vec[i+(k*rows)],vec[j+(k*rows)]);
+			if(std::abs(vec[i+(i*this->rows)]) < std::abs(vec[j+(i*this->rows)])){
+				for(k=0;k<=rows;k++){
+					std::swap(vec[i+(k*this->rows)],vec[j+(k*this->rows)]);
 				}
-			}
-		}
-		for(j=i+1;j<rows;j++){
-			double tmp=vec[j+(i*rows)]/vec[i+(i*rows)];
-			for(k=0;k<cols;k++){
-				vec[j+(k*rows)]=vec[j+(k*rows)]-tmp*vec[i+(k*rows)];
 			}
 		}
 	}
 
-	for(l=rows-1;0<=l;l--){
-		tmp_vars[l] = vec[l+(rows*this->rows)];
-		for(j=i+1;j<rows;j++){
-			tmp_vars[l] -= vec[l+(j*rows)] * tmp_vars[j];
+	for(i=0;i<this->rows-1;i++){
+		for(j=i+1;j<this->rows;j++){
+			double tmp=vec[j+(i*this->rows)]/vec[i+(i*this->rows)];
+			for(k=0;k<=this->rows;k++){
+				vec[j+(k*this->rows)]-=tmp*vec[i+(k*this->rows)];
+			}
 		}
+	}
 
-		tmp_vars[l] = tmp_vars[l]/vec[l+(l*rows)];
+	for(i=this->rows-1;;i--){
+		tmp_vars[i]=vec[i+(this->rows*this->rows)];
+		for(j=i+1;j<this->rows;j++) {
+			if (j != i) {
+				tmp_vars[i] -= vec[i + (j *this->rows)] * tmp_vars[j];
+			}
+		}
+		tmp_vars[i] = tmp_vars[i] / vec[i + (i * this->rows)];
+		if(i==0) break;
 	}
 
 	std::vector<T> vars(this->rows);
@@ -704,7 +684,9 @@ template<typename T> Matrix<T> Matrix<T>::gae_solve()const{
 	}
 	return Matrix<T>(vars,rows,1);
 }
-//this one is for calculating the determinant. Thus the decomposied 
+
+//this one is for calculating the determinant. Thus the decomposied
+
 template <> bool Matrix<double>::lud(double &determinant){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::lud(): LUD doesn't work on a  non-square matrix!");
@@ -750,8 +732,8 @@ template <> bool Matrix<double>::lud(double &determinant){
 
 	return true;
 }
-//this one still lets you maybe calculate the determinant
-template <> bool Matrix<double>::lud(std::vector<double> &P,double *ptr_det){
+/*
+template <> bool Matrix<double>::lud(std::vector<double> &P){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::lud(): LUD doesn't work on a  non-square matrix!");
 	}
@@ -760,15 +742,15 @@ template <> bool Matrix<double>::lud(std::vector<double> &P,double *ptr_det){
 	double max_matrix, absolute_matrix;
 	if(P.size() != this->cols)
 		P.resize(cols);
-	
-	if(ptr_det != NULL)
-		*ptr_det = 1.0;
+
+//	if(ptr_det != NULL)
+//		*ptr_det = 1.0;
 	
 	for (i = 0; i < n; i++) {
 		P[i]=i;
 	}
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n-1; i++) {
 		max_matrix = std::abs(this->array[P[i] * n + i]);
 		long long int i_max = i;
 		for (j = i + 1; j < n; j++) {
@@ -778,17 +760,15 @@ template <> bool Matrix<double>::lud(std::vector<double> &P,double *ptr_det){
 			}
 		}
 		if (i_max != i) {
-			std::swap(P[i], P[i_max]);
-			if(ptr_det != NULL)			
-				*ptr_det = -(*ptr_det);
+			std::swap(P[i_max], P[i]);
 		}
 
 		size_t i_pos = static_cast<size_t>(P[i] * n);
 		if (std::abs(this->array[i_pos+i]) < epsilon(this->array[i_pos+i])) {
 			return false;
 		}
-		if(ptr_det != NULL)
-			*ptr_det *= this->array[i_pos+i];
+//		if(ptr_det != NULL)
+//			*ptr_det *= this->array[i_pos+i];
 		
 		for (j = i + 1; j < n; j++) {
 			size_t j_pos = static_cast<size_t>(P[j] * n);
@@ -798,110 +778,48 @@ template <> bool Matrix<double>::lud(std::vector<double> &P,double *ptr_det){
 			}
 		}
 	}
-	
-
-	i--;
-	if(ptr_det != NULL)
-		*ptr_det *= this->array[P[i]*n+i];
 
 	return true;
 }
-template <> bool Matrix<float>::lud(float &determinant){
-	if(this->rows != this->cols){
-		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
-	}
-	long long int i, j, k,n=static_cast<long long int>(this->cols);
-	std::vector<float> tmp_row;
-	float max_matrix, absolute_matrix;
-	std::vector<float> P(cols);
-	determinant = 1.0f;
-	for (i = 0; i < n; i++) {
-		P.push_back(i);
+*/
+template <> bool Matrix<double>::lud(std::vector<double> &P){
+	size_t i,j,k;
+	double ta,tb;
+
+	size_t n = this->rows;
+	for (i=0; i < n; i++){
+		P[i] = i;
 	}
 
-	for (i = 0; i < n; i++) {
-		max_matrix = std::abs(this->array[P[i] * n + i]);
-		long long int i_max = i;
-		for (j = i + 1; j < n; j++) {
-			if ((absolute_matrix = std::abs(this->array[j] * n + i)) > max_matrix) {
-				max_matrix = absolute_matrix;
-				i_max = j;
+	for(k=0; k < n-1; k++){
+		j = k;
+		ta = abs(this->array[P[k]*n+k]);
+		for (i=k+1; i < n; i++)
+			if ((tb = abs( this->array[P[i]*n+k])) > ta){
+				ta = tb;
+				j = i;
 			}
-		}
-		if (i_max != i) {
-			std::swap(P[i], P[i_max]);
-			determinant = -determinant;
+		if (j != k){
+			std::swap( P[j], P[k]);
+
 		}
 
-		size_t i_pos = static_cast<size_t>(P[i] * n);
-		if (std::abs(this->array[i_pos+i]) < epsilon(this->array[i_pos+i])) {
+		size_t kpos = P[k] * n;
+
+		if (abs( this->array[kpos+k]) < epsilon( this->array[kpos+k]))
 			return false;
-		}
-		determinant *= this->array[i_pos+i];
-		for (j = i + 1; j < n; j++) {
-			size_t j_pos = static_cast<size_t>(P[j] * n);
-			float a = this->array[j_pos + i] /= this->array[i_pos+i];
-			for (k = i + 1; k < n; k++) {
-				this->array[j_pos + k] -= a * this->array[i_pos + k];
+
+
+
+		for (i=k+1; i < n; i++){
+			size_t ipos = P[i] * n;
+			double a = this->array[ipos+k] /= this->array[kpos+k];
+
+			for (j=k+1; j < n; j++){
+				this->array[ipos+j] -= a * this->array[kpos+j];
 			}
 		}
 	}
-
-	determinant*= this->array[P[i]*n+i];
-	return true;
-}
-template <> bool Matrix<float>::lud(std::vector<float> &P,float *ptr_det){
-	if(this->rows != this->cols){
-		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
-	}
-
-	long long int i, j, k,n=static_cast<long long int>(this->cols);
-	float max_matrix, absolute_matrix;
-	if(P.size() != this->cols)
-		P.resize(this->cols);
-	
-	if(ptr_det != NULL)
-		*ptr_det = 1.0;
-	
-	for (i = 0; i < n; i++) {
-		P[i]=i;
-	}
-
-	for (i = 0; i < n; i++) {
-		max_matrix = std::abs(this->array[P[i] * n + i]);
-		long long int i_max = i;
-		for (j = i + 1; j < n; j++) {
-			if ((absolute_matrix = std::abs(this->array[j] * n + i)) > max_matrix) {
-				max_matrix = absolute_matrix;
-				i_max = j;
-			}
-		}
-		
-		if (i_max != i) {
-			std::swap(P[i], P[i_max]);
-			if(ptr_det != NULL)			
-				*ptr_det = -(*ptr_det);
-		}
-
-		size_t i_pos = static_cast<size_t>(P[i] * n);
-		if (std::abs(this->array[i_pos+i]) < epsilon(this->array[i_pos+i])) {
-			return false;
-		}
-		if(ptr_det != NULL)
-			*ptr_det *= this->array[i_pos+i];
-		
-		for (j = i + 1; j < n; j++) {
-			size_t j_pos = static_cast<size_t>(P[j] * n);
-			double a = this->array[j_pos + i] /= this->array[i_pos+i];
-			for (k = i + 1; k < n; k++) {
-				this->array[j_pos + k] -= a * this->array[i_pos + k];
-			}
-		}
-	}
-	i--;
-	if(ptr_det != NULL)
-		*ptr_det *= this->array[P[i]*n+i];
-	
 	return true;
 }
 template <typename T> bool Matrix<T>::lud(double &determinant){
@@ -920,7 +838,7 @@ template <typename T> bool Matrix<T>::lud(double &determinant){
 	}
 	return true;
 }
-template <typename T> bool Matrix<T>::lud(std::vector<T> &P,double *ptr_det){
+template <typename T> bool Matrix<T>::lud(std::vector<T> &P){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a  non-square matrix!");
 	}
@@ -928,7 +846,7 @@ template <typename T> bool Matrix<T>::lud(std::vector<T> &P,double *ptr_det){
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	size_t i=0;
-	tmp_matrix.lud(P,ptr_det);
+	tmp_matrix.lud(P);
 	size_t max=(this->cols);
 	for(i=0;i<(max*max);i++){
 		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
@@ -937,24 +855,6 @@ template <typename T> bool Matrix<T>::lud(std::vector<T> &P,double *ptr_det){
 	return true;
 }
 //I have to break these templates out because the way that I'm going to do integer types.
-template <> float Matrix<float>::det(void) const{
-	//it has to be a square matrix for this to work.
-	if(this->cols != this->rows){
-		throw std::invalid_argument( "Matrix<float>::det() Error: Cannot calculate the determinant of a non-square matrix!");
-	}
-	//if it's 2x2 I can simply do it w/o having do LUD or any other
-	//expensive operations. No reason do all of those extra operations.
-	if(cols == 2 && rows == 2)
-		return _det();
-	//otherwise we create our variables to use later.
-	//this'll reduce memory used when it can be easily done with some simple math.
-	Matrix<float> tmp_matrix=Matrix<float>(*this);
-	float determinant=0.0f;
-	if(!tmp_matrix.lud(determinant))
-		determinant=0.0f;
-
-	return determinant;
-}
 
 //this inversion takes ~O(2/3(n**3)+(1.709*(n**3))) iterations.
 template <> bool Matrix<double>::inv(){
@@ -973,75 +873,6 @@ template <> bool Matrix<double>::inv(){
 		double a(0);
 		i_pos = i * n;
 		i_max = i;
-		ta = std::abs( this->array[i_pos + i]);
-		for (j=i + 1; j < n; j++){;
-			if ((tb = std::abs(this->array[j * n + i])) > ta){
-				ta = tb;
-				i_max = j;
-			}
-		}
-		if (ta < epsilon( a))
-			return false;
-
-		if (i_max != i){
-			std::swap(P[i], P[i_max]);
-			for (j_pos=i_max*n, j=0; j < n; j++){
-				std::swap(this->array[i_pos + j], this->array[j_pos + j]);;
-			}
-		}
-
-		a = double(1) / this->array[i_pos + i];
-		this->array[i_pos + i] = double(1);
-
-		for (j=0; j < n; j++){;
-			this->array[i_pos+j] *= a;
-		}
-
-		for (j=0; j < n; j++){;
-			if (j != i){
-				j_pos = j * n;
-				a = this->array[j_pos + i];
-				this->array[j_pos + i] = double(0);
-				for (k=0; k < n; k++){;
-					this->array[j_pos+k] -= a * this->array[i_pos+k];
-				}
-			}
-		}
-	}
-
-	for (i=0; i < n; i++){;
-		if (i != P[i]){
-			k = i + 1;
-			while (i != P[k])
-				k++;
-			for (j=0; j < n; j++){
-				std::swap(this->array[j * n + i], this->array[j * n + k]);
-			}
-			std::swap(P[i], P[k]);
-		}
-	}
-	
-	return true;
-}
-
-
-template <> bool Matrix<float>::inv(){
-	if(this->rows != this->cols){
-		throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
-	}
-	
-	long long int i, j, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
-	long long int i_max=0;
-	std::vector<float> P(cols);
-	for (i=0; i < n; i++)
-		P[i] = i;
-
-	for (i=0; i < n; i++){
-		double ta,tb;
-		double a(0);
-		i_pos = i * n;
-		i_max = i;
-		
 		ta = std::abs( this->array[i_pos + i]);
 		for (j=i + 1; j < n; j++){;
 			if ((tb = std::abs(this->array[j * n + i])) > ta){
@@ -1169,7 +1000,90 @@ template <typename T> T Matrix<T>::det(void)const{
 
 	return determinant;
 }
+/*
+template <> void Matrix<double>::lud_backsub(const std::vector<double> &partition, const std::vector<double> &values,std::vector<double> &solution) const{
+	size_t i,j,k,index_part;
+	bool index_value_nonzero=false;
+	if( this->rows != values.size()){
+		throw std::invalid_argument("Matrix<double>::lud_backsup Invalid size of vector. Vector must be the same size as the input matrix has rows.");
+	}
+	if(this->rows != solution.size()){
+		solution.resize(this->rows);
+	}
+	for(i=0,k=0;i<this->rows;i++){
+		index_part=partition[i];
+		solution[i]=values[index_part];
+		if(index_value_nonzero){
+			index_part*=this->rows;
+			for(j=k;j<i;j++){
+				solution[i] -= this->array[index_part+j] * solution[j];
+			}
+		}
+		else if(solution[i] != 0.0){
+			k=i;
+			index_value_nonzero=true;
+		}
+	}
+	for(i=this->rows-1;;i--){
+		index_part=partition[i]*this->rows;
+		for(j=i+1;j<this->rows;j++){
+			solution[i] -= this->array[index_part+j] * solution[j];
+		}
+		solution[i] /= this->array[index_part+i];
+		if(i==0) break;
+	}
+}
+*/
+template <> void Matrix<double>::lud_backsub(const std::vector<double> &partition, const std::vector<double> &v,std::vector<double> &s) const{
+	size_t i,j,k,ip;
+	bool nonzero = false;
+	size_t n=this->rows;
+	for (k=0,i=0; i < n; i++)
+	{
+		ip = partition[i];
+		s[i] = v[ip];
 
+		if (nonzero)
+		{
+			ip *= n;
+			for (j=k; j < i; j++)
+				s[i] -= this->array[ip+j] * s[j];
+		}
+		else if (s[i] != 0.0)
+		{
+			k = i;
+			nonzero = true;
+		}
+	}
+	for (i=n-1; ; i--)
+	{
+		ip = partition[i] * n;
+		for (j=i+1; j < n; j++)
+			s[i] -= this->array[ip+j] * s[j];
+		s[i] /= this->array[ip+i];
+		if (i == 0) break;
+	}
+}
+template <typename T> void Matrix<T>::lud_backsub(const std::vector<T> &Partition, const std::vector<T> &values,std::vector<T> &solution) const{
+	std::vector<double> vec(this->array.begin(),this->array.end());
+	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	tmp_matrix.solve(Partition,values,solution);
+}
+template <> bool Matrix<double>::solve(const std::vector<double> &values,std::vector<double> &solution) const{
+	Matrix<double> tmp = *this;
+	std::vector<double> Partition(this->rows);
+	if(tmp.lud(Partition)){
+		tmp.lud_backsub(Partition,values,solution);
+		return true;
+	}
+	return false;
+}
+
+template <typename T> bool Matrix<T>::solve(const std::vector<T> &values, std::vector<T> &solution) const{
+	std::vector<double> vec(this->array.begin(),this->array.end());
+	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	return tmp_matrix.solve(values,solution);
+}
 typedef Matrix<int> matrix_int;
 typedef Matrix<unsigned int> matrix_uint;
 typedef Matrix<double> matrix_double;
