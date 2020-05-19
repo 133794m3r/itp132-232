@@ -3,6 +3,7 @@
 #include "stock_trader.h"
 #include <cstdio>
 #include <string>
+#include <limits>
 /*
 * Stock Trader CLI Application
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -91,6 +92,19 @@ template <typename T> void clear_all_vectors(T &vectors){
 		delete x;
 	}
 }
+
+template <typename T> void proper_input(T &variable){
+	
+	while(!(std::cin >> variable)){
+		std::cout << "You have entered invalid input please try again." << std::endl;
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');		
+		system("pause");
+		move_and_clear_terminal(3,0);
+		std::cout << "\x1b[1mSelection\x1b[22m: ";
+	}
+	
+}
 //main.
 int main(){
 	//xor128 isn't the best PRNG but it's good enough for this simple exercise.
@@ -105,12 +119,11 @@ int main(){
 	int selection=0;
 	int tx_success=0;	
 	bool owns_something=false;
-	
+
 	//create a pointer to other pointers.
 	vector_ptr_item items = { new Item("Tuna Fish", 10.5), new Item("Bunch of Bananas", 3.7),
 	new Item("Barrel of Oil", 100.35), new Item("Wuhan Bat Soup",66.6), new Item("Shiny Water Charizard",37.51),
-	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)
-	};
+	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)};
 	
 	//get the total items.
 	int total_items=items.size();
@@ -133,7 +146,7 @@ int main(){
 	std::cout << "\x1b[0J" << "\x1b[0;0H";
 	
 	//tell them the startup information.
-	std::cout << "Welcome to the Trading simulator. You will play for "<< max_days << " days. The goals is to end up with the maximum money at the end of it.\r\nYou start off with $1000.0\r\nEach day there will be a list of items to buy at the start, then a list of items that people want to buy. Both will have a price listed beside them along with how many of them there are. At the end of the game any unsold items will be automatically sold for the final sale price and added to your final total" << std::endl;
+	std::cout << "Welcome to the Trading simulator. You will play for "<< max_days << " days. The goals is to end up with the maximum money at the end of it.\r\nYou start off with $1000.00\r\nEach day there will be a list of items to buy at the start, then a list of items that people want to buy. Both will have a price listed beside them along with how many of them there are. At the end of the game any unsold items will be automatically sold for the final sale price and added to your final total" << std::endl;
 	std::cout << "The item of the day is \x1b[1mBolded\x1b[22m and also colored \x1b[93mBright Yellow\x1b[37m. This item is in high demand so the price is SKY HIGH! Also the item no one wants is also \x1b[1mBolded\x1b[22m and it's color is \x1b[31mRed\x1b[37m. That means the item is at a ROCK BOTTOM PRICE! So keep your eyes peeeled for this deals. Remember to sell \x1b[1;93mHIGH\x1b[22;37m and buy \x1b[1;93mLOW\x1b[22;37m if you can!"<< std::endl;
 	
 	//go through each of the days.
@@ -152,10 +165,9 @@ int main(){
 			print_items(items);
 			
 			//prompt for selection.
-			std::cout << "\x1b[1mSelection:";
-			std::cin >> selection;
-			std::cout << selection << std::endl;
-			std::cout << "\x1b[0m";
+			std::cout << "\x1b[1mSelection\x1b[22m:";
+			//std::cin >> selection;
+			proper_input(selection);
 			//if it's -1 we're done.
 			if(selection == -1){
 				selection=0;
@@ -173,15 +185,18 @@ int main(){
 				else if(tx_success == -1){
 					std::cout << "You tried to buy more than you could afford!" << std::endl;
 				}
+				system("pause");
+				move_and_clear_terminal(0,total_items);
 			}
 			else {
 				//they tried to do something other than what's valid.
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
+				//move the terminal back up and clear the old stuff.
+				system("pause");
+				move_and_clear_terminal(8,total_items);				
 			}
 			//evil pause thing since I don't want to prompt for something else during the loop.
-			system("pause");
-			//move the terminal back up and clear the old stuff.
-			move_and_clear_terminal(9,total_items);
+	
 	
 		}
 		//we're done with the day so move it up and clear it.
@@ -198,9 +213,8 @@ int main(){
 			//see if you own _anything_.
 			owns_something=user_inventory->print_items();
 			//prompt them for their selection.
-			std::cout << "\x1b[1mSelection:";
-			std::cin >> selection;
-			std::cout << "\x1b[0m";
+			std::cout << "\x1b[1mSelection:\x1b[22m";
+			proper_input(selection);
 			
 			//if it's -1 then it's time to end the day.
 			if(selection == -1){
