@@ -3,7 +3,7 @@
 #include "stock_trader.h"
 #include <cstdio>
 #include <string>
-#include <limits>
+
 /*
 * Stock Trader CLI Application
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -93,18 +93,6 @@ template <typename T> void clear_all_vectors(T &vectors){
 	}
 }
 
-template <typename T> void proper_input(T &variable){
-	
-	while(!(std::cin >> variable)){
-		std::cout << "You have entered invalid input please try again." << std::endl;
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');		
-		system("pause");
-		move_and_clear_terminal(3,0);
-		std::cout << "\x1b[1mSelection\x1b[22m: ";
-	}
-	
-}
 //main.
 int main(){
 	//xor128 isn't the best PRNG but it's good enough for this simple exercise.
@@ -185,14 +173,16 @@ int main(){
 				else if(tx_success == -1){
 					std::cout << "You tried to buy more than you could afford!" << std::endl;
 				}
-				system("pause");
+				pause();
+//system("pause");
 				move_and_clear_terminal(0,total_items);
 			}
 			else {
 				//they tried to do something other than what's valid.
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
 				//move the terminal back up and clear the old stuff.
-				system("pause");
+				pause();
+//system("pause");
 				move_and_clear_terminal(8,total_items);				
 			}
 			//evil pause thing since I don't want to prompt for something else during the loop.
@@ -245,7 +235,8 @@ int main(){
 				std::cout << "Your selection: '" << selection << "' wasn't valid. Please try again." << std::endl;			
 			
 			//evil pause.
-			system("pause");
+			pause();
+//system("pause");
 			//see if you own anything if not we have to do less work.
 			if(!owns_something)
 				move_and_clear_terminal(6,0);
