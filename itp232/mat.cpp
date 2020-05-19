@@ -13,8 +13,8 @@ std::string equality(bool test){
 	return (test)?"true":"false";
 }
 int main() {
-	int i=0;
-	int j=0;
+	//int i=0;
+	//int j=0;
 	double start,end;
 	start=microtime();
 	/*
@@ -115,6 +115,7 @@ int main() {
 	std::cout << det_mat << std::endl;
 	std::cout << "det_mat*result=" << std::endl << mat2*det_mat << std::endl;
 	 */
+	/*
 	matrix_int a(2,2,1);
 	matrix_int b(2,2,1);
 	matrix_double c_1(2,2,2);
@@ -161,11 +162,13 @@ int main() {
 	//c_1/=c_2;
 	//std::cout << "c_1/=c2" << std::endl;
 	//std::cout << c_1 << std::endl;
+	 */
 	/*
 	std::cout << "det_matrix" << std::endl << det_mat << std::endl;
 	double the_determinant=det_mat.det();
 	std::cout << the_determinant << std::endl;
 	 */
+	/*
 	double hill3_arr[4]={7.0,8.0,11.0,11.0};
 	int arr[4]={7,8,11,11};
 	std::cout << "Hill Cipher Tests" << std::endl;
@@ -181,6 +184,7 @@ int main() {
 	std::cout << hill2.gae() << std::endl;
 	std::cout << hill2 << std::endl;
 	std::cout << hill2(0,1) << std::endl;
+	 */
 	std::vector<int> arr2={3,2,5,2,3,-3,-4,3,1,3,15,14};
 	matrix_int gaec1(arr2,4,3);
 	matrix_double gaec(3,2,1);
@@ -197,12 +201,13 @@ int main() {
 	std::cout << "x=" << result2(0,0) << std::endl;
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;
-	double deta=0.0;
+
+	std::vector<double> P={0,0};
 	//std::cout << gaec.gae(1) << std::endl;
 	//std::cout << "gaec1.lud" << std::endl;
 /*
 	hill2=matrix_int(arr,2,2);
-	std::vector<double> P={0,0};
+
 	matrix_double hill3_a=hill3;
 	matrix_double hill3_b=hill3;
 	std::cout << hill3 << std::endl;
@@ -220,15 +225,14 @@ int main() {
 	hill3_b.lud(P);
 	std::cout << "3b det" << deta << std::endl;
 	std::cout << "hil3_b.lud(P,det) " << hill3_b << std::endl;
+ */
 	matrix_double gaec2(2,2,1);
 	gaec2(0,0)=3;gaec2(0,1)=1;
 	gaec2(1,0)=5;gaec2(1,1)=1;
 	std::vector<double> rhs={15,20};
 	std::vector<double> Solution(2);
-	std::cout << gaec2.solve(rhs,Solution) << std::endl;
+	//std::cout << gaec.solve(rhs,Solution) << std::endl;
 
-	gaec(0,0)=3;gaec(0,1)=1;gaec(0,2)=15;
-	gaec(1,0)=5;gaec(1,1)=1;gaec(1,2)=20;
 	std::cout << "gaec2" << gaec2 << std::endl;
 	matrix_double gaec_inv=gaec2;
 	gaec_inv.inv();
@@ -246,7 +250,7 @@ int main() {
 	std::cout << "s2" << std::endl;
 	std::cout << Solution[0] << std::endl;
 	std::cout << Solution[1] << std::endl;
- */
+
 //	int k=1;
 //	for(i=0;i<2;i++){
 //		for(j=0;j<2;j++){

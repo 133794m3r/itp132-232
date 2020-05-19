@@ -604,15 +604,14 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 
 
 template<>Matrix<double> Matrix<double>::solve_gae() const{
-	size_t i,j,k;
 	std::vector<double> vec(this->array);
 	std::vector<double> tmp_vars(this->rows);
 
+	size_t i,j,k;
 	for(i=0;i<this->rows;i++){
 		for(j=i+1;j<rows;j++){
 			if(std::abs(vec[i+(i*this->rows)]) < std::abs(vec[j+(i*this->rows)])){
-				for(k=0;k<=cols;k++){
-				//for(j=0;j<=this->rows;j++){
+				for(k=0;k<=rows;k++){
 					std::swap(vec[i+(k*this->rows)],vec[j+(k*this->rows)]);
 				}
 			}
