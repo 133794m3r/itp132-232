@@ -169,7 +169,7 @@ int main() {
 	std::cout << the_determinant << std::endl;
 	 */
 	/*
-	double hill3_arr[4]={7.0,8.0,11.0,11.0};
+	double hill3_arr[4]={7.0,11.0,8.0,11.0};
 	int arr[4]={7,8,11,11};
 	std::cout << "Hill Cipher Tests" << std::endl;
 	matrix_int hill2(arr,2,2);
@@ -185,7 +185,7 @@ int main() {
 	std::cout << hill2 << std::endl;
 	std::cout << hill2(0,1) << std::endl;
 	 */
-	std::vector<int> arr2={3,2,5,2,3,-3,-4,3,1,3,15,14};
+	std::vector<int> arr2={3,2,-4,3,2,3,3,15,5,-3,1,14};
 	matrix_int gaec1(arr2,4,3);
 	matrix_double gaec(3,2,1);
 	gaec(0,0)=3;gaec(0,1)=1;gaec(0,2)=15;
@@ -193,12 +193,14 @@ int main() {
 
 	std::cout << "Solve for x and y in the following equation. \r\n3x + y = 15\r\n5x + y = 20\r\n";
 	//std::cout << gaec << std::endl;
-	matrix_double result(2,1,0); result=gaec.solve_gae();
+	matrix_double result(2,1,0);
+	result=gaec.solve_gae();
 	std::cout << "x=" << result(0,0) << std::endl;
 	std::cout << "y=" << result(0,1) << std::endl;
 	std::cout << "solve again but this time for x, y and z." << std::endl;
 	std::cout <<"3x+2y-4z=3\r\n2x+3y+3z=15\r\n5x-3y+z=14\r\n";
-	matrix_int result2(3,1,0);result2=gaec1.solve_gae();
+	matrix_int result2(3,1,0);
+	result2=gaec1.solve_gae();
 	std::cout << "x=" << result2(0,0) << std::endl;
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;

@@ -609,80 +609,80 @@ template<>Matrix<double> Matrix<double>::solve_gae() const{
 	}
 	std::vector<double> vec(this->array);
 	std::vector<double> tmp_vars(this->rows);
+
 	size_t i,j,k;
-	for(i=0;i<this->rows;i++){
-		for(j=i+1;j<this->rows;j++){
-			if(std::abs(vec[i+(i*this->cols)]) < std::abs(vec[i+(j*this->cols)])){
-				for(k=0;k<=rows;k++){
-					std::swap(vec[k+(i*this->cols)],vec[k+(j*this->cols)]);
+	for (i=0;i<rows;i++) {
+		for (k = i + 1; k < rows; k++) {
+			if (std::abs(vec[i + (i * cols)]) < std::abs(vec[i + (k * cols)])) {
+				for (j = 0; j <= rows; j++) {
+					std::swap(vec[j + (i * cols)], vec[j + (k * cols)]);
 				}
 			}
 		}
 	}
 
-	for(i=0;i<this->rows-1;i++){
-		for(j=i+1;j<this->rows;j++){
-			double tmp=vec[i+(j*this->cols)]/vec[i+(i*this->cols)];
-			for(k=0;k<=this->rows;k++){
-				vec[k+(j*this->cols)]-=tmp*vec[k+(i*this->cols)];
+	for (i=0;i<rows-1;i++){
+		for (k=i+1;k<rows;k++){
+			double t=vec[i+(k*cols)]/vec[i+(i*cols)];
+			for (j=0;j<=rows;j++){
+				vec[j+(k*cols)]-=t*vec[j+(i*cols)];
 			}
 		}
 	}
 
-	for(i=this->rows-1;;i--){
-		tmp_vars[i]=vec[this->rows+(i*this->cols)];
-		for(j=i+1;j<this->rows;j++) {
-			if(j != i) {
-				tmp_vars[i] -= vec[j +(i *this->cols)] * tmp_vars[j];
+	for (i=rows-1;;i--) {
+		tmp_vars[i] = vec[rows + (i * cols)];
+		for (j = i + 1; j < rows; j++) {
+			if (j != i) {
+				tmp_vars[i] -= vec[j + (i * cols)] * tmp_vars[j];
 			}
 		}
-		tmp_vars[i] /= vec[i +(i * this->cols)];
+		tmp_vars[i] /= vec[i + (i * cols)];
 		if(i==0) break;
 	}
-
 	return Matrix<double>(tmp_vars,rows,1);
 }
+
 template<typename T> Matrix<T> Matrix<T>::solve_gae()const{
 	if(this->rows < (this->cols -1 )){
 		throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
 	}
-	
-	size_t i,j,k;
+
+
 	std::vector<double> vec(this->array.begin(), this->array.end());
 	std::vector<double> tmp_vars(this->rows);
-
-	for(i=0;i<this->rows;i++){
-		for(j=i+1;j<this->rows;j++){
-			if(std::abs(vec[i+(i*this->cols)]) < std::abs(vec[i+(j*this->cols)])){
-				for(k=0;k<=rows;k++){
-					std::swap(vec[k+(i*this->cols)],vec[k+(j*this->cols)]);
+	size_t i,j,k;
+	for (i=0;i<rows;i++) {
+		for (k = i + 1; k < rows; k++) {
+			if (std::abs(vec[i + (i * cols)]) < std::abs(vec[i + (k * cols)])) {
+				for (j = 0; j <= rows; j++) {
+					std::swap(vec[j + (i * cols)], vec[j + (k * cols)]);
 				}
 			}
 		}
 	}
 
-	for(i=0;i<this->rows-1;i++){
-		for(j=i+1;j<this->rows;j++){
-			double tmp=vec[i+(j*this->cols)]/vec[i+(i*this->cols)];
-			for(k=0;k<=this->rows;k++){
-				vec[k+(j*this->cols)]-=tmp*vec[k+(i*this->cols)];
+	for (i=0;i<rows-1;i++){
+		for (k=i+1;k<rows;k++){
+			double t=vec[i+(k*cols)]/vec[i+(i*cols)];
+			for (j=0;j<=rows;j++){
+				vec[j+(k*cols)]-=t*vec[j+(i*cols)];
 			}
 		}
 	}
 
-	for(i=this->rows-1;;i--){
-		tmp_vars[i]=vec[this->rows+(i*this->cols)];
-		for(j=i+1;j<this->rows;j++) {
-			if(j != i) {
-				tmp_vars[i] -= vec[j +(i *this->cols)] * tmp_vars[j];
+	for (i=rows-1;;i--) {
+		tmp_vars[i] = vec[rows + (i * cols)];
+		for (j = i + 1; j < rows; j++) {
+			if (j != i) {
+				tmp_vars[i] -= vec[j + (i * cols)] * tmp_vars[j];
 			}
 		}
-		tmp_vars[i] /= vec[i +(i * this->cols)];
+		tmp_vars[i] /= vec[i + (i * cols)];
 		if(i==0) break;
 	}
 
 	std::vector<T> vars(this->rows);
-
 	for(i=0;i<rows;i++){
 		vars[i]=round(tmp_vars[i]);
 	}
