@@ -190,6 +190,7 @@ int main() {
 	matrix_double gaec(3,2,1);
 	gaec(0,0)=3;gaec(0,1)=1;gaec(0,2)=15;
 	gaec(1,0)=5;gaec(1,1)=1;gaec(1,2)=20;
+
 	std::cout << "Solve for x and y in the following equation. \r\n3x + y = 15\r\n5x + y = 20\r\n";
 	//std::cout << gaec << std::endl;
 	matrix_double result(2,1,0); result=gaec.solve_gae();
@@ -202,7 +203,26 @@ int main() {
 	std::cout << "y=" << result2(0,1) << std::endl;
 	std::cout << "z=" << result2(0,2) << std::endl;
 
-	std::vector<double> P={0,0};
+	std::vector<size_t> P={0,0};
+	std::vector<size_t> Q={0,0};
+	std::vector<double> Solution={0.0,0.0};
+	std::vector<double> Vars={15.0,20.0};
+	matrix_double ludc(2,2,1);
+	ludc(0,0)=3;ludc(0,1)=1;
+	ludc(1,0)=5;ludc(1,1)=1;	
+	std::cout << ludc * ludc << std::endl;
+	double det=0.0;
+	double detb=ludc.det();
+	matrix_double ludc2=ludc;
+	std::cout << "ludc_orig\r\n" << ludc << std::endl;
+	ludc2.lud(det);
+	std::cout << ludc.lud(Q) << std::endl;
+	std::cout << "ludc\r\n" << ludc << std::endl;
+	std::cout << "ludc2\r\n" << ludc2 << std::endl;
+	ludc.lud_backsub(Q,Vars,Solution);
+	std::cout << "Solution " << Solution[0] << ", " << Solution[1] << std::endl;
+	std::cout << "ri " << Q[0] << " " << Q[1] << std::endl;
+	std::cout << "det " << det << "detb " << detb <<  std::endl;
 	//std::cout << gaec.gae(1) << std::endl;
 	//std::cout << "gaec1.lud" << std::endl;
 /*
@@ -230,7 +250,7 @@ int main() {
 	gaec2(0,0)=3;gaec2(0,1)=1;
 	gaec2(1,0)=5;gaec2(1,1)=1;
 	std::vector<double> rhs={15,20};
-	std::vector<double> Solution(2);
+	//std::vector<double> Solution(2);
 	//std::cout << gaec.solve(rhs,Solution) << std::endl;
 
 	std::cout << "gaec2" << gaec2 << std::endl;
