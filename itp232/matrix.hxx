@@ -317,7 +317,6 @@ template <class T> class Matrix{
 		for(size_t i=0;i<rhs.size();i++){
 			tmp=1.0/rhs[i];
 		}
-		//std::cout << "/" << tmp << other_matrix << "/ " << std::endl;
 		return *this * tmp;
 	}
 
@@ -486,10 +485,8 @@ template <class T> class Matrix{
 		return true;
 	}
 
-
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
-
 	
 	T _det()const{
 		std::cout << "_det " <<((array[0]*array[3])-(array[1]*array[2])) << std::endl;
@@ -635,6 +632,7 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
+
 	~Matrix();
 	T det(void) const;
 	Matrix<T> solve_gae() const;
