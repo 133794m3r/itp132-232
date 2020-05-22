@@ -16,7 +16,7 @@ template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& 
 //I have it undefined.
 //#define _CHECK_RANGE_
 template <class T> class Matrix{
-	
+
  private:
 	size_t rows;
 	size_t cols;
@@ -427,8 +427,8 @@ template <class T> class Matrix{
 	}
 	
 	/**
-	 * Comparison Operators are below here.
-	 *
+	 * Comparison Operators are below here. They're implemented because I may just use them in the future and I'd rather
+	 * have them implemented now rather than having to do it later.
 	 */
 
 	bool operator==(const Matrix<T> &other_matrix) const{
@@ -601,14 +601,14 @@ template <class T> class Matrix{
 		Matrix<T> inversed(cols,rows,0);
 		double det_inv=0;
 		U det=static_cast<U>(floor(det_M));
-		if(det_M == 0)
+		if(det == 0)
 			throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
 
 		inversed=this->adj();
 		try{
 			det_inv=mod_inv(det,m);
 		}
-		catch(std::string e){
+		catch(std::string &e){
 			std::invalid_argument("Matrix is not invertible(mod "+std::to_string(m)+").");
 		}
 
@@ -1094,6 +1094,7 @@ template <typename T> bool Matrix<T>::solve(const std::vector<T> &values, std::v
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	return tmp_matrix.solve(values,solution);
 }
+typedef Matrix<char> matrix_char;
 typedef Matrix<int> matrix_int;
 typedef Matrix<unsigned int> matrix_uint;
 typedef Matrix<double> matrix_double;

@@ -17,6 +17,8 @@ int main() {
 	//int j=0;
 	double start,end;
 	start=microtime();
+	matrix_int test;
+	std::cout << test <<std::endl;
 	/*
 	int row=2;
 	int col=2;
