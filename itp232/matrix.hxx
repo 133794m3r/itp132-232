@@ -147,6 +147,7 @@ template <class T> class Matrix{
 
 	/**
 	 * Arithmetic operators.
+	 * First are scalars. Then matricies. Finally it's std::vectors.
 	 */
 	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
@@ -169,16 +170,7 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
-	Matrix<T> mul_mod(const T scalar, const T modulus) const{
-		size_t i=0,j=0;
-		Matrix<T> result(cols,rows,0);
-		for(i=0;i<rows;i++){
-			for(j=0;j<cols;j++){
-				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]*scalar;
-			}
-		}
-		return result;
-	}
+
 	Matrix<T> operator-(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
@@ -273,10 +265,65 @@ template <class T> class Matrix{
 		//std::cout << "/" << tmp << other_matrix << "/ " << std::endl;
 		return *this * tmp;
 	}
+	/**
+	 * The same but with std::vectors.
+	 */
+	Matrix<T> operator+(std::vector<T> const &rhs) const{
+		if((cols != rhs.size())||(rows != rhs.size())){
+			_invalid_dim("addition",rhs);
+		}
+		Matrix<T> result(cols,rows,0);
+
+		size_t i=0,j=0;
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]+rhs[j+(this->cols*i)];
+			}
+		}
+		return result;
+	}
+
+	Matrix<T> operator-(std::vector<T> const &rhs) const{
+		if((cols != rhs.cols)||(rows != rhs.rows)){
+			_invalid_dim("subtraction",rhs);
+		}
+		Matrix result(cols,rows,0);
+		size_t i=0,j=0;
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]-rhs[j+(this->cols*i)];
+			}
+		}
+		return result;
+	}
+
+	Matrix<T> operator*(std::vector<T> const &rhs) const{
+		if((this->cols != rhs.size())){
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(rhs.rows)+"\r\n");
+		}
+		size_t i=0,j=0,k=0;
+		Matrix result(rhs.cols,this->rows,0);
+		for(i=0;i<rows;++i){
+			for(j=0;j<rhs.cols;j++){
+				for(k=0;k<rows;k++){
+					result.array[(j*rhs.cols)+i]+=this->array[(k*this->cols)+i] * rhs[(j*rhs.cols)+k];
+				}
+			}
+		}
+		return result;
+	}
+	Matrix<T> operator/(const std::vector<T> &rhs) const{
+		std::vector<T> tmp=rhs;
+		for(size_t i=0;i<rhs.size();i++){
+			tmp=1.0/rhs[i];
+		}
+		//std::cout << "/" << tmp << other_matrix << "/ " << std::endl;
+		return *this * tmp;
+	}
 
 	/**
 	 * The arith&&= operators.
-	 *
+	 * scalars first. Then matrices. Then finally with std::vectors.
 	 */
 	Matrix<T> &operator+=(const T scalar) {
 		size_t i=0;
@@ -312,7 +359,18 @@ template <class T> class Matrix{
 			}
 		}
 		return *this;
-	};
+	}
+
+	Matrix<T> &operator%=(const T &scalar) {
+		size_t i=0;
+		size_t j=0;
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				this->array[j+(this->cols*i)] %= scalar;
+			}
+		}
+		return *this;
+	}
 
 	Matrix<T> &operator+=(const Matrix<T> &other_matrix) {
 		size_t i=0;
@@ -364,16 +422,6 @@ template <class T> class Matrix{
 		return *this;
 	}
 
-	Matrix<T> &operator%=(const T &scalar) {
-		size_t i=0;
-		size_t j=0;
-		for(i=0;i<rows;i++){
-			for(j=0;j<cols;j++){
-				this->array[j+(this->cols*i)] %= scalar;
-			}
-		}
-		return *this;
-	}
 	Matrix<T> &operator/=(const Matrix<T> &other_matrix){
 		*this *= !other_matrix;
 		return *this;
@@ -577,6 +625,16 @@ template <class T> class Matrix{
 		return inversed;
 	}
 
+	Matrix<T> mul_mod(const T scalar, const T modulus) const{
+		size_t i=0,j=0;
+		Matrix<T> result(cols,rows,0);
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				result.array[j+(this->cols*i)]=mod(this->array[j+(this->cols*i)]*scalar,modulus);
+			}
+		}
+		return result;
+	}
 	~Matrix();
 	T det(void) const;
 	Matrix<T> solve_gae() const;

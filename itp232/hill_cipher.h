@@ -9,7 +9,7 @@
 #define ITP232_HILL_CIPHER_H
 
 
-class hill_cipher {
+class Hill {
 public:
 
 };
