@@ -1,13 +1,16 @@
 /**
+ * Vector Operators
+ * By Macarthur Inbody AGPLv3 <admin-contact@transcendental.us>
  * This source file overloads the templated vectors so that I can store this somewhere else.
  * Basically it does, +,-,*,/, and %. No operator equals is included in here.
  * It also does the << operator so that I can print it to the terminal/file so that I can easily debug it.
  *
  */
+
+#ifndef _VECTORS_HXX_
+#define _VECTORS_HXX_
 #include <vector>
 #include <stdexcept>
-#ifndef VECTORS_HXX
-#define VECTORS_HXX
 template <typename T> std::vector<T> operator+(const std::vector<T> &lhs, std::vector<T> &rhs){
 	size_t lhs_size=lhs.size();
 	size_t rhs_size=rhs.size();
@@ -77,4 +80,4 @@ template <class T> std::istream& operator>>(std::istream& is, std::vector<T> &m)
 	}
 	return is;
 }
-#endif //VECTORS_HXX
+#endif //_VECTORS_HXX_

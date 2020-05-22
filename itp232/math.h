@@ -1,5 +1,5 @@
-#ifndef CRYPTO_MATH_HEADER
-#define CRYPTO_MATH_HEADER
+#ifndef _CRYPTO_MATH_HEADER_
+#define _CRYPTO_MATH_HEADER_
 #include <cmath>
 #include <limits>
 template <class T> inline T epsilon (const T& v) {
@@ -52,19 +52,22 @@ template <typename T> T mod_inv(T a, T mod){
 	if(mod < 0){
 		x=-mod;
 	}
-	else
-		x=mod;
-	if(a<0)
-		a+=x;
+	else {
+		x = mod;
+	}
+	if(a<0) {
+		a += x;
+	}
 	gcd=gcd_fast(a,mod,&x,&y);
 	if((gcd != 1) && (gcd != -1)){
 		throw std::invalid_argument("The gcd between a and the modulus must be either 1 or -1");
 	}
-	if(gcd == -1)
-		if(x < 0)
+	if(gcd == -1) {
+		if (x < 0)
 			return mod - x;
 		else
 			return x + mod;
+	}
 	else
 		return x % mod;
 	/*
@@ -118,4 +121,4 @@ template <typename T> T fast_lcm(T a,T b){
 	lcm=(a/gcd)*b;
 	return lcm;
 }
-#endif
+#endif //_CRYPTO_MATH_HEADER_

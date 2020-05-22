@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef ITP232_HILL_CIPHER_H
-#define ITP232_HILL_CIPHER_H
+#ifndef _HILL_CIPHER_
+#define _HILL_CIPHER_
 
 
 class Hill {
@@ -15,4 +15,4 @@ public:
 };
 
 
-#endif //ITP232_HILL_CIPHER_H
+#endif //_HILL_CIPHER_H

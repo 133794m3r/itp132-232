@@ -1,5 +1,5 @@
-#ifndef _BANK_H_
-#define _BANK_H_
+#ifndef _STOCK_TRADER_
+#define _STOCK_TRADER_
 #include <cmath>
 #include <vector>
 #include <memory>
@@ -234,7 +234,7 @@ class Account{
 * returns a status code.
 */
 int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
-	int amount=0;
+	int amount=1;
 	//get their current balance.
 	double available_funds = usr.get_balance();
 	//initialize a bunch of vars.
@@ -254,8 +254,9 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	std::cin >> amount;
 	
 	//if they entered zero it's time to end it.
-	if(amount ==0)
+	if(amount ==0) {
 		return 0;
+	}
 	//get the total cost of how many they wanted.
 	total_cost=amount*price;
 	//if they can afford it we buy it.
@@ -284,7 +285,7 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	Int < Status code> 0 == Nothing happened. 1 == success. -1 == failure.
 */
 int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
-	unsigned int amount =0;
+	unsigned int amount=1;
 	//figure out how many they own.
 	unsigned int owned=total_owned[item.get_id()];
 	//get the item's price.
@@ -344,4 +345,4 @@ void Inventory::sell_all_items(Account &usr){
 	//set their balance to equal to the total sales amount.
 	usr.balance+=total_sales;
 }	
-#endif
+#endif //_STOCK_TRADER_

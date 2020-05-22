@@ -1,5 +1,5 @@
-#ifndef MATRIX_CLASS_DEMO
-#define MATRIX_CLASS_DEMO
+#ifndef _MATRIX_CLASS_
+#define _MATRIX_CLASS_
 #include <vector>
 #include <valarray>
 #include <stdexcept>
@@ -1100,4 +1100,4 @@ typedef Matrix<double> matrix_double;
 typedef Matrix<float> matrix_float;
 typedef Matrix<long long int> matrix_long;
 typedef Matrix<unsigned long long> matrix_ulong;
-#endif
+#endif //_MATRIX_CLASS_

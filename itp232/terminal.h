@@ -3,7 +3,7 @@
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
 * Licensed AGPLv3
 */
-#ifndef TERMINAL_SETUP
+#ifndef _TERMINAL_SETUP_
 	#ifdef _WIN32
 		#include <windows.h>
 		//windows has the system pause command.
@@ -20,7 +20,7 @@
 			char x=getchar();	
 		}
 		
-	#endif
+	#endif //_WIN32
 	
 #include <limits>
 
@@ -57,4 +57,4 @@ template <typename T> void proper_input(T &variable){
 	}
 	
 }
-#endif
+#endif //_TERMINAL_SETUP_
