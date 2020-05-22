@@ -24,6 +24,11 @@ add_executable(matrix_test
         math.h
         matrix.hxx)
 
+add_executable(hill_cipher
+		hill_cipher.cpp
+		matrix.hxx
+		math.h hill_cipher.h)
+
 add_executable(stock_trader
 	stock_trader.cpp
 	math.h

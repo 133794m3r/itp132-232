@@ -169,7 +169,16 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
-
+	Matrix<T> mul_mod(const T scalar, const T modulus) const{
+		size_t i=0,j=0;
+		Matrix<T> result(cols,rows,0);
+		for(i=0;i<rows;i++){
+			for(j=0;j<cols;j++){
+				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]*scalar;
+			}
+		}
+		return result;
+	}
 	Matrix<T> operator-(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
 		size_t i=0,j=0;
