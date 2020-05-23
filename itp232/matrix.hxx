@@ -3,7 +3,7 @@
 #include <vector>
 #include <valarray>
 #include <stdexcept>
-#include "math.h"
+#include "math.hxx"
 template <class T> class Matrix;
 template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& );
 /*

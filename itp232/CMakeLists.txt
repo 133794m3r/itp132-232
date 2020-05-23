@@ -21,19 +21,19 @@ include_directories(.)
 
 add_executable(matrix_test
         mat.cpp
-        math.h
+		math.hxx
         matrix.hxx vectors.hxx)
 
 add_executable(hill_cipher
 		hill_cipher.cpp
 		matrix.hxx
 		hill_cipher.hxx
-		math.h
+		math.hxx
 		vectors.hxx)
 
 add_executable(stock_trader
 	stock_trader.cpp
-	math.h
+		math.hxx
 	random.h
 	stock_trader.h
 	terminal.h)

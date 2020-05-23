@@ -37,6 +37,8 @@ BLACK_BG = 40,RED_BG,GREEN_BG,YELLOW_BG,BLUE_BG,MAGENTA_BG,CYAN_BG,WHITE_BG
 void move_and_clear_terminal(unsigned int up_amount,unsigned int total_items){
 	printf("\x1b[%dF\x1b[0J",up_amount+total_items);
 }
+#ifdef __cplusplus
+//to make it still work as a C style header. I'll have a version for C eventually.
 template <typename T> void proper_input(T &variable){
 	/* I'm checking to see if the return code is set to anything.
 	* if it fails to coerce the input into the type that's passed
@@ -57,4 +59,7 @@ template <typename T> void proper_input(T &variable){
 	}
 	
 }
+#else
+//this'll be the C version of the function sometime in the future.
+#endif //__cplusplus
 #endif //_TERMINAL_SETUP_

@@ -34,7 +34,8 @@ template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	*y=x1;
 	return gcd;
 }
-
+//TODO: This function may return 0 so that errors can be more easily. Since I'm allowing unsigned types and the inversion should never be 0.
+//this way I can also not have to wrap every attempt inside of a try{}catch(e){} block.
 template <typename T> T mod_inv(T a, T mod){
 	T gcd=0;
 	T x=0;

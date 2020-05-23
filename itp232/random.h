@@ -3,6 +3,8 @@
 #ifndef uint64
 typedef unsigned long long uint64;
 #endif
+bool XOR_SHIFT_128_SEEDED=false;
+uint64 xorshift128();
 /*
 * Stock Trader CLI Application
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -18,26 +20,20 @@ unsigned long long splitmix64(uint64 seed){
 	return z ^ (z >> 32);
 }
 
-void s_xor_128(uint64 seed=0){
-	//make the seed be the current time since epoch in milliseconds.
-	seed=(seed=0)?(std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1)):seed;
-	//initalize the state with the seed throught the splitmix64 function.
-	XOR_SHIFT_128_STATE[0]=splitmix64(seed);
-	//take the seed and modify it by a bit and reuse it again.
-	XOR_SHIFT_128_STATE[1]=splitmix64(seed<<1);
-}
+#ifdef __cplusplus
 /*
-* templated xorshift128 function.
-*
-* It's type is based upon what the user passes it.
-* Low and high are set to 0 by default so that it can be called with a single argument.
-* And that argument will be the highest value with 0 being the low automatically.
-* 
-*/
+ * templated xorshift128 function.
+ *
+ * It's type is based upon what the user passes it.
+ * Low and high are set to 0 by default so that it can be called with a single argument.
+ * And that argument will be the highest value with 0 being the low automatically.
+ *
+ * If it's included in a C program this won't be called thus making sure that this header works for both C++ and C.
+ */
 template <typename T> T xorshift128(T low=0, T high=0){
 	//get the current state.
 	uint64 s1=XOR_SHIFT_128_STATE[0];
-	uint64 s0=XOR_SHIFT_128_STATE[1];  
+	uint64 s0=XOR_SHIFT_128_STATE[1];
 	//set the result of the values.
 	uint64 result=XOR_SHIFT_128_STATE[0]+XOR_SHIFT_128_STATE[1];
 	//set state[0] to s0.
@@ -45,7 +41,7 @@ template <typename T> T xorshift128(T low=0, T high=0){
 	//set the value of s1 to be s^ (s1 << 23)
 	s1 ^= s1 << 23;
 	/*
-	* We are taking s1 shifting it to the right by 18. 
+	* We are taking s1 shifting it to the right by 18.
 	* take s0 shift it to the right by 5.
 	* Then take s1 xor it with s0.
 	* then take that intermediate value and xor it with the (s1 >> 18)
@@ -57,20 +53,73 @@ template <typename T> T xorshift128(T low=0, T high=0){
 	//if high is equal to low then set high to low and keep low  as zero.
 	if(high == 0 && low != 0){
 		high=low;
+		low=0;
 	}
-	/*
-	* To make sure that we get a value within the range of the high and low.
-	* I have to cast the results of the division of result and UINT64_MAX to a double
-	* because otherwise it'll be integer division which'll be between 0 and 1.
-	* Then I take that result and multiply it by the range (high-low)
-	* Then you add the low value and you now have a value that's between low and high(inclusive)
-	*/
-	return low+((high-low)*((double)result/ UINT64_MAX));	
+	else if(high == 0 && low == 0){
+		high = UINT64_MAX;
+	}
+	return low+((high-low)*((double)result/ UINT64_MAX));
 }
+template <typename T, typename U> U xorshift128(T low=0, U high=0){
+	//get the current state.
+	uint64 s1=XOR_SHIFT_128_STATE[0];
+	uint64 s0=XOR_SHIFT_128_STATE[1];
+	//set the result of the values.
+	uint64 result=XOR_SHIFT_128_STATE[0]+XOR_SHIFT_128_STATE[1];
+	//set state[0] to s0.
+	XOR_SHIFT_128_STATE[0]=s0;
+	//set the value of s1 to be s^ (s1 << 23)
+	s1 ^= s1 << 23;
+	XOR_SHIFT_128_STATE[1]=s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5);
+	if(high == 0 && low != 0){
+		high=low;
+		low=0;
+	}
+	else if(high == 0 && low == 0){
+		high = UINT64_MAX;
+	}
+	return low+((high-low)*((double)result/ UINT64_MAX));
+}
+//this is the C++ version because I'm using chrono. The C version using the same function.
+void s_xor_128(uint64 seed=0){
+	//if we've already seeded it, there's no reason to do it again, if the seed is 0 then they're just calling it to make
+	//sure that it's seeded. But if the seed is not
+	if(!XOR_SHIFT_128_SEEDED || seed != 0) {
+		//make the seed be the current time since epoch in milliseconds.
+		seed = (seed == 0) ? (std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1))
+						   : seed;
+		//initalize the state with the seed throught the splitmix64 function.
+		XOR_SHIFT_128_STATE[0] = splitmix64(seed);
+		//take the seed and modify it by a bit and reuse it again.
+		XOR_SHIFT_128_STATE[1] = splitmix64(seed << 1);
+		//select how many times we're going to "warm-up" our PRNG. It's from 4->32. This adds a tiny bit of extra randomness.
+		size_t iters = (seed & 7) + 1 << 2;
+		unsigned long long rnd = 0;
+		for (size_t i = 0; i < iters; i++) {
+			//i'm just caputring it just so that I don't get that warning.
+			rnd = xorshift128();
+		}
+		XOR_SHIFT_128_SEEDED=true;
+	}
 
+}
+#else
+//this is currently not used. But will be so that I can seed it and make this into a proper C/C++ header.
+/*
+void s_xor_128(uint64 seed=0){
+	//make the seed be the current time since epoch in milliseconds.
+	//have to create a microtime function for win32, and also unix variant so that I can then call it.
+	seed=(seed==0)?(std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1)):seed;
+	//initalize the state with the seed throught the splitmix64 function.
+	XOR_SHIFT_128_STATE[0]=splitmix64(seed);
+	//take the seed and modify it by a bit and reuse it again.
+	XOR_SHIFT_128_STATE[1]=splitmix64(seed<<1);
+}
+ */
+#endif //__cplusplus
 //non templated version for the full width uint64 always.
 //not recommenting this bit.
-uint64 xorshift128(void){
+uint64 xorshift128(){
 	//same as above except we dont' change the values and clamp the range down.
 	uint64 s1=XOR_SHIFT_128_STATE[0];
 	uint64 s0=XOR_SHIFT_128_STATE[1];  
