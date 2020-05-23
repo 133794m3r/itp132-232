@@ -35,10 +35,19 @@ class Hill {
 			throw std::invalid_argument("The key must be square. Thus rows and columns should be the same! key.rows="
 				+std::to_string(_key.get_rows())+"key.cols="+std::to_string(_key.get_cols()));
 		}
-		key=_key;
+		//if they didn't provide a key we generate one so that it can be instantly used after constructing the class.
+		if(_key[0] == _key[1] && _key[1] == _key[2] && _key[3] == _key[0]){
+			//gen_key also creates the decryption key for them too.
+			gen_key();
+		}
+		else {
+			key = _key;
+			//have to wrap this in a try_catch just incase the key doesn't work.
+			decryption_key=key.inv_mod(alphabet_size);
+		}
 		alphabet=_alphabet;
 		alphabet_size=_alphabet.size();
-		decryption_key=key.inv_mod(alphabet_size);
+
 	}
 	//in case they think this is C.
 	Hill(const Matrix<char> _key=Matrix<char>(2,2,1), char *_alphabet=NULL,size_t size=0){
@@ -46,6 +55,14 @@ class Hill {
 			throw std::invalid_argument("The key must be square. Thus rows and columns should be the same! key.rows="
 										+ std::to_string(_key.get_rows()) + "key.cols=" +
 										std::to_string(_key.get_cols()));
+		}
+		//if they didn't provide a key we generate one so that it can be instantly used after constructing the class.
+		if(_key[0] == _key[1] && _key[1] == _key[2] && _key[3] == _key[0]){
+			gen_key();
+		}
+		else{
+			key=_key;
+			decryption_key=key.inv_mod(alphabet_size);
 		}
 		if(_alphabet==NULL){
 			alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -60,16 +77,17 @@ class Hill {
 				alphabet[i]=_alphabet[i];
 			}
 		}
-		key=_key;
+
 		alphabet_size=size;
-		decryption_key=key.inv_mod(alphabet_size);
+
 	}
-	//this isn't the proper way to do it but I'll support it.
+	//all of the setters.
 	void set_alphabet(const std::string &string_alphabet){
 		alphabet=string_alphabet;
 		alphabet_size=string_alphabet.size();
 		decryption_key=key.inv_mod(alphabet_size);
 	}
+	//if they like pointers.
 	void set_alphabet(const char *string_alphabet=NULL,size_t size=0){
 		if(string_alphabet==NULL){
 			alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -87,14 +105,18 @@ class Hill {
 		alphabet_size=size;
 		decryption_key=key.inv_mod(alphabet_size);
 	}
+	//if they want the program to generate the key for them.
 	void gen_key(void){
 		size_t cols=chunk_size*chunk_size;
 		//have to seed the PRNG. We call it w/o arguments so that if it's already seeded it won't be reseeded again.
 		s_xor_128();
+		size_t maximum=alphabet_size-1;
 		Matrix<char> key(chunk_size,chunk_size,1);
 		for(size_t i=0;i<cols;i++){
-			key[i]=xorshift128(0,alphabet_size);
+			key[i]=xorshift128(0,maximum);
 		}
+		//going to have to figure out how I'm going to loop the generator until I get one that doesn't result in the inv modulus resulting in 0.
+		decryption_key=key.inv_mod(alphabet_size);
 	}
 	//to let them set the key from a string of characters. This'll create the Matrix and re-declare it.
 	int set_key(const std::string &string_key){
@@ -181,6 +203,28 @@ class Hill {
 			}
 		}
 		return return_code;
+	}
+	//all of the getters that someone would need from the Hill cipher class.
+	Matrix<char> get_enc_key(void){
+		return this->key;
+	}
+	Matrix<char> get_encryption_key(void){
+		return this->key;
+	}
+	Matrix<char> get_dec_key(void){
+		return this->decryption_key;
+	}
+	Matrix<char> get_decryption_key(void){
+		return this->decryption_key;
+	}
+	std::string get_alphabet(void){
+		return this->alphabet;
+	}
+	size_t get_modulus(void){
+		return this->alphabet_size;
+	}
+	size_t get_chunk_size(void){
+		return this->chunk_size;
 	}
 };
 

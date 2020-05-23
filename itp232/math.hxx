@@ -34,8 +34,12 @@ template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	*y=x1;
 	return gcd;
 }
-//TODO: This function may return 0 so that errors can be more easily. Since I'm allowing unsigned types and the inversion should never be 0.
-//this way I can also not have to wrap every attempt inside of a try{}catch(e){} block.
+/**
+ * TODO: This function may return 0 so that errors can be more easily. Since I'm allowing unsigned types and the
+ * inversion should never be 0 this way I can also not have to wrap every attempt inside of a try{}catch(e){} block,
+ * might make it a #ifdef variable to find out if it throws the error or if it just returns 0. That or make it a
+ * 3rd argument.
+ */
 template <typename T> T mod_inv(T a, T mod){
 	T gcd=0;
 	T x=0;
@@ -61,6 +65,7 @@ template <typename T> T mod_inv(T a, T mod){
 	}
 	gcd=gcd_fast(a,mod,&x,&y);
 	if((gcd != 1) && (gcd != -1)){
+		//may make this just return 0 which is basically the same thing.
 		throw std::invalid_argument("The gcd between a and the modulus must be either 1 or -1");
 	}
 	if(gcd == -1) {
