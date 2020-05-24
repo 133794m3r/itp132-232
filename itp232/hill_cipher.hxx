@@ -10,6 +10,8 @@
 #include "matrix.hxx"
 #include "vectors.hxx"
 #include "random.h"
+//may end up making it templated to work with bytes also but not sure yet.
+//template <typename character>
 class Hill {
  private:
 	Matrix<char> key;

@@ -17,8 +17,8 @@ int main() {
 	//int j=0;
 	double start,end;
 	start=microtime();
-	matrix_int test;
-	std::cout << test <<std::endl;
+	//matrix_int test;
+	//std::cout << test <<std::endl;
 	/*
 	int row=2;
 	int col=2;
@@ -215,6 +215,13 @@ int main() {
 	ludc(0,0)=3;ludc(0,1)=1;
 	ludc(1,0)=5;ludc(1,1)=1;	
 	std::cout << ludc * ludc << std::endl;
+	matrix_int test(2,2,1);
+	std::vector<int> vec_test={1,2};
+	matrix_int test3(1,1,1);
+	std::cout << "sizeof(test3)=" << sizeof(test3) << std::endl;
+	test(0,0)=1;test(0,1)=2;
+	test(1,0)=3;test(1,1)=4;
+	std::cout << "test * vec_test" << test*vec_test << std::endl;
 	double det=0.0;
 	double detb=ludc.det();
 	matrix_double ludc2=ludc;

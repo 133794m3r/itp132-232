@@ -148,6 +148,7 @@ template <class T> class Matrix{
 	/**
 	 * Arithmetic operators.
 	 * First are scalars. Then matricies. Finally it's std::vectors.
+	 * For scalars I do them first as a this, then as the scalar being on the lhs.
 	 */
 	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
@@ -159,7 +160,7 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
-
+	//friend Matrix<T> operator+(const T scalar,const Matrix<T> rhs);
 	Matrix<T> operator*(const T scalar) const{
 		size_t i=0,j=0;
 		Matrix<T> result(cols,rows,0);
@@ -268,6 +269,8 @@ template <class T> class Matrix{
 	/**
 	 * The same but with std::vectors.
 	 */
+	 //+ and - aren't really defined when it comes to vectors really.
+	 /*
 	Matrix<T> operator+(std::vector<T> const &rhs) const{
 		if((cols != rhs.size())||(rows != rhs.size())){
 			_invalid_dim("addition",rhs);
@@ -296,18 +299,16 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
-
+*/
 	Matrix<T> operator*(std::vector<T> const &rhs) const{
 		if((this->cols != rhs.size())){
-			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(rhs.rows)+"\r\n");
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(rhs.size())+"\r\n");
 		}
-		size_t i=0,j=0,k=0;
-		Matrix result(rhs.cols,this->rows,0);
+		size_t i=0,j=0;
+		Matrix result(1,this->rows,0);
 		for(i=0;i<rows;++i){
-			for(j=0;j<rhs.cols;j++){
-				for(k=0;k<rows;k++){
-					result.array[(j*rhs.cols)+i]+=this->array[(k*this->cols)+i] * rhs[(j*rhs.cols)+k];
-				}
+			for(j=0;j<cols;j++){
+				result.array[i]+=this->array[j+(i*this->cols)] * rhs[j];
 			}
 		}
 		return result;
@@ -476,15 +477,19 @@ template <class T> class Matrix{
 	bool operator>=(const Matrix<T> &other_matrix) const{
 		return !(*this < other_matrix);
 	}
-
+	//compared against a scalar it's always going to be false.
 	bool operator==(const T &rhs) const{
 		return false;
 	}
-
 	bool operator !=(const T &rhs) const{
 		return true;
 	}
-
+	bool operator >=(const T &rhs) const{
+		return false;
+	}
+	bool operator <=(const T &rhs) const{
+		return false;
+	}
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 	
@@ -666,8 +671,50 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 	}
 	return os;
 }
-
-
+/*
+template <typename T> Matrix<T> Matrix<T>::operator+(T scalar,const Matrix<T> rhs){
+	Matrix<T> result(rhs.cols,rhs.rows,0);
+	size_t i=0,j=0;
+	for(i=0;i<rhs.rows;i++){
+		for(j=0;j<rhs.cols;j++){
+			result[j+(rhs.cols*i)]=rhs[j+(rhs.cols*i)]+scalar;
+		}
+	}
+	return result;
+}
+ */
+/*
+ * since I need to also support the basic operators as if they were _normal_ I have to define them like so.
+ * i'm basically overloading the global operator instead of having it be part of the class. First is the arithematic operators.
+ * then it's the comparison ones.
+ */
+template <typename T> Matrix<T> operator+(const T scalar, const Matrix<T> rhs){
+	//no reason to redefine the whole function again. Why not just reuse my already defined code. This codebase is large
+	// enough already.
+	return rhs+scalar;
+}
+template <typename T> Matrix<T> operator-(const T scalar, const Matrix<T> rhs){
+	return rhs-scalar;
+}
+template <typename T> Matrix<T> operator*(const T scalar, const Matrix<T> rhs){
+	return rhs*scalar;
+}
+template <typename T> Matrix<T> operator/(const T scalar, const Matrix<T> rhs){
+	return rhs/scalar;
+}
+//then the comparison operators.
+template <typename T> bool operator==(const T scalar, const Matrix<T> rhs) {
+	return false;
+}
+template <typename T> bool operator !=(const T scalar, const Matrix<T> rhs){
+	return true;
+}
+template <typename T> bool operator >=(const T scalar, const Matrix<T> rhs){
+	return false;
+}
+template <typename T> bool operator <=(const T scalar, const Matrix<T> rhs){
+	return false;
+}
 template<>Matrix<double> Matrix<double>::solve_gae() const{
 	if(this->rows < (this->cols -1 )){
 		throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
@@ -911,7 +958,7 @@ template <> bool Matrix<double>::inv(){
 
 	for(i=0; i < n; i++){
 		double ta,tb;
-		double a(0);
+		double a=0.0;
 		i_pos = i * n;
 		i_max = i;
 		ta = std::abs( this->array[i_pos + i]);
@@ -931,7 +978,7 @@ template <> bool Matrix<double>::inv(){
 			}
 		}
 
-		a = double(1) / this->array[i_pos + i];
+		a = 1.0 / this->array[i_pos + i];
 		this->array[i_pos + i] = double(1);
 
 		for(j=0; j < n; j++){;
