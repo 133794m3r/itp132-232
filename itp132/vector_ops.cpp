@@ -36,7 +36,7 @@ int main(){
     return -1;
 	}
 	
-	//create a new vector that's intialized to the size of the number.s
+	//create a new vector that's initialized to the size of the number.s
 	std::vector <float> third_numbers(numbers);  
 	//tell them to enter their vectors.
 	std::cout << "Enter your first set of numbers one at a time.\r\n";

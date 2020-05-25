@@ -1,5 +1,5 @@
 /*
-* Super simple Ceaser Cipher using the for each operator in C++.
+* Super simple Caesar Cipher using the for each operator in C++.
 * plus it shows functional overloading, pass by reference, address, and value.
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
 * Licensed AGPLv3
@@ -66,7 +66,7 @@ void transform(std::string &input, int shift){
 
 }
 int main() {
-	//intialize strings(also requirement)
+	//initialize strings(also requirement)
 	std::string input="";
 	std::string out="";
 	//the shift.
@@ -75,7 +75,7 @@ int main() {
 	uint8 mode=0;
 	
 	//tell them the options.
-	std::cout << "Welcome to the ceaser shifter!\r\nSelect whether you want to \r\n1:Encrypt\r\n2:Decrypt\r\n";
+	std::cout << "Welcome to the caesar shifter!\r\nSelect whether you want to \r\n1:Encrypt\r\n2:Decrypt\r\n";
 	//read it in.
 	std::cin >> mode;
 	//prompt for shift.
@@ -88,7 +88,7 @@ int main() {
 	//if the shift is greater than we get the absolute value.
 	shift=(shift>26 || shift < 0)?shift%26:shift;
 	
-	//if it's decyrption then make the shift negative.
+	//if it's decryption then make the shift negative.
 	shift*=((mode == '1')?1:-1);
 	
 	//output the input string.

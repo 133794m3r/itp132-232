@@ -24,12 +24,12 @@ template <typename T, typename S, typename K> T bin_search(S *arr,T l, T h, K x)
 			//return the middle.
 			return m;
 		}
-		//othwerise if current value is greater than x then we have went past it.
+		//otherwise if current value is greater than x then we have went past it.
 		else if(cur > x){
 			//set the highest to the middle minus 1.
 			h=m-1;
 		}
-		//othwerise we set low ot the middle+1 as we're lower than it.
+		//otherwise we set low ot the middle+1 as we're lower than it.
 		else{
 			l=m+1;
 		}
@@ -43,7 +43,7 @@ template <typename T, typename S, typename K> T bin_search(S *arr,T l, T h, K x)
 }
 
 //swap the first value with the second.
-//by using * we're getting the actual value itself by derefencing it.
+//by using * we're getting the actual value itself by de-refencing it.
 template <typename T> void swap(T *a, T *b){
 	T t = *a;
 	*a = *b;

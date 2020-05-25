@@ -126,7 +126,7 @@ int main(int argc, char **argv){
 	//get the mode they chose.
 	encode=opt_exists(argv,end_argv,"-e");
 	decode=opt_exists(argv,end_argv,"-d");
-	//both were seelcted so we've got an error.
+	//both were selected so we've got an error.
 	if(encode && decode){
 		std::cout << "You can't both encrypt and decrypt. Only one is allowed." << std::endl;
 		print_help(argv[0]);

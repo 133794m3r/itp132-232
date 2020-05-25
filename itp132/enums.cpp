@@ -7,7 +7,7 @@
 */
 
 //this'll give me a real round function the way that I want.
-//basically I overloaded the round fucntion if it's got 2 params I call this one
+//basically I overloaded the round function if it's got 2 params I call this one
 //otherwise I do standard round.
 inline double round( double val,unsigned int precision){
 		precision= static_cast<unsigned int>(pow(10, precision));
@@ -40,7 +40,7 @@ void calculate_weights(double weight,const char *units){
 	enum planets{earth=0,mars=1,moon=2};
 	//wow ||.
 	const char *planets_str[3]={"Earth","Mars","The Moon"};
-	//muchh ||
+	//much ||
 	double gravity[3]={9.81,3.721,1.622};
 	//create my iterator.
 	typedef Iterator<planets, planets::earth, planets::moon> planets_iterator;
