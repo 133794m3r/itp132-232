@@ -84,7 +84,7 @@ class Inventory{
 	public:
 		//constructor.
 		Inventory(int total_items,std::vector<Item *>itms){
-			int i=0;
+			int i;
 			for(i=0;i<total_items;i++){
 				Items.push_back(itms[i]);
 				total_owned.push_back(0);
@@ -238,7 +238,7 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	//get their current balance.
 	double available_funds = usr.get_balance();
 	//initialize a bunch of vars.
-	double total_cost = 0;
+	double total_cost;
 	double price=item.get_price();
 	//figure out how many they can buy.
 	double can_buy = floor(available_funds / price);
@@ -327,7 +327,7 @@ int Inventory::sell_item(Account &usr, Item &item,unsigned int total_items){
 * Nothing.
 */
 void Inventory::sell_all_items(Account &usr){
-	unsigned int owned=0;
+	unsigned int owned;
 	double total_sales=0.0f;
 	unsigned int i=0;
 	//for each loop with each item being taken from the pointers.

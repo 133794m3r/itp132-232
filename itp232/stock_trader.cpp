@@ -52,9 +52,9 @@ void print_items(vector_ptr_item &Items){
 //update all of the prices.
 void update_prices(vector_ptr_item &Items){
 	//init files.
-	double current_price=0.0f;
-	double modifier=0.0f;
-	double new_price=0.0f;
+	double current_price;
+	double modifier;
+	double new_price;
 	char flag=0;
 	//for each.
 	for(Item *current_item:Items){
@@ -103,10 +103,10 @@ int main(){
 	unsigned int current_day=0;
 	unsigned int max_days=2;
 	double starting_balance=1000.00f;
-	double final_balance=0.0f;
+	double final_balance;
 	int selection=0;
 	int tx_success=0;	
-	bool owns_something=false;
+	bool owns_something;
 
 	//create a pointer to other pointers.
 	vector_ptr_item items = { new Item("Tuna Fish", 10.5), new Item("Bunch of Bananas", 3.7),
@@ -174,7 +174,6 @@ int main(){
 					std::cout << "You tried to buy more than you could afford!" << std::endl;
 				}
 				pause();
-//system("pause");
 				move_and_clear_terminal(0,total_items);
 			}
 			else {
@@ -182,7 +181,6 @@ int main(){
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
 				//move the terminal back up and clear the old stuff.
 				pause();
-//system("pause");
 				move_and_clear_terminal(8,total_items);				
 			}
 			//evil pause thing since I don't want to prompt for something else during the loop.

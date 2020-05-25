@@ -566,7 +566,7 @@ template <class T> class Matrix{
 					continue;
 				tmp.array[z*(rows-1)+y] = array[i*this->cols+j];
 				y++;
-			};
+			}
 		}
 		T cofact=tmp.det();
 		if((max_row+max_col) & 1u )
@@ -962,7 +962,7 @@ template <> bool Matrix<double>::inv(){
 		i_pos = i * n;
 		i_max = i;
 		ta = std::abs( this->array[i_pos + i]);
-		for(j=i + 1; j < n; j++){;
+		for(j=i + 1; j < n; j++){
 			if((tb = std::abs(this->array[j * n + i])) > ta){
 				ta = tb;
 				i_max = j;
@@ -974,30 +974,30 @@ template <> bool Matrix<double>::inv(){
 		if(i_max != i){
 			std::swap(P[i], P[i_max]);
 			for(j_pos=i_max*n, j=0; j < n; j++){
-				std::swap(this->array[i_pos + j], this->array[j_pos + j]);;
+				std::swap(this->array[i_pos + j], this->array[j_pos + j]);
 			}
 		}
 
 		a = 1.0 / this->array[i_pos + i];
 		this->array[i_pos + i] = double(1);
 
-		for(j=0; j < n; j++){;
+		for(j=0; j < n; j++){
 			this->array[i_pos+j] *= a;
 		}
 
-		for(j=0; j < n; j++){;
+		for(j=0; j < n; j++){
 			if(j != i){
 				j_pos = j * n;
 				a = this->array[j_pos + i];
 				this->array[j_pos + i] = double(0);
-				for(k=0; k < n; k++){;
+				for(k=0; k < n; k++){
 					this->array[j_pos+k] -= a * this->array[i_pos+k];
 				}
 			}
 		}
 	}
 
-	for(i=0; i < n; i++){;
+	for(i=0; i < n; i++){
 		if(i != P[i]){
 			k = i + 1;
 			while(i != P[k])

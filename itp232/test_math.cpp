@@ -6,9 +6,9 @@ int main(void){
 	b=5;
 	int x=0;
 	int y=0;
-	int gcd=0;
-	int modular_inverse=0;
-	int lcm=0;
+	int gcd;
+	int modular_inverse;
+	int lcm;
 	int c=23;
 	int d=7;
 	
