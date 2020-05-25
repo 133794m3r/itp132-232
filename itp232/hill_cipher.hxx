@@ -109,12 +109,12 @@ class Hill {
 	}
 	//if they want the program to generate the key for them.
 	void gen_key(void){
-		size_t cols=chunk_size*chunk_size;
+		size_t items=chunk_size*chunk_size;
 		//have to seed the PRNG. We call it w/o arguments so that if it's already seeded it won't be reseeded again.
 		s_xor_128();
 		size_t maximum=alphabet_size-1;
 		Matrix<char> key(chunk_size,chunk_size,1);
-		for(size_t i=0;i<cols;i++){
+		for(size_t i=0;i<items;i++){
 			key[i]=xorshift128(0,maximum);
 		}
 		//going to have to figure out how I'm going to loop the generator until I get one that doesn't result in the inv modulus resulting in 0.
@@ -228,6 +228,26 @@ class Hill {
 	size_t get_chunk_size(void){
 		return this->chunk_size;
 	}
+	//this method will return a vector containing matrices of the input data.
+	std::vector<Matrix<char>> chunk_it(const std::string input_data){
+		size_t mat_size=chunk_size*chunk_size;
+		//this will be modified later to append enough data to make it an even number.
+		size_t items=input_data.size()/(mat_size);
+		//create our return item.
+		std::vector<Matrix<char>> result(items);
+		//loop over the entire input string. For now it's just a string.
+		for(size_t i=0;i<items;i++){
+			//create my matrix.
+			for(size_t j=0;j<chunk_size;j++){
+				for(size_t k=0;k<chunk_size;k++){
+					//insert into it at the correct spot the correct character.
+					//later I'll actually do the lookup part.
+					result[i][k+(j*chunk_size)]=input_data[(i*mat_size)+(k+(j*chunk_size))];
+				}
+			}
+		}
+	}
+
 };
 
 
