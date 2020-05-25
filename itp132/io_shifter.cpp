@@ -10,7 +10,7 @@
 #ifdef _WIN32
 #include <windows.h>
 //complained that I wasn't capturing the output. So this is just here for that.
-bool test = SetConsoleMode(GetStdHandle(-11),7);
+WINBOOL test = SetConsoleMode(GetStdHandle(static_cast<DWORD>(-11)), 7);
 #endif
 
 /*
@@ -65,16 +65,16 @@ void transform_full(std::string &input, unsigned int length, int shift){
 }
 
 void transform_full(char *input, unsigned int length, int shift){
-	unsigned int i=0;
-	char character=0;
-	for(char character:input){		
+	unsigned int i;
+	char character;
+	for(i=0;i<length;i++){
 		character=input[i]+shift;
 		if(character > 126)
 			character=32+(character - 127);
 		else if(character < 32)
 			character=127 -  (32 - character);
 			
-		input[i++]=character;
+		input[i]=character;
 	}
 }
 

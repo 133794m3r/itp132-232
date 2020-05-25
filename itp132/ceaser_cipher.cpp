@@ -96,5 +96,5 @@ int main() {
 	
 	transform(input,shift);
 	//output the final encrypted string.
-	std::cout "Transformed" << std::endl << input << std::endl;
+	std::cout << "Transformed" << std::endl << input << std::endl;
 }

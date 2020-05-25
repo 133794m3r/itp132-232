@@ -9,8 +9,8 @@
 //this'll give me a real round function the way that I want.
 //basically I overloaded the round fucntion if it's got 2 params I call this one
 //otherwise I do standard round.
-inline double round( double val,int precision){
-		precision=pow(10,precision);
+inline double round( double val,unsigned int precision){
+		precision= static_cast<unsigned int>(pow(10, precision));
 		return round(val*precision)/precision;
 }
 //I have to have an iterator.

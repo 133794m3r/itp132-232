@@ -1,27 +1,27 @@
 #include <iostream>
-#include "matrix_functions.h"
+#include "matrix_functions.hxx"
 /*
 * Just showing templates that's all.
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
 * Licensed AGPLv3
 */
-typdef unsigned int uint32;
+
 
 
 //the main function
 int main() {
-	int i=0;
+	int i;
 	//the int arrays.
 	int a[4]={0,0,0,0};
 	int b[4]={1,2,3,4};
 	//resulting heap object.
-	int *r = new int[4];
+	int *r;
 	
 	//float version.
 	float c[4]={2,3,4,5};
 	float d[4]={0.1,0.1,0.1,0.1};
 	//the result.
-	float *r2=new float[4];
+	float *r2;
 	
 	//get result of ints.
 	r=matrix_add(a,b);

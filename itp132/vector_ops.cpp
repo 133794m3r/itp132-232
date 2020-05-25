@@ -28,7 +28,7 @@ int main(){
 	*/
 	getline(std::cin >> std::ws,input);
 	//if empty set numbers to be 0. Otherwise cast to integer.
-	(input.empty())?numbers=0:numbers=std::atoi(input.c_str());
+	(input.empty())?numbers=0:numbers=static_cast<unsigned int>(std::atoi(input.c_str()));
 	
 	//if it's zero then warn them and return error code.
 	if(numbers==0){
