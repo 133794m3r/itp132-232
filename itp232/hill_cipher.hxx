@@ -47,7 +47,7 @@ class Hill {
 		else {
 			key = _key;
 			//have to wrap this in a try_catch just incase the key doesn't work.
-			decryption_key=key.inv_mod(alphabet_size);
+			decryption_key=key.inv_mod(static_cast<char>(alphabet_size));
 		}
 		for(size_t i=0;i<_alphabet.size();i++){
 			alphabet[_alphabet[i]]=i;
@@ -69,7 +69,7 @@ class Hill {
 		}
 		else{
 			key=_key;
-			decryption_key=key.inv_mod(alphabet_size);
+			decryption_key=key.inv_mod((char)alphabet_size);
 		}
 		if(_alphabet==NULL){
 			//const char *tmp="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -97,7 +97,7 @@ class Hill {
 			alphabet[string_alphabet[i]]=i;
 		}
 		alphabet_size=string_alphabet.size();
-		decryption_key=key.inv_mod(alphabet_size);
+		decryption_key=key.inv_mod((char)alphabet_size);
 	}
 	//if they like pointers.
 	void set_alphabet(const char *string_alphabet=NULL,size_t size=0){
@@ -117,20 +117,20 @@ class Hill {
 			}
 		}
 		alphabet_size=size;
-		decryption_key=key.inv_mod(alphabet_size);
+		decryption_key=key.inv_mod((char)alphabet_size);
 	}
 	//if they want the program to generate the key for them.
 	void gen_key(void){
 		size_t items=chunk_size*chunk_size;
 		//have to seed the PRNG. We call it w/o arguments so that if it's already seeded it won't be reseeded again.
 		s_xor_128();
-		char maximum=alphabet_size-1;
+		char maximum=(char)alphabet_size-1;
 		Matrix<char> key(chunk_size,chunk_size,1);
 		for(size_t i=0;i<items;i++){
-			key[i]=xorshift128(0,maximum);
+			key[i]=xorshift128((char)0,maximum);
 		}
 		//going to have to figure out how I'm going to loop the generator until I get one that doesn't result in the inv modulus resulting in 0.
-		decryption_key=key.inv_mod(alphabet_size);
+		decryption_key=key.inv_mod((char)alphabet_size);
 	}
 	//to let them set the key from a string of characters. This'll create the Matrix and re-declare it.
 	int set_key(const std::string &string_key){
@@ -178,7 +178,7 @@ class Hill {
 				}
 			}
 		}
-		decryption_key=key.inv_mod(alphabet_size);
+		decryption_key=key.inv_mod((char)alphabet_size);
 		return return_code;
 	}
 	//if they are doing it like it was C.
@@ -240,9 +240,11 @@ class Hill {
 	Matrix<char> get_decryption_key(void){
 		return this->decryption_key;
 	}
+	/*
 	std::string get_alphabet(void){
 		return this->alphabet;
 	}
+	 */
 	size_t get_modulus(void){
 		return this->alphabet_size;
 	}
@@ -288,7 +290,7 @@ class Hill {
 		return result;
 	}
 	//TODO: Actually make this a function.
-	std::string dechunk_it(std::vector<Matrix<char>> &input_data);
+	//std::string dechunk_it(std::vector<Matrix<char>> &input_data);
 };
 
 

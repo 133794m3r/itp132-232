@@ -29,7 +29,7 @@ template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 		return b;
 	}
 	T x1,y1;
-	T gcd = gcd_fast((a+b)%a, a, &x1, &y1);
+	T gcd = gcd_fast(static_cast<T>((a+b)%a), a, &x1, &y1);
 	*x=y1-(b/a) * x1;
 	*y=x1;
 	return gcd;

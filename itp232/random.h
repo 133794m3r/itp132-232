@@ -56,7 +56,7 @@ template <typename T> T xorshift128(T low=0, T high=0){
 		low=0;
 	}
 	else if(high == 0 && low == 0){
-		high = UINT64_MAX;
+		high = (T)UINT64_MAX;
 	}
 	return low+((high-low)*((double)result/ UINT64_MAX));
 }
@@ -93,7 +93,7 @@ void s_xor_128(uint64 seed=0){
 		//take the seed and modify it by a bit and reuse it again.
 		XOR_SHIFT_128_STATE[1] = splitmix64(seed << 1);
 		//select how many times we're going to "warm-up" our PRNG. It's from 4->32. This adds a tiny bit of extra randomness.
-		size_t iters = (seed & 7) + 1 << 2;
+		size_t iters = ((seed & 7) + 1) << 2;
 		//unsigned long long rnd;
 		for (size_t i = 0; i < iters; i++) {
 			//i'm just capturing it just so that I don't get that warning.
