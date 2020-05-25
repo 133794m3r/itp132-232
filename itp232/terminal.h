@@ -11,7 +11,7 @@
 			system("pause");
 		}
 		//complained that I wasn't capturing the output. So this is just here for that.
-		bool test = SetConsoleMode(GetStdHandle(-11),7);
+		WINBOOL test = SetConsoleMode(GetStdHandle(static_cast<DWORD>(-11)), 7);
 		
 	#else
 		//all other devices I have use to the crappy getchar() version but it works.

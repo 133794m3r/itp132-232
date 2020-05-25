@@ -12,11 +12,21 @@ double microtime(void){
 std::string equality(bool test){
 	return (test)?"true":"false";
 }
+
 int main() {
-	//int i=0;
+	//int i;
 	//int j=0;
 	double start,end;
 	start=microtime();
+	/*
+	std::string input_data="1234567890AB";
+	std::vector<Matrix<char>> chunked;
+	chunked=__chunk_it(input_data);
+
+	for(i=0;i<chunked.size();i++){
+		std::cout << chunked[i] << std::endl;
+	}
+	 */
 	//matrix_int test;
 	//std::cout << test <<std::endl;
 	/*

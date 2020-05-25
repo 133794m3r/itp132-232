@@ -114,7 +114,7 @@ int main(){
 	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)};
 	
 	//get the total items.
-	int total_items=items.size();
+	long long total_items=items.size();
 	
 	//prompt for name.
 	std::cout << "Please enter your name: ";

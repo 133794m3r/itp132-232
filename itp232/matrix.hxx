@@ -824,9 +824,9 @@ template <> bool Matrix<double>::lud(double &determinant){
 	
 	for(i=0; i < n-1; i++){
 		ip = i;
-		max_matrix = abs(this->array[Partition[i]*n+i]);
+		max_matrix = fabs(this->array[Partition[i]*n+i]);
 		for(j=i+1; j < n; j++){		
-			if((candidate_matrix = abs( this->array[Partition[j]*n+i])) > max_matrix){
+			if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
 				max_matrix = candidate_matrix;
 				ip = j;				
 			}
@@ -839,7 +839,7 @@ template <> bool Matrix<double>::lud(double &determinant){
 
 		size_t ipos = Partition[i] * n;
 
-		if(abs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
+		if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
 			return false;
 
 		determinant*=this->array[ipos+i];
@@ -1140,6 +1140,29 @@ template <typename T> bool Matrix<T>::solve(const std::vector<T> &values, std::v
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	return tmp_matrix.solve(values,solution);
+}
+//this'll be modified to basically read in a file's line later on.
+//but for now it's just here as a placeholder.
+std::vector<Matrix<char>> __chunk_it(const std::string input_data){
+	size_t chunk_size=2;
+	size_t mat_size=chunk_size*chunk_size;
+	//this will be modified later to append enough data to make it an even number.
+	size_t items=input_data.size()/(mat_size);
+	//create our return item.
+	std::vector<Matrix<char>> result(items);
+	//loop over the entire input string. For now it's just a string.
+	for(size_t i=0;i<items;i++){
+		//create my matrix.
+		result[i]=Matrix<char>(chunk_size,chunk_size);
+		for(size_t j=0;j<chunk_size;j++){
+			for(size_t k=0;k<chunk_size;k++){
+				//insert into it at the correct spot the correct character.
+				//later I'll actually do the lookup part.
+				result[i][k+(j*chunk_size)]=input_data[(i*mat_size)+(j+(k*chunk_size))];
+			}
+		}
+	}
+	return result;
 }
 typedef Matrix<char> matrix_char;
 typedef Matrix<int> matrix_int;

@@ -41,7 +41,7 @@ template <typename T> T gcd_fast(T a, T b, T *x, T *y){
  * 3rd argument.
  */
 template <typename T> T mod_inv(T a, T mod){
-	T gcd=0;
+	T gcd;
 	T x=0;
 	T y=0;
 	/*
@@ -94,8 +94,8 @@ template <typename T> T *small_prime_factor(T n){
 		//as one of the primes from n has to be one of these primes since NCL likes
 		//small numbers.
 		int primes[20]={2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71};
-		int remainder=0;
-		int i=0;
+		int remainder;
+		int i;
 		T p=0;
 		T q=0;
 		T *two_factors=new T[2];
@@ -113,8 +113,8 @@ template <typename T> T *small_prime_factor(T n){
 }
 
 template <typename T> T fast_lcm(T a,T b){
-	T lcm=0;
-	T gcd=0;
+	T lcm;
+	T gcd;
 	T x=0;
 	T y=0;
 	if(a == 0 || b == 0)

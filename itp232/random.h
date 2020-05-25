@@ -88,16 +88,16 @@ void s_xor_128(uint64 seed=0){
 		//make the seed be the current time since epoch in milliseconds.
 		seed = (seed == 0) ? (std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1))
 						   : seed;
-		//initalize the state with the seed throught the splitmix64 function.
+		//initalize the state with the seed through the splitmix64 function.
 		XOR_SHIFT_128_STATE[0] = splitmix64(seed);
 		//take the seed and modify it by a bit and reuse it again.
 		XOR_SHIFT_128_STATE[1] = splitmix64(seed << 1);
 		//select how many times we're going to "warm-up" our PRNG. It's from 4->32. This adds a tiny bit of extra randomness.
 		size_t iters = (seed & 7) + 1 << 2;
-		unsigned long long rnd = 0;
+		//unsigned long long rnd;
 		for (size_t i = 0; i < iters; i++) {
-			//i'm just caputring it just so that I don't get that warning.
-			rnd = xorshift128();
+			//i'm just capturing it just so that I don't get that warning.
+			xorshift128();
 		}
 		XOR_SHIFT_128_SEEDED=true;
 	}
