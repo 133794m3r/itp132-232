@@ -646,9 +646,9 @@ template <class T> class Matrix{
 	bool inv(void);
 	bool inv_slow();
 	bool solve(const std::vector<T> &right_side,std::vector<T> &solution) const;
-	bool solve(const Matrix<T> &right_side, Matrix<T> &solution) const;
+	//bool solve(const Matrix<T> &right_side, Matrix<T> &solution) const;
 	bool solve_lud(const std::vector<T> &right_side,std::vector<T> &solution) const;
-	bool solve_lud(const Matrix<T> &right_side, Matrix<T> &solution) const;
+	//bool solve_lud(const Matrix<T> &right_side, Matrix<T> &solution) const;
 	void lud_backsub(const std::vector<size_t> &partition, const std::vector<T> &right_side,std::vector<T> &solution) const;
 };
 
@@ -880,9 +880,9 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 	for(i=0; i < n-1; i++){
 		ip = i;
-		max_matrix = abs(this->array[Partition[i]*n+i]);
+		max_matrix = fabs(this->array[Partition[i]*n+i]);
 		for(j=i+1; j < n; j++){		
-			if((candidate_matrix = abs( this->array[Partition[j]*n+i])) > max_matrix){
+			if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
 				max_matrix = candidate_matrix;
 				ip = j;				
 			}
@@ -893,7 +893,7 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 		size_t ipos = Partition[i] * n;
 
-		if(abs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
+		if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
 			return false;
 
 
@@ -1125,7 +1125,15 @@ template <typename T> void Matrix<T>::lud_backsub(const std::vector<size_t> &Par
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	tmp_matrix.lud_backsub(Partition,values,solution);
 }
-
+template <> bool Matrix<double>::solve_lud(const std::vector<double> &values,std::vector<double> &solution) const{
+	Matrix<double> tmp = *this;
+	std::vector<size_t> Partition(this->rows);
+	if(tmp.lud(Partition)){
+		tmp.lud_backsub(Partition,values,solution);
+		return true;
+	}
+	return false;
+}
 template <> bool Matrix<double>::solve(const std::vector<double> &values,std::vector<double> &solution) const{
 	Matrix<double> tmp = *this;
 	std::vector<size_t> Partition(this->rows);
@@ -1135,7 +1143,11 @@ template <> bool Matrix<double>::solve(const std::vector<double> &values,std::ve
 	}
 	return false;
 }
-
+template <typename T> bool Matrix<T>::solve_lud(const std::vector<T> &values, std::vector<T> &solution) const{
+	std::vector<double> vec(this->array.begin(),this->array.end());
+	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	return tmp_matrix.solve(values,solution);
+}
 template <typename T> bool Matrix<T>::solve(const std::vector<T> &values, std::vector<T> &solution) const{
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);

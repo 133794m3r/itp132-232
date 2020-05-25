@@ -134,7 +134,7 @@ class Hill {
 	}
 	//to let them set the key from a string of characters. This'll create the Matrix and re-declare it.
 	int set_key(const std::string &string_key){
-		unsigned int cols=2;
+		unsigned int cols;
 		int return_code=0;
 		std::map <char,size_t>::iterator iterator;
 		size_t size=string_key.size();
@@ -156,7 +156,7 @@ class Hill {
 			key = Matrix<char>(cols, cols, 1);
 			chunk_size=cols;
 			size_t pos = 0;
-			char index = 0;
+			char index;
 			for (unsigned int i = 0; i < cols; i++) {
 				for (unsigned int j = 0; j < cols; j++) {
 					//this is insanely inefficient to do a linear search for _every_ single character. I should utilize a hashtable of the alphabet
@@ -204,7 +204,7 @@ class Hill {
 			key = Matrix<char>(cols, cols, 1);
 			chunk_size=cols;
 			size_t pos = 0;
-			char index = 0;
+			char index;
 			for (unsigned int i = 0; i < cols; i++) {
 				for (unsigned int j = 0; j < cols; j++) {
 					//this is insanely inefficient to do a linear search for _every_ single character. I should utilize a hashtable of the alphabet
@@ -258,7 +258,7 @@ class Hill {
 		//create our return item.
 		std::vector<Matrix<char>> result(items);
 		std::map<char,size_t>::iterator iterator;
-		char item=0;
+		char item;
 		//loop over the entire input string. For now it's just a string.
 		for(size_t i=0;i<items;i++){
 			//create my matrix.

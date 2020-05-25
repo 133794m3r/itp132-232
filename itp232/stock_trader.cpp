@@ -55,7 +55,7 @@ void update_prices(vector_ptr_item &Items){
 	double current_price;
 	double modifier;
 	double new_price;
-	char flag=0;
+	char flag;
 	//for each.
 	for(Item *current_item:Items){
 		//get price.
@@ -100,12 +100,12 @@ int main(){
 	//their username.
 	std::string username;
 	//all of the variables getting setup.
-	unsigned int current_day=0;
+	unsigned int current_day;
 	unsigned int max_days=2;
 	double starting_balance=1000.00f;
 	double final_balance;
 	int selection=0;
-	int tx_success=0;	
+	int tx_success;
 	bool owns_something;
 
 	//create a pointer to other pointers.
@@ -114,7 +114,7 @@ int main(){
 	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)};
 	
 	//get the total items.
-	long long total_items=items.size();
+	unsigned int total_items= static_cast<unsigned int>(items.size());
 	
 	//prompt for name.
 	std::cout << "Please enter your name: ";
