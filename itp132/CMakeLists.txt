@@ -5,7 +5,7 @@ if(MSVC)
 	# Default debug flags are OK
 	set(CMAKE_CXX_FLAGS_RELEASE "{CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -Wextra -Wpedantic")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 ")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g2")
 
@@ -19,23 +19,22 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(.)
 
-add_executable(matrix_test
-        mat.cpp
-		math.hxx
-        matrix.hxx
-		vectors.hxx)
+add_executable(array_sort_search
+        array_sort_search.cpp)
 
-add_executable(hill_cipher
-		hill_cipher.cpp
-		matrix.hxx
-		hill_cipher.hxx
-		math.hxx
-		vectors.hxx)
+add_executable(ceaser_cipher
+		ceaser_cipher.cpp)
 
-add_executable(stock_trader
-	stock_trader.cpp
-		math.hxx
-	random.h
-	stock_trader.h
-	terminal.h)
+add_executable(enums
+		enums.cpp)
+
+add_executable(io_shifter
+		io_shifter.cpp)
+
+add_executable(matrix_functions
+		matrix_functions.cpp
+		matrix_functions.hxx)
+		
+add_executable(vector_ops
+		vector_ops.cpp)
 
