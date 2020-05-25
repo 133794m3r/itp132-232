@@ -52,7 +52,7 @@ void print_help(char *prog_name){
 
 void transform_full(std::string &input, unsigned int length, int shift){
 	unsigned int i=0;
-	char character=0;
+	char character;
 	while(i<length){
 		character=input[i]+shift;
 		if(character > 126)
@@ -80,14 +80,14 @@ void transform_full(char *input, unsigned int length, int shift){
 
 int main(int argc, char **argv){
 	//the shift.
-	int shift = 0;
+	int shift;
 	//two bools.
-	bool encode=false;
-	bool decode=false;
+	bool encode;
+	bool decode;
 	//pointer to end of the array of options.
 	char **end_argv=argv+argc;
 	//the length of the current line.
-	unsigned int length=0;
+	unsigned int length;
 	//the line of text we're working with.
 	std::string line;
 	

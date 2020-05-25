@@ -10,7 +10,7 @@ typedef unsigned char uint8;
 
 void transform(char *input, unsigned int length, int shift){
 	unsigned int i=0;
-	char x=0;
+	char x;
 	while(i<length){
 		x=input[i];
 		//if the value is printable uppercase ASCII
@@ -37,7 +37,7 @@ void transform(char *input, unsigned int length, int shift){
 
 }
 
-void transform(std::string &input, unsigned int length, int shift){
+void transform(std::string &input, int shift){
 	unsigned int i=0;
 	
 	for(char x:input){
@@ -94,7 +94,7 @@ int main() {
 	//output the input string.
 	std::cout << input << std::endl;
 	
-	transform(input,input.length(),shift);
+	transform(input,shift);
 	//output the final encrypted string.
 	std::cout "Transformed" << std::endl << input << std::endl;
 }

@@ -54,7 +54,7 @@ template <typename T> void swap(T *a, T *b){
 template <typename T, typename N> N part(T *arr, N low, N high){
     N pivot = arr[high];// pivot 
     N i = (low - 1);  // Index of smaller element 
-	N j=0; //start j as zero.
+	N j
 	//iterate over the entire thing.
     for(j = low; j <= high- 1; j++){
 		//if the current value is less than the pivot value we saw before
@@ -90,7 +90,7 @@ template <typename T, typename N> void quick_sort(T *arr, N start, N length){
 
 //have to use templates for _everything_.
 template <typename T, typename N> void print_arr(T *arr, N n) { 
-	N i=0;
+	N i;
 	std::cout << "[";
 	for (i=0; i < n; i++){
 		if(i > 0)
@@ -135,7 +135,7 @@ int main(){
 	//get the values we want to find.
 	int arr_keys[5]={3,7,11,70,10};
 	//the index of it has to be int so that it can be signed.
-	int arr_index=0;
+	int arr_index;
 	//output the index of all of the keys.
 	std::cout << "Indexes of keys: " << std::endl;
 	//loop over every key and print index.

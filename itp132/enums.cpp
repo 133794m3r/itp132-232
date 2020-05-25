@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <type_traits>
 /*
 * Enums demo.
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -58,7 +57,7 @@ int main() {
 	//get the user's weight.
 	float weight;
 	std::string line;
-	int unit=0;
+	int unit;
 	enum units{lb=0,kg=1,oz=2,g=3};	
 	typedef Iterator<units, units::lb, units::g> units_iterator;
 	const char *unit_str[]={"lb","oz","kg","g"};	
