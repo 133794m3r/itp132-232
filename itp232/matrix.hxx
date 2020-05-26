@@ -77,7 +77,12 @@ template <class T> class Matrix{
 		cols=input.cols;
 		return *this;
 	}
-
+	//since apparently you have to define your own copy constructor I'm doing so.
+	Matrix<T>( const Matrix<T> &matrix){
+		rows=matrix.rows;
+		cols=matrix.cols;
+		array=matrix.array;
+	}
 	//get columns constantly.
 	size_t get_cols() const{
 		return this->cols;

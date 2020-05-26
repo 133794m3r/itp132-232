@@ -54,7 +54,7 @@ template <typename T> void swap(T *a, T *b){
 template <typename T, typename N> N part(T *arr, N low, N high){
     N pivot = arr[high];// pivot 
     N i = (low - 1);  // Index of smaller element 
-	N j
+	N j;
 	//iterate over the entire thing.
     for(j = low; j <= high- 1; j++){
 		//if the current value is less than the pivot value we saw before
