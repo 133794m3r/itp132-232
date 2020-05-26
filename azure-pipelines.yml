@@ -12,6 +12,7 @@ pool:
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
+- script: cmake .
 - task: CMake@1
   displayName: 'build itp132'
   inputs:
