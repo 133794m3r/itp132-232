@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Wpedantic   CMakeFiles/stock_trader.dir/stock_trader.cpp.o  -o stock_trader 
