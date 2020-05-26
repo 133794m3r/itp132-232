@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic   CMakeFiles/enums.dir/enums.cpp.o  -o enums 

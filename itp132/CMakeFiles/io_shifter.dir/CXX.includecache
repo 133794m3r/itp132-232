@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/macarthur/misc_proj/cplus_programs/itp132/io_shifter.cpp
+fstream
+-
+iostream
+-
+algorithm
+-
+windows.h
+-
+

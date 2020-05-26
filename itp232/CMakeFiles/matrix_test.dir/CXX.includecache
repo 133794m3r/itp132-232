@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp
+iostream
+-
+matrix.hxx
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix.hxx
+chrono
+-
+
+/home/macarthur/misc_proj/cplus_programs/itp232/math.hxx
+cmath
+-
+limits
+-
+
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix.hxx
+vector
+-
+valarray
+-
+stdexcept
+-
+math.hxx
+/home/macarthur/misc_proj/cplus_programs/itp232/math.hxx
+

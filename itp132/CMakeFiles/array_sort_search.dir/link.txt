@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic   CMakeFiles/array_sort_search.dir/array_sort_search.cpp.o  -o array_sort_search 

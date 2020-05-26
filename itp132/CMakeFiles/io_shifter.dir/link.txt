@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic   CMakeFiles/io_shifter.dir/io_shifter.cpp.o  -o io_shifter 
