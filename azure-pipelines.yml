@@ -15,8 +15,8 @@ steps:
 - task: CMake@1
   displayName: 'build itp132'
   inputs:
-    workingDirectory: 'itp132'
-    cmakeArgs: --build
+    workingDirectory: '.'
+    cmakeArgs: '--build itp132'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
