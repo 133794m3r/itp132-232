@@ -15,7 +15,7 @@ steps:
 - task: CMake@1
   inputs:
     workingDirectory: '.'
-    cmakeArgs: 
+    cmakeArgs: --build
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
