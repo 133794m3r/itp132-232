@@ -627,8 +627,8 @@ template <class T> class Matrix{
 	template <typename U> Matrix<T> inv_mod(U m) const{
 		double det_M=this->det();
 		Matrix<T> inversed(cols,rows,0);
-		double det_inv=0;
-		U det=static_cast<U>(floor(det_M));
+		T det_inv=0;
+		U det=static_cast<U>(det_M);
 		if(det == 0)
 			throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
 
@@ -680,6 +680,8 @@ template <class T> class Matrix{
         }
         array=_arr;
     }
+
+    bool lud(float &determinant);
 };
 
 template <class T> Matrix<T>::~Matrix(){
@@ -832,63 +834,59 @@ template<typename T> Matrix<T> Matrix<T>::solve_gae()const{
 	}
 	return Matrix<T>(vars,rows,1);
 }
+//I hae to also include a float version of the same exact code due to the way that compiler works.
+template <> bool Matrix<float>::lud(std::vector<size_t> &Partition){
+    size_t i,j,k;
+    //this is the maximal value in our array during swapping.
+    size_t ip=0;
+    float max_matrix,candidate_matrix;
 
-//this one is for calculating the determinant. Thus the decomposied
+    if(this->rows != this->cols)
+        throw std::invalid_argument( "matrix<T>::lud: Non-square matrix!");
 
-template <> bool Matrix<double>::lud(double &determinant){
-	
-	if(this->rows < (this->cols -1 )){
-		throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
-	}
-	
-	size_t i,j,k;
-	//this is the maximal value in our array during swapping.
-	size_t ip=0;
-	double max_matrix,candidate_matrix;
-	std::vector<size_t> Partition(this->rows);
-	determinant=1.0;
-	size_t n = this->rows;
+    if(this->rows != Partition.size()){
+        Partition.resize( this->rows);
+    }
 
-	for(i=0; i < n; i++){
-		Partition[i] = i;
+    size_t n = this->rows;
 
-	}
-	
-	for(i=0; i < n-1; i++){
-		ip = i;
-		max_matrix = fabs(this->array[Partition[i]*n+i]);
-		for(j=i+1; j < n; j++){		
-			if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
-				max_matrix = candidate_matrix;
-				ip = j;				
-			}
-		}
-		
-		if(ip != i){
-			std::swap( Partition[i], Partition[ip]);
-			determinant= -determinant;
-		}
 
-		size_t ipos = Partition[i] * n;
+    for(i=0; i < n; i++){
+        Partition[i] = i;
 
-		if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
-			return false;
+    }
 
-		determinant*=this->array[ipos+i];
-		for(j=i+1; j < n; j++){
-			size_t jpos = Partition[j] * n;
-			double a = this->array[jpos+i] /= this->array[ipos+i];
+    for(i=0; i < n-1; i++){
+        ip = i;
+        max_matrix = std::fabs(this->array[Partition[i]*n+i]);
+        for(j=i+1; j < n; j++){
+            if((candidate_matrix = std::fabs( this->array[Partition[j]*n+i])) > max_matrix){
+                max_matrix = candidate_matrix;
+                ip = j;
+            }
+        }
+        if(ip != i){
+            std::swap( Partition[i], Partition[ip]);
+        }
 
-			for(k=i+1; k < n; k++){
-				this->array[jpos+k] -= a * this->array[ipos+k];
-			}
-		}
-	}
-	determinant*= this->array[Partition[i]*n+i];
+        size_t ipos = Partition[i] * n;
 
-	return true;
+        if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
+            return false;
+
+
+        for(j=i+1; j < n; j++){
+            size_t jpos = Partition[j] * n;
+            float a = this->array[jpos+i] /= this->array[ipos+i];
+
+            for(k=i+1; k < n; k++){
+                this->array[jpos+k] -= a * this->array[ipos+k];
+            }
+        }
+    }
+
+    return true;
 }
-
 template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 	size_t i,j,k;
 	//this is the maximal value in our array during swapping.
@@ -941,39 +939,151 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 	return true;
 }
-template <typename T> bool Matrix<T>::lud(double &determinant){
-	if(this->rows != this->cols){
-		throw std::invalid_argument("matrix<T>::lud(): LUD doesn't work on a non-square matrix!");
-	}
-
-	std::vector<double> vec(this->array.begin(),this->array.end());
-	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
-	tmp_matrix.lud(determinant);
-	size_t i=0;
-	size_t max=(this->cols);
-	
-	for(i=0;i<(max*max);i++){
-		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
-
-	}
-	return true;
-}
 template <typename T> bool Matrix<T>::lud(std::vector<size_t> &P){
-	if(this->rows != this->cols){
-		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a	non-square matrix!");
-	}
-	
-	std::vector<double> vec(this->array.begin(),this->array.end());
-	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
-	size_t i=0;
-	tmp_matrix.lud(P);
-	size_t max=(this->cols);
-	for(i=0;i<(max*max);i++){
-		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
+    if(this->rows != this->cols){
+        throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a non-square matrix!");
+    }
+    std::vector<double> vec(cols*rows);
+    //then we allocate the matrix.
+    for(size_t i=0;i<rows*cols;i++){
+        vec[i]=double(array[i]);
+    }
+    Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+    size_t i=0;
+    tmp_matrix.lud(P);
+    size_t max=(this->cols);
+    for(i=0;i<(max*max);i++){
+        this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
 
-	}
-	return true;
+    }
+    return true;
 }
+template <> bool Matrix<double>::lud(double &determinant){
+
+    if(this->rows < (this->cols -1 )){
+        throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
+    }
+
+    size_t i,j,k;
+    //this is the maximal value in our array during swapping.
+    size_t ip=0;
+    double max_matrix,candidate_matrix;
+    std::vector<size_t> Partition(this->rows);
+    determinant=1.0;
+    size_t n = this->rows;
+
+    for(i=0; i < n; i++){
+        Partition[i] = i;
+
+    }
+
+    for(i=0; i < n-1; i++){
+        ip = i;
+        max_matrix = fabs(this->array[Partition[i]*n+i]);
+        for(j=i+1; j < n; j++){
+            if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
+                max_matrix = candidate_matrix;
+                ip = j;
+            }
+        }
+
+        if(ip != i){
+            std::swap( Partition[i], Partition[ip]);
+            determinant= -determinant;
+        }
+
+        size_t ipos = Partition[i] * n;
+
+        if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
+            return false;
+
+        determinant*=this->array[ipos+i];
+        for(j=i+1; j < n; j++){
+            size_t jpos = Partition[j] * n;
+            double a = this->array[jpos+i] /= this->array[ipos+i];
+
+            for(k=i+1; k < n; k++){
+                this->array[jpos+k] -= a * this->array[ipos+k];
+            }
+        }
+    }
+    determinant*= this->array[Partition[i]*n+i];
+
+    return true;
+}
+template <> bool Matrix<float>::lud(float &determinant){
+
+    if(this->rows < (this->cols -1 )){
+        throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
+    }
+
+    size_t i,j,k;
+    //this is the maximal value in our array during swapping.
+    size_t ip=0;
+    float max_matrix,candidate_matrix;
+    std::vector<size_t> Partition(this->rows);
+    determinant=1.0f;
+    size_t n = this->rows;
+
+    for(i=0; i < n; i++){
+        Partition[i] = i;
+
+    }
+
+    for(i=0; i < n-1; i++){
+        ip = i;
+        max_matrix = fabs(this->array[Partition[i]*n+i]);
+        for(j=i+1; j < n; j++){
+            if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
+                max_matrix = candidate_matrix;
+                ip = j;
+            }
+        }
+
+        if(ip != i){
+            std::swap( Partition[i], Partition[ip]);
+            determinant= -determinant;
+        }
+
+        size_t ipos = Partition[i] * n;
+
+        if(fabs( this->array[ipos+i]) < epsilon( this->array[ipos+i]))
+            return false;
+
+        determinant*=this->array[ipos+i];
+        for(j=i+1; j < n; j++){
+            size_t jpos = Partition[j] * n;
+            double a = this->array[jpos+i] /= this->array[ipos+i];
+
+            for(k=i+1; k < n; k++){
+                this->array[jpos+k] -= a * this->array[ipos+k];
+            }
+        }
+    }
+    determinant*= this->array[Partition[i]*n+i];
+
+    return true;
+}
+template <typename T> bool Matrix<T>::lud(double &determinant){
+    if(this->rows != this->cols){
+        throw std::invalid_argument("matrix<T>::lud(): LUD doesn't work on a non-square matrix!");
+    }
+    std::vector<double> vec(cols*rows);
+    //then we allocate the matrix.
+    for(size_t i=0;i<rows*cols;i++){
+        vec[i]=double(array[i]);
+    }
+    Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+    tmp_matrix.lud(determinant);
+    size_t i=0;
+    size_t max=(this->cols);
+
+    for(i=0;i<(max*max);i++){
+        this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
+    }
+    return true;
+}
+
 //I have to break these templates out because the way that I'm going to do integer types.
 
 //this inversion takes ~O(2/3(n**3)+(1.709*(n**3))) iterations.
@@ -1042,6 +1152,71 @@ template <> bool Matrix<double>::inv(){
 	}
 	return true;
 }
+template <> bool Matrix<float>::inv(){
+    if(this->rows != this->cols){
+        throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
+    }
+    long long int i=0, j=0, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
+    long long int i_max=0;
+    std::vector<float> P(cols);
+
+    for(i=0; i < n; i++)
+        P[i] = i;
+    for(i=0; i < n; i++){
+        float ta,tb;
+        float a=0.0;
+        i_pos = i * n;
+        i_max = i;
+        ta = std::fabs( this->array[i_pos + i]);
+        for(j=i+1; j < n; j++){
+            if((tb = std::fabs(this->array[j * n + i])) > ta){
+                ta = tb;
+                i_max = j;
+            }
+        }
+
+        if(ta < epsilon( a))
+            return false;
+
+        if(i_max != i){
+            std::swap(P[i], P[i_max]);
+            for(j_pos=i_max*n, j=0; j < n; j++){
+                std::swap(this->array[i_pos + j], this->array[j_pos + j]);
+            }
+        }
+
+        a = 1.0 / this->array[i_pos + i];
+        this->array[i_pos + i] = 1.0;
+
+        for(j=0; j < n; j++){
+            this->array[i_pos+j] *= a;
+        }
+
+        for(j=0; j < n; j++){
+            if(j != i){
+                j_pos = j * n;
+                a = this->array[j_pos + i];
+                this->array[j_pos + i] = 0.0;
+                for(k=0; k < n; k++){
+                    this->array[j_pos+k] -= a * this->array[i_pos+k];
+                }
+            }
+        }
+    }
+
+    for(i=0; i < n; i++){
+        if(i != P[i]){
+            k = i + 1;
+            while(i != P[k])
+                k++;
+            for(j=0; j < n; j++){
+                std::swap(this->array[j * n + i], this->array[j * n + k]);
+            }
+            std::swap(P[i], P[k]);
+        }
+    }
+    return true;
+}
 //for all other types we have to first cast to a double then we can use that version.
 template <typename T> bool Matrix<T>::inv(){
 	if(this->rows != this->cols){
@@ -1061,7 +1236,7 @@ template <typename T> bool Matrix<T>::inv(){
 	size_t max=this->cols*this->rows;
 	size_t i=0;
 	for(i=0;i<max;i++){
-		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
+        this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
 	}
 	return true;
 }

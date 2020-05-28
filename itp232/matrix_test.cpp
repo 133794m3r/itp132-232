@@ -92,8 +92,8 @@ void test_arithmetic(){
      */
     matrix_int result_int(2,2,1);
     matrix_int expected_int(2,2,1);
-    int scalar=-5;
-
+    int scalar=10;
+    std::cout << "Matrix<int> Arithmetic tests" << std::endl;
     result_int=lhs_int+rhs_int;
     int_vec={5,5,5,5};
     expected_int.set_arr(int_vec);
@@ -138,7 +138,55 @@ void test_arithmetic(){
     else{
         std::cout << "(Matrix A / Matrix B) == Matrix C test succeeded" << std::endl;
     }
-
+    result_int=lhs_int+scalar;
+    int_vec={11,12,13,14};
+    expected_int.set_arr(int_vec);
+    if(result_int != expected_int){
+        std::cout << "(Matrix A + scalar) == Matrix C test failed" << std::endl;
+        std::cout << "Matrix A = " << lhs_int << "scalar = " << scalar << std::endl <<
+        "Matrix C = " << expected_int << std::endl;
+        std::cout << "Result = " << result_int << std::endl;
+    }
+    else{
+        std::cout << "(Matrix A + scalar) == Matrix C test succeeded" << std::endl;
+    }
+    result_int=lhs_int-scalar;
+    int_vec={-9,-8,-7,-6};
+    expected_int.set_arr(int_vec);
+    if(result_int != expected_int){
+        std::cout << "(Matrix A - scalar) == Matrix C test failed" << std::endl;
+        std::cout << "Matrix A = " << lhs_int << "scalar = " << scalar << std::endl <<
+        " Matrix C = " << expected_int << std::endl;
+        std::cout << "Result = " << result_int << std::endl;
+    }
+    else{
+        std::cout << "(Matrix A - scalar) == Matrix C test succeeded" << std::endl;
+    }
+    result_int=lhs_int*scalar;
+    int_vec={10,20,30,40};
+    expected_int.set_arr(int_vec);
+    if(result_int != expected_int){
+        std::cout << "(Matrix A * scalar) == Matrix C test failed" << std::endl;
+        std::cout << "Matrix A = " << lhs_int << "scalar = " << scalar << std::endl <<
+                  " Matrix C = " << expected_int << std::endl;
+        std::cout << "Result = " << result_int << std::endl;
+    }
+    else{
+        std::cout << "(Matrix A * scalar) == Matrix C test succeeded" << std::endl;
+    }
+    //of course this is going to be zero but still have to make sure.
+    result_int=lhs_int/scalar;
+    int_vec={0,0,0,0};
+    expected_int.set_arr(int_vec);
+    if(result_int != expected_int){
+        std::cout << "(Matrix A / scalar) == Matrix C test failed" << std::endl;
+        std::cout << "Matrix A = " << lhs_int << "scalar = " << scalar << std::endl <<
+                  " Matrix C = " << expected_int << std::endl;
+        std::cout << "Result = " << result_int << std::endl;
+    }
+    else{
+        std::cout << "(Matrix A / scalar) == Matrix C test succeeded" << std::endl;
+    }
 }
 int main(){
     test_comparisons();
