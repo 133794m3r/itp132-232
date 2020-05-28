@@ -15,34 +15,62 @@ template <typename T> void test_print(std::string input,T expected,T result){
         std::cout << input << " test succeeded." << std::endl;
     }
 }
-template <typename T> void test_print_matrix(std::string op,Matrix<T> &lhs, Matrix<T> &rhs){
+template <typename T> void test_print_matrix(Matrix<T> &lhs, Matrix<T> &rhs){
     std::cout << "Matrix A=" << lhs << "Matrix B=" << rhs << std::endl;
 }
+template <typename T,typename U> void test_print_m_scalar(Matrix<T> &lhs, U &rhs){
+    std::cout << "Matrix A " << lhs << "scalar=" << rhs << std::endl;
+}
+
+template <typename T,typename U> void test_print_m_scalar(U &lhs,Matrix<T> &rhs){
+std::cout << "scalar=" << rhs << "Matrix A " << lhs  << std::endl;
+}
+/*
+ * This function will go through all of the comparison operators to verify that they work.
+ */
 void test_comparisons(){
-    matrix_int test_least(2,2,1);
-    matrix_int test_greatest(2,2,3);
-    matrix_int test_matrix(2,2,1);
+    matrix_int least(2, 2, 1);
+    matrix_int most(2, 2, 3);
+    matrix_int equals_least(2, 2, 1);
+    int scalar=0;
     bool result;
+    bool expected;
     std::cout << "Comparison operators " << std::endl;
-    result=(test_least != test_greatest);
-    test_print("!=(Not Equals) ",true,result);
-    if(!result){
-        test_print_matrix("!=",test_least,test_greatest);
+    result=(least != most);
+    expected=true;
+    test_print("Matrix A !=(Not Equals) Matrix B",expected,result);
+    if(result != expected){
+        test_print_matrix(least, most);
     }
-    result=(test_least == test_matrix);
-    test_print("==(Not Equals) ",false,result);
-    if(!result){
-        test_print_matrix("==",test_least,test_greatest);
+    result=(least == equals_least);
+    expected=true;
+    test_print("Matrix A ==(Equals) Matrix B",expected,result);
+    if(result != expected){
+        test_print_matrix(least, most);
     }
-    result=(test_least >= test_greatest);
-    test_print(">=(greater than equals",false,result);
-    if(!result){
-        test_print_matrix(">=",test_least,test_greatest);
+    result=(least >= most);
+    expected=false;
+    test_print("Matrix A >=Matrix B",expected,result);
+    if(result != expected){
+        test_print_matrix(least, most);
     }
-    result=(test_least <= test_greatest);
-    test_print("<=(less than equals) ",true,result);
-    if(!result){
-        test_print_matrix("<=",test_least,test_greatest);
+    result=(least <= most);
+    expected=true;
+    test_print("Matrix A <= Matrix B",expected,result);
+    if(result != expected){
+        test_print_matrix(least, most);
+    }
+    result=(least == scalar);
+    expected=false;
+    test_print("Matrix A == scalar",expected,result);
+    if(result != expected){
+        test_print_m_scalar(least,scalar);
+    }
+    result=(scalar != least);
+    expected=true;
+    test_print("scalar != Matrix A",expected,result);
+    if(result != expected){
+        test_print_m_scalar(scalar,least);
     }
 }
 int main(){
