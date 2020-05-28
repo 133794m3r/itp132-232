@@ -20,9 +20,15 @@ endif()
 include_directories(.)
 
 add_executable(matrix_test
-        mat.cpp
+		matrix_test.cpp
 		math.hxx
         matrix.hxx
+		vectors.hxx)
+
+add_executable(matrix
+		mat.cpp
+		math.hxx
+		matrix.hxx
 		vectors.hxx)
 
 add_executable(hill_cipher

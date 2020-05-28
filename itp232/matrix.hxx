@@ -505,6 +505,7 @@ template <class T> class Matrix{
 	bool operator <=(const T &rhs) const{
 		return false;
 	}
+
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 	
@@ -679,7 +680,7 @@ template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>
 	for(size_t i=0; i < rows; i++) {
 		os << "[";
 		for(size_t j = 0; j < cols; j++) {
-			os << m(i, j) <<(j == cols - 1 ? "]" : "\t,");
+			os << m(i, j) <<(j == cols - 1 ? "]" : ",\t");
 		}
 		os <<((i < rows -1)? "," : "]");
 		os << '\n';
