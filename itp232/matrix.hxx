@@ -69,16 +69,20 @@ template <class T> class Matrix{
 		}
 	}
 	//allow assignment operator.
+	//Matrix<T>& operator=(const Matrix<T> &input){
 	Matrix<T> operator=(const Matrix<T> &input){
 		//self referential assignment.
-		if(this == &input) {
+		if(*this == input) {
             return *this;
         }
 		//otherwise we do the deep copy.
 		//we copy the std::vector<T> to the new one.
 		//I make sure that it has this much memory to make sure it doesn't break.
 		array.reserve(input.rows*input.cols);
-		array=input.array;
+		//for some reason the equal operator nor the copy operator oh well.
+        for(size_t i=0;i<input.rows*input.cols;i++){
+            array[i]=input.array[i];
+        }
 		//same with rows.
 		rows=input.rows;
 		//same with cols.
@@ -261,8 +265,8 @@ template <class T> class Matrix{
 		Matrix result(other_matrix.cols,this->rows,0);
 		for(i=0;i<rows;++i){
 			for(j=0;j<other_matrix.cols;j++){
-				for(k=0;k<rows;k++){
-					result.array[(j*other_matrix.cols)+i]+=this->array[(k*this->cols)+i] * other_matrix.array[(j*other_matrix.cols)+k];
+				for(k=0;k<cols;k++){
+					result.array[(i*other_matrix.cols)+j]+=this->array[(i*this->cols)+k] * other_matrix.array[(k*other_matrix.cols)+j];
 				}
 			}
 		}
@@ -277,8 +281,9 @@ template <class T> class Matrix{
 
 	//division is actually undefined so this is going to be hard to do.
 	Matrix<T> operator/(const Matrix<T> &other_matrix) const{
-		Matrix<T> tmp=!other_matrix;
-		//std::cout << "/" << tmp << other_matrix << "/ " << std::endl;
+		Matrix<T> tmp(other_matrix.rows,other_matrix.cols);
+		tmp=other_matrix;
+		tmp.inv();
 		return *this * tmp;
 	}
 	/**
@@ -426,14 +431,17 @@ template <class T> class Matrix{
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
 		}
 		size_t i=0,j=0,k=0;
+		Matrix<T> tmp_matrix(this->cols,this->rows,0);
+		for(i=0;i<rows;++i) {
+            for (j = 0; j < other_matrix.cols; j++) {
+                for (k = 0; k < cols; k++) {
+                    tmp_matrix[j + (other_matrix.cols * i)] +=
+                            this->array[k + (i * this->cols)] * other_matrix.array[j + (k * other_matrix.cols)];
+                }
 
-		for(i=0;i<rows;++i){
-			for(j=0;j<other_matrix.cols;j++){
-				for(k=0;k<rows;k++){
-					this->array[j+(other_matrix.cols*i)]+=this->array[i+(k*this->cols)] * other_matrix.array[k+(j*other_matrix.cols)];
-				}
-			}
-		}
+            }
+        }
+		*this=tmp_matrix;
 		return *this;
 	}
 
@@ -510,7 +518,6 @@ template <class T> class Matrix{
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 	
 	T _det()const{
-		std::cout << "_det " <<((array[0]*array[3])-(array[1]*array[2])) << std::endl;
 		return(array[0]*array[3])-(array[1]*array[2]);
 	}
 
@@ -600,8 +607,8 @@ template <class T> class Matrix{
 	Matrix<T> adj()const{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
-		Matrix<T> tmp_matrix=Matrix<T>(*this);
-		
+		Matrix<T> tmp_matrix(cols,rows);
+		tmp_matrix=*this;
 		if(tmp_matrix.cols == 2 && tmp_matrix.rows == 2) {
 			_adj(tmp_matrix);
 		}
@@ -666,6 +673,13 @@ template <class T> class Matrix{
 	bool solve_lud(const std::vector<T> &right_side,std::vector<T> &solution) const;
 	//bool solve_lud(const Matrix<T> &right_side, Matrix<T> &solution) const;
 	void lud_backsub(const std::vector<size_t> &partition, const std::vector<T> &right_side,std::vector<T> &solution) const;
+
+    void set_arr(std::vector<T> _arr){
+        if(_arr.size() != cols*rows){
+            throw std::invalid_argument("vector must be the same size as the original matrix!");
+        }
+        array=_arr;
+    }
 };
 
 template <class T> Matrix<T>::~Matrix(){
@@ -967,25 +981,25 @@ template <> bool Matrix<double>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::inv(): Can't invert a non-square matrix.");
 	}
-	long long int i, j, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
+	long long int i=0, j=0, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
 	long long int i_max=0;
 	std::vector<double> P(cols);
 	//size_t j_pos,i_pos;
 	for(i=0; i < n; i++)
 		P[i] = i;
-
 	for(i=0; i < n; i++){
 		double ta,tb;
 		double a=0.0;
 		i_pos = i * n;
 		i_max = i;
-		ta = std::abs( this->array[i_pos + i]);
-		for(j=i + 1; j < n; j++){
-			if((tb = std::abs(this->array[j * n + i])) > ta){
+		ta = std::fabs( this->array[i_pos + i]);
+		for(j=i+1; j < n; j++){
+			if((tb = std::fabs(this->array[j * n + i])) > ta){
 				ta = tb;
 				i_max = j;
 			}
 		}
+
 		if(ta < epsilon( a))
 			return false;
 
@@ -997,7 +1011,7 @@ template <> bool Matrix<double>::inv(){
 		}
 
 		a = 1.0 / this->array[i_pos + i];
-		this->array[i_pos + i] = double(1);
+		this->array[i_pos + i] = 1.0;
 
 		for(j=0; j < n; j++){
 			this->array[i_pos+j] *= a;
@@ -1007,7 +1021,7 @@ template <> bool Matrix<double>::inv(){
 			if(j != i){
 				j_pos = j * n;
 				a = this->array[j_pos + i];
-				this->array[j_pos + i] = double(0);
+				this->array[j_pos + i] = 0.0;
 				for(k=0; k < n; k++){
 					this->array[j_pos+k] -= a * this->array[i_pos+k];
 				}
@@ -1026,7 +1040,6 @@ template <> bool Matrix<double>::inv(){
 			std::swap(P[i], P[k]);
 		}
 	}
-	
 	return true;
 }
 //for all other types we have to first cast to a double then we can use that version.
@@ -1036,15 +1049,19 @@ template <typename T> bool Matrix<T>::inv(){
 	}	
 	//we create a vector so that we can then cast to a double.
 	//to keep precision this has to be done.
-	std::vector<double> vec(this->array.begin(),this->array.end());
+
+	std::vector<double> vec(cols*rows);
 	//then we allocate the matrix.
-	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+	for(size_t i=0;i<rows*cols;i++){
+	    vec[i]=double(array[i]);
+	}
+	Matrix<double> tmp_matrix(this->cols,this->rows);
+	tmp_matrix.set_arr(vec);
 	tmp_matrix.inv();
 	size_t max=this->cols*this->rows;
 	size_t i=0;
 	for(i=0;i<max;i++){
 		this->array[i]=static_cast<T>(floor(tmp_matrix[i]));
-
 	}
 	return true;
 }
@@ -1060,7 +1077,7 @@ template <typename T> bool Matrix<T>::inv_slow(){
 	size_t i=0,j=0;
 	for(i=0;i<cols;i++){
 		for(j=0;j<cols;j++){
-			this->array[(j*cols)+i] = adj_mat[(j*cols)+i]/det_m;
+			this->array[j+(i*cols)] = adj_mat(i,j)/det_m;
 		}
 	}
 	return true;
@@ -1075,7 +1092,8 @@ template <> double Matrix<double>::det(void) const{
 	//if(cols == 2 && rows == 2)
 	//	return _det();
 	//since it's a const we have to create a matrix to modify.
-	Matrix<double> tmp_matrix=Matrix<double>(*this);
+	Matrix<double> tmp_matrix(cols,rows);
+	tmp_matrix=*this;
 	double determinant=0;
 	if(!tmp_matrix.lud(determinant))
 		determinant=0;
@@ -1195,7 +1213,6 @@ std::vector<Matrix<char>> __chunk_it(const std::string input_data){
 	}
 	return result;
 }
-
 typedef Matrix<char> matrix_char;
 typedef Matrix<int> matrix_int;
 typedef Matrix<unsigned int> matrix_uint;
