@@ -2,21 +2,20 @@ cmake_minimum_required(VERSION 2.16)
 project(itp232)
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++11 /W4")
-	# Default debug flags are OK
 	set(CMAKE_CXX_FLAGS_RELEASE "{CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 ")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g2")
+	#since CLion decides that you debug from the damn release buildl always instead of from debug and won't let you change that.
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g3")
 
 	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 	else()
-		# nothing special for gcc at the moment
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	endif()
 endif()
-set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD 11)
 
 include_directories(.)
 

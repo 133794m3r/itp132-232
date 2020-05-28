@@ -13,7 +13,7 @@
 #include <map>
 //may end up making it templated to work with bytes also but not sure yet.
 //template <typename character>
-class Hill {
+class Hill{
  private:
 	Matrix<char> key;
 	//I may do a vector as the alphabet but I'm unsure about this.

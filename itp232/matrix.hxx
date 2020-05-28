@@ -29,7 +29,7 @@ template <class T> class Matrix{
 	
  public:
 	//constructor section.
-	Matrix(size_t _cols=1, size_t _rows=1, T initial_value=0){
+	explicit Matrix(size_t _cols, size_t _rows, T initial_value=0){
 			size_t total_elements=_rows*_cols;
 			size_t i=0;
 			rows=_rows;
@@ -38,11 +38,17 @@ template <class T> class Matrix{
 			//otherwise each push_back might result in a realloc|| destruct+construct
 			array.reserve(total_elements);
 			for(i=0;i<total_elements;++i){
-				array.push_back(initial_value);
+				array[i]=initial_value;
 			}
 	}
 
-	//allow them to seed it with a vector of values precomputed.
+	explicit Matrix(void){
+	    rows=1;
+	    cols=1;
+	    array.push_back(T(1));
+	}
+
+    //allow them to seed it with a vector of values precomputed.
 	Matrix(std::vector<T> &input_array,size_t _cols, size_t _rows){
 		//if the input is already a std::vector of normal type just copy it.
 		array=input_array;
@@ -65,22 +71,26 @@ template <class T> class Matrix{
 	//allow assignment operator.
 	Matrix<T> operator=(const Matrix<T> &input){
 		//self referential assignment.
-		//if(this == &input) {
-		//	return *this;
-		//}
+		if(this == &input) {
+            return *this;
+        }
 		//otherwise we do the deep copy.
 		//we copy the std::vector<T> to the new one.
+		//I make sure that it has this much memory to make sure it doesn't break.
+		array.reserve(input.rows*input.cols);
 		array=input.array;
 		//same with rows.
 		rows=input.rows;
 		//same with cols.
 		cols=input.cols;
+		//return a pointer to this object.
 		return *this;
 	}
 	//since apparently you have to define your own copy constructor I'm doing so.
 	Matrix<T>( const Matrix<T> &matrix){
 		rows=matrix.rows;
 		cols=matrix.cols;
+		array.reserve(cols*rows);
 		array=matrix.array;
 	}
 	//get columns constantly.
@@ -116,7 +126,7 @@ template <class T> class Matrix{
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
 			_index_out_of_bounds("(",")",x,y);
-		#endif			
+		#endif
 		return array[x+(cols*y)];
 	}
 
@@ -724,13 +734,15 @@ template<>Matrix<double> Matrix<double>::solve_gae() const{
 	if(this->rows < (this->cols -1 )){
 		throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
 	}
-	std::vector<double> vec(this->array);
+	//for some reason I have to define the size of the matrix before assinging to it via the copy constructor or else
+	//it'll segfault.
+	std::vector<double> vec(rows*cols);
+	vec=this->array;
 	std::vector<double> tmp_vars(this->rows);
-
 	size_t i,j,k;
 	for (i=0;i<rows;i++) {
 		for (k = i + 1; k < rows; k++) {
-			if (std::abs(vec[i + (i * cols)]) < std::abs(vec[i + (k * cols)])) {
+			if (std::fabs(vec[i + (i * cols)]) < std::fabs(vec[i + (k * cols)])) {
 				for (j = 0; j <= rows; j++) {
 					std::swap(vec[j + (i * cols)], vec[j + (k * cols)]);
 				}
@@ -1148,6 +1160,7 @@ template <> bool Matrix<double>::solve(const std::vector<double> &values,std::ve
 	}
 	return false;
 }
+
 template <typename T> bool Matrix<T>::solve_lud(const std::vector<T> &values, std::vector<T> &solution) const{
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
@@ -1181,6 +1194,7 @@ std::vector<Matrix<char>> __chunk_it(const std::string input_data){
 	}
 	return result;
 }
+
 typedef Matrix<char> matrix_char;
 typedef Matrix<int> matrix_int;
 typedef Matrix<unsigned int> matrix_uint;

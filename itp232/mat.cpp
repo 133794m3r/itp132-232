@@ -231,7 +231,7 @@ int main() {
 	std::cout << "sizeof(test3)=" << sizeof(test3) << std::endl;
 	test(0,0)=1;test(0,1)=2;
 	test(1,0)=3;test(1,1)=4;
-	std::cout << "test * vec_test" << test*vec_test << std::endl;
+	std::cout << "test * vec_test " << test*vec_test << std::endl;
 	double det=0.0;
 	double detb=ludc.det();
 	matrix_double ludc2=ludc;
@@ -276,16 +276,9 @@ int main() {
 
 	std::cout << "gaec2" << gaec2 << std::endl;
 	matrix_double gaec_inv=gaec2;
-	gaec_inv.inv();
 	matrix_double solution(1,2,1);
 	solution(0,0)=15;
 	solution(1,0)=20;
-	std::cout << "g" << gaec.solve_gae() << std::endl;
-	std::cout << "s" << solution << std::endl;
-	std::cout << "g_inv" << gaec_inv << std::endl;
-	std::cout << "g*g" << gaec_inv * solution << std::endl;
-	std::cout << Solution[0] << std::endl;
-	std::cout << Solution[1] << std::endl;
 	gaec2.lud(P);
 	gaec2.lud_backsub(P,rhs,Solution);
 	std::cout << "s2" << std::endl;
