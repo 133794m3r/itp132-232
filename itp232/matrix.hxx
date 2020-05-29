@@ -274,7 +274,9 @@ template <class T> class Matrix{
 	}
 
 	Matrix<T> operator !(void)const{
-		Matrix<T> inverted(*this);
+	    //have to seperate creation and initalization for whatever reason with this.
+	    Matrix<T> inverted(this->cols,this->rows,0);
+		inverted=*this;
 		inverted.inv();
 		return inverted;
 	}
@@ -375,13 +377,21 @@ template <class T> class Matrix{
 		size_t i=0,j=0;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
-				this-array[j+(this->cols*i)]*=scalar;
+				this->array[j+(this->cols*i)]*=scalar;
 			}
 		}
 		return *this;
 	}
-
-	Matrix<T> &operator%=(const T &scalar) {
+    Matrix<T> &operator /=(const T &scalar){
+	    size_t i=0,j=0;
+        for(i=0;i<rows;i++){
+            for(j=0;j<cols;j++){
+                this->array[j+(this->cols*i)]=this->array[j+(this->cols*i)]/scalar;
+            }
+        }
+        return *this;
+    }
+	Matrix<T> &operator %=(const T &scalar) {
 		size_t i=0;
 		size_t j=0;
 		for(i=0;i<rows;i++){
@@ -392,7 +402,7 @@ template <class T> class Matrix{
 		return *this;
 	}
 
-	Matrix<T> &operator+=(const Matrix<T> &other_matrix) {
+	Matrix<T> &operator +=(const Matrix<T> &other_matrix) {
 		size_t i=0;
 		size_t j=0;
 
@@ -409,7 +419,7 @@ template <class T> class Matrix{
 		return *this;
 	}
 	
-	Matrix<T> &operator-=(const Matrix<T> &other_matrix) {
+	Matrix<T> &operator -=(const Matrix<T> &other_matrix) {
 		size_t i=0;
 		size_t j=0;
 
@@ -426,7 +436,7 @@ template <class T> class Matrix{
 		return *this;
 	}
 
-	Matrix<T> &operator*=(const Matrix<T> &other_matrix){
+	Matrix<T> &operator *=(const Matrix<T> &other_matrix){
 		if((this->cols != other_matrix.rows)){
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
 		}
@@ -501,16 +511,16 @@ template <class T> class Matrix{
 		return !(*this < other_matrix);
 	}
 	//compared against a scalar it's always going to be false.
-	bool operator==(const T &rhs) const{
+	bool operator==(const T) const{
 		return false;
 	}
-	bool operator !=(const T &rhs) const{
+	bool operator !=(const T) const{
 		return true;
 	}
-	bool operator >=(const T &rhs) const{
+	bool operator >=(const T) const{
 		return false;
 	}
-	bool operator <=(const T &rhs) const{
+	bool operator <=(const T) const{
 		return false;
 	}
 
@@ -720,31 +730,31 @@ template <typename T> Matrix<T> Matrix<T>::operator+(T scalar,const Matrix<T> rh
  * i'm basically overloading the global operator instead of having it be part of the class. First is the arithematic operators.
  * then it's the comparison ones.
  */
-template <typename T> Matrix<T> operator+(const T scalar, const Matrix<T> rhs){
+template <typename T> Matrix<T> operator+(const T scalar, const Matrix<T> &rhs){
 	//no reason to redefine the whole function again. Why not just reuse my already defined code. This codebase is large
 	// enough already.
 	return rhs+scalar;
 }
-template <typename T> Matrix<T> operator-(const T scalar, const Matrix<T> rhs){
+template <typename T> Matrix<T> operator-(const T scalar, const Matrix<T> &rhs){
 	return rhs-scalar;
 }
-template <typename T> Matrix<T> operator*(const T scalar, const Matrix<T> rhs){
+template <typename T> Matrix<T> operator*(const T scalar, const Matrix<T> &rhs){
 	return rhs*scalar;
 }
-template <typename T> Matrix<T> operator/(const T scalar, const Matrix<T> rhs){
+template <typename T> Matrix<T> operator/(const T scalar, const Matrix<T> &rhs){
 	return rhs/scalar;
 }
 //then the comparison operators.
-template <typename T> bool operator==(const T scalar, const Matrix<T> rhs) {
+template <typename T> bool operator==(const T, const Matrix<T>) {
 	return false;
 }
-template <typename T> bool operator !=(const T scalar, const Matrix<T> rhs){
+template <typename T> bool operator !=(const T, const Matrix<T>){
 	return true;
 }
-template <typename T> bool operator >=(const T scalar, const Matrix<T> rhs){
+template <typename T> bool operator >=(const T, const Matrix<T>){
 	return false;
 }
-template <typename T> bool operator <=(const T scalar, const Matrix<T> rhs){
+template <typename T> bool operator <=(const T, const Matrix<T>){
 	return false;
 }
 template<>Matrix<double> Matrix<double>::solve_gae() const{

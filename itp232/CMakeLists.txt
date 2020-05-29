@@ -44,4 +44,3 @@ add_executable(stock_trader
 	random.h
 	stock_trader.h
 	terminal.h)
-
