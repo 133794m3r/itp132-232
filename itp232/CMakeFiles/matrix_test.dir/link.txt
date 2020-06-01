@@ -1,1 +1,1 @@
-/usr/bin/c++   -Wall -Wextra -Wpedantic   CMakeFiles/matrix_test.dir/mat.cpp.o  -o matrix_test 
+/usr/bin/c++   -Wall -Wextra -Wpedantic -std=c++11 -O3 -DNDEBUG -g0  -rdynamic CMakeFiles/matrix_test.dir/mat.cpp.o  -o matrix_test 

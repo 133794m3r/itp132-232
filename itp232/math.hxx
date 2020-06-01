@@ -127,4 +127,5 @@ template <typename T> T fast_lcm(T a,T b){
 	lcm=(a/gcd)*b;
 	return lcm;
 }
+template <typename F,typename P> F to_fixed(F num,P precision){P modifier=pow(10,precision); return round(num*modifier)/modifier;}
 #endif //_CRYPTO_MATH_HEADER_
