@@ -26,7 +26,7 @@ template <class T> class Matrix{
 	 * thus I'll use this less effecient vector implementation.
 	 */
 	std::vector<T> array;
-	
+
  public:
 	//constructor section.
 	explicit Matrix(size_t _cols, size_t _rows, T initial_value=0){
@@ -139,15 +139,15 @@ template <class T> class Matrix{
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
 			_index_out_of_bounds("(",")",x);
-		#endif		
+		#endif
 		return this->array[x];
 	}
-	
+
 	const T &operator[](const size_t x) const{
 		#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
 			_index_out_of_bounds("[","]",x);
-		#endif			
+		#endif
 		return this->array[x];
 	}
 
@@ -241,8 +241,8 @@ template <class T> class Matrix{
 			}
 		}
 		return result;
-	}	
-	
+	}
+
 	Matrix<T> operator-(const Matrix<T> &other_matrix) const{
 		if((cols != other_matrix.cols)||(rows != other_matrix.rows)){
 			_invalid_dim("subtraction",other_matrix);
@@ -335,6 +335,7 @@ template <class T> class Matrix{
 		}
 		return result;
 	}
+
 	Matrix<T> operator/(const std::vector<T> &rhs) const{
 		std::vector<T> tmp=rhs;
 		for(size_t i=0;i<rhs.size();i++){
@@ -359,7 +360,7 @@ template <class T> class Matrix{
 
 		return *this;
 	}
-	
+
 	Matrix<T> &operator-=(const T scalar) {
 		size_t i=0;
 		size_t j=0;
@@ -418,7 +419,7 @@ template <class T> class Matrix{
 
 		return *this;
 	}
-	
+
 	Matrix<T> &operator -=(const Matrix<T> &other_matrix) {
 		size_t i=0;
 		size_t j=0;
@@ -438,13 +439,15 @@ template <class T> class Matrix{
 
 	Matrix<T> &operator *=(const Matrix<T> &other_matrix){
 		if((this->cols != other_matrix.rows)){
-			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="
+				+std::to_string(cols)+" M2.cols="+std::to_string(other_matrix.rows)+"\r\n");
 		}
+
 		size_t i=0,j=0,k=0;
 		Matrix<T> tmp_matrix(this->cols,this->rows,0);
-		for(i=0;i<rows;++i) {
+		for(i=0;i<this->rows;++i) {
 			for (j = 0; j < other_matrix.cols; j++) {
-				for (k = 0; k < cols; k++) {
+				for (k = 0; k < this->cols; k++) {
 					tmp_matrix[j + (other_matrix.cols * i)] +=
 							this->array[k + (i * this->cols)] * other_matrix.array[j + (k * other_matrix.cols)];
 				}
@@ -459,7 +462,7 @@ template <class T> class Matrix{
 		*this *= !other_matrix;
 		return *this;
 	}
-	
+
 	/**
 	 * Comparison Operators are below here. They're implemented because I may just use them in the future and I'd rather
 	 * have them implemented now rather than having to do it later.
@@ -483,7 +486,7 @@ template <class T> class Matrix{
 	bool operator!=(const Matrix<T> &other_matrix) const{
 		return !( *this == other_matrix );
 	}
-	
+
 	bool operator<(const Matrix<T> &other_matrix) const{
 		if((this->cols != other_matrix.cols)||(this->rows != other_matrix.rows)){
 			_invalid_dim(">",other_matrix);
@@ -526,7 +529,7 @@ template <class T> class Matrix{
 
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
-	
+
 	T _det()const{
 		return(array[0]*array[3])-(array[1]*array[2]);
 	}
@@ -604,7 +607,7 @@ template <class T> class Matrix{
 		T cofact=tmp.det();
 		if((max_row+max_col) & 1u )
 			cofact = -cofact;
-		
+
 		return cofact;
 	}
 
@@ -763,40 +766,40 @@ template<>Matrix<double> Matrix<double>::solve_gae() const{
 	}
 	//for some reason I have to define the size of the matrix before assinging to it via the copy constructor or else
 	//it'll segfault.
-	std::vector<double> vec(rows*cols);
+	std::vector<double> vec(this->rows*this->cols);
 	vec=this->array;
 	std::vector<double> tmp_vars(this->rows);
 	size_t i,j,k;
-	for (i=0;i<rows;i++) {
-		for (k = i + 1; k < rows; k++) {
-			if (std::fabs(vec[i + (i * cols)]) < std::fabs(vec[i + (k * cols)])) {
-				for (j = 0; j <= rows; j++) {
-					std::swap(vec[j + (i * cols)], vec[j + (k * cols)]);
+	for (i=0;i<this->rows;i++) {
+		for (k = i + 1; k < this->rows; k++) {
+			if (std::fabs(vec[i + (i * this->cols)]) < std::fabs(vec[i + (k * this->cols)])) {
+				for (j = 0; j <= this->rows; j++) {
+					std::swap(vec[j + (i * this->cols)], vec[j + (k * this->cols)]);
 				}
 			}
 		}
 	}
 
-	for (i=0;i<rows-1;i++){
-		for (k=i+1;k<rows;k++){
-			double t=vec[i+(k*cols)]/vec[i+(i*cols)];
-			for (j=0;j<=rows;j++){
-				vec[j+(k*cols)]-=t*vec[j+(i*cols)];
+	for (i=0;i<this->rows-1;i++){
+		for (k=i+1;k<this->rows;k++){
+			double t=vec[i+(k*this->cols)]/vec[i+(i*this->cols)];
+			for (j=0;j<=this->rows;j++){
+				vec[j+(k*this->cols)]-=t*vec[j+(i*this->cols)];
 			}
 		}
 	}
 
-	for (i=rows-1;;i--) {
-		tmp_vars[i] = vec[rows + (i * cols)];
-		for (j = i + 1; j < rows; j++) {
+	for (i=this->rows-1;;i--) {
+		tmp_vars[i] = vec[this->rows + (i * this->cols)];
+		for (j = i + 1; j < this->rows; j++) {
 			if (j != i) {
-				tmp_vars[i] -= vec[j + (i * cols)] * tmp_vars[j];
+				tmp_vars[i] -= vec[j + (i * this->cols)] * tmp_vars[j];
 			}
 		}
-		tmp_vars[i] /= vec[i + (i * cols)];
+		tmp_vars[i] /= vec[i + (i * this->cols)];
 		if(i==0) break;
 	}
-	return Matrix<double>(tmp_vars,rows,1);
+	return Matrix<double>(tmp_vars,this->rows,1);
 }
 
 template<typename T> Matrix<T> Matrix<T>::solve_gae()const{
@@ -921,13 +924,13 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 	for(i=0; i < n-1; i++){
 		ip = i;
 		max_matrix = fabs(this->array[Partition[i]*n+i]);
-		for(j=i+1; j < n; j++){		
+		for(j=i+1; j < n; j++){
 			if((candidate_matrix = fabs( this->array[Partition[j]*n+i])) > max_matrix){
 				max_matrix = candidate_matrix;
-				ip = j;				
+				ip = j;
 			}
 		}
-		if(ip != i){	
+		if(ip != i){
 			std::swap( Partition[i], Partition[ip]);
 		}
 
@@ -1231,7 +1234,7 @@ template <> bool Matrix<float>::inv(){
 template <typename T> bool Matrix<T>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
-	}	
+	}
 	//we create a vector so that we can then cast to a double.
 	//to keep precision this has to be done.
 
@@ -1294,17 +1297,22 @@ template <typename T> T Matrix<T>::det(void)const{
 
 	//if it's 2x2 I can simply do it w/o having do LUD or any other
 	//expensive operations. No reason do all of those extra operations.
-	
+
 	if(cols == 2 && rows == 2)
 		return _det();
-	
+
 	//we create a vector so that we can then cast to a double.
 	//to keep precision this has to be done.
-	std::vector<double> vec(this->array.begin(),this->array.end());
+	std::vector<double> vec(this->cols*this->rows);
+	for(size_t i=0;i<vec.size();i++){
+		vec[i]= static_cast<double>(this->array[i]);
+	}
 	//then we allocate the matrix.
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+
 	double determinant=0;
-	if(!tmp_matrix.lud(determinant))
+	bool res=tmp_matrix.lud(determinant);
+	if(!res)
 		determinant=0;
 
 	return determinant;
@@ -1341,7 +1349,7 @@ template <> void Matrix<double>::lud_backsub(const std::vector<size_t> &partitio
 }
 
 template <typename T> void Matrix<T>::lud_backsub(const std::vector<size_t> &Partition, const std::vector<T> &values,std::vector<T> &solution) const{
-	
+
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	tmp_matrix.lud_backsub(Partition,values,solution);
