@@ -1282,9 +1282,9 @@ template <> double Matrix<double>::det(void) const{
 	//since it's a const we have to create a matrix to modify.
 	Matrix<double> tmp_matrix(cols,rows);
 	tmp_matrix=*this;
-	double determinant=0;
+	double determinant=0.0;
 	if(!tmp_matrix.lud(determinant))
-		determinant=0;
+		determinant=0.0;
 
 	return determinant;
 }

@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include "matrix.hxx"
+//#include "vectors.hxx"
 #include "matrix_test.hxx"
 /*
  * By Macarthur Inbody <admin-contact@transcendental.us> 2020
@@ -10,21 +12,18 @@
 
 //forward declarations.
 void test_comparisons();
-
 void test_arithmetic_int();
-
 void test_arithmetic_double();
-
-void test_det();
-
+void test_det_int();
+void test_det_double();
+//void test_adj_int();
 //the actual driver program to do the testing.  It just calls all of them in order and prints tests.
 int main(void) {
-	/*
 	test_comparisons();
 	test_arithmetic_int();
-	test_arithematic_double();
-	*/
-	test_det();
+	test_arithmetic_double();
+	test_det_int();
+	test_det_double();
 	return 0;
 }
 
@@ -308,7 +307,7 @@ void test_arithmetic_int() {
 	std::cout << std::endl;
 }
 
-void test_arithematic_double() {
+void test_arithmetic_double() {
 	matrix_double lhs_dbl(2, 2, 1.0);
 	lhs_dbl(0, 0) = 1.4;
 	lhs_dbl(0, 1) = 2.3;
@@ -546,12 +545,12 @@ void test_arithematic_double() {
 	std::cout << std::endl;
 }
 
-void test_det() {
+void test_det_int() {
 	std::vector<int> vec_int = {7, 11, 8, 11};
 	matrix_int test_int(vec_int, 2, 2);
 	int det = test_int.det();
 	int expect_int = -11;
-	std::cout << "Int tests." << std::endl;
+	std::cout << "Double tests." << std::endl;
 	std::cout << "2x2 tests." << std::endl;
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
@@ -562,13 +561,14 @@ void test_det() {
 	test_print("Lud calculation directly --> test_int.lud(det) == " + std::to_string(expect_int), expect_int, det);
 
 	std::cout << "3x3 tests" << std::endl;
+	//can't loop here b/c compiling with Optimizations is undefined behavior somehow. Not worth the effort.
 	expect_int = 0;
 	vec_int = {3, 5, 7, 13, 15, 17, 22, 24, 26};
 	test_int = matrix_int(vec_int, 3, 3);
 	det = test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
 	vec_int = {211,312,415,514,223,213,789,897,978};
 	expect_int = 19618908;
@@ -576,7 +576,7 @@ void test_det() {
 	det=test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
 	expect_int=-176;
 	vec_int = {3, 5, 7, 11, 19, 21, 22, 27, 31};
@@ -584,7 +584,7 @@ void test_det() {
 	det=test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
 	std::cout << "4x4 tests" << std::endl;
 	expect_int = 12;
@@ -593,7 +593,7 @@ void test_det() {
 	det=test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
 	expect_int=-1270230;
 	vec_int={31, 21, 41, 55, 66, 76, 81, 90, 91, 93, 95, 97, 99, 100, 35, 41};
@@ -601,7 +601,7 @@ void test_det() {
 	det=test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
 	vec_int={51, 51, 41, 55, 66, 76, 81, 90, 91, 93, 95, 97, 103, 200, 351, 411};
 	expect_int=965609;
@@ -609,7 +609,78 @@ void test_det() {
 	det=test_int.det();
 	test_print("Matrix A.det() == " + std::to_string(expect_int), expect_int, det);
 	if (expect_int != det)
-		std::cout << "Matrix A = " << stringify_matrix(test_int);
+		std::cout << "Matrix A = " << stringify_matrix(test_int) << std::endl;
 
-	return;
+}
+
+void test_det_double() {
+	std::vector<double> vec_dbl = {7.5, 11.5, 8.5, 11.5};
+	matrix_double test_dbl(vec_dbl, 2, 2);
+	double det = test_dbl.det();
+	double expect_dbl = -11.5;
+	std::cout << "Int tests." << std::endl;
+	std::cout << "2x2 tests." << std::endl;
+	det=to_fixed(det,5);
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << std::setw(3) << stringify_matrix(test_dbl) << std::endl;
+	double det2 = 0.0;
+	test_dbl.lud(det2);
+	det2=to_fixed(det2,5);
+	test_print("Lud calculation directly --> test_dbl.lud(det) == " + std::to_string(expect_dbl), expect_dbl, det);
+
+	std::cout << "3x3 tests" << std::endl;
+	//can't loop here b/c compiling with Optimizations is undefined behavior somehow. Not worth the effort.
+	expect_dbl = -0.14057098;
+	vec_dbl = {1.06, 1.755, 1.717, 1.204, 1.806, 1.758, 1.462, 1.135, 1.757};
+	test_dbl = matrix_double(vec_dbl, 3, 3);
+	det = test_dbl.det();
+	det=to_fixed(test_dbl.det(),8);
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
+	vec_dbl = {335.397, 537.152, 938.085, 526.995, 335.988, 342.176, 703.787, 565.472, 525.516};
+	expect_dbl = 32645885.0;
+	test_dbl.set_arr(vec_dbl);
+	det=round(test_dbl.det());
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
+	test_dbl.lud(det);
+	std::cout << "direct det " << std::to_string(det) << std::endl;
+	expect_dbl=189403211.0;
+	vec_dbl = {689.487, 117.733, 488.985, 261.032, 871.987, 232.306, 375.025, 631.979, 630.354};
+	test_dbl.set_arr(vec_dbl);
+	det=floor(test_dbl.det());
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
+	std::cout << "4x4 tests" << std::endl;
+	expect_dbl = 27064975180.0;
+	vec_dbl = {746.223, 213.029, 162.938, 342.047, 566.813, 826.29, 162.789, 666.067, 706.131, 884.913, 208.152, 654.047, 368.807, 285.234, 656.547, 652.029};
+	test_dbl = matrix_double(vec_dbl, 4, 4);
+	det=floor(test_dbl.det());
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
+	expect_dbl=7907416068.0;
+	vec_dbl={775.653, 800.148, 773.827, 681.509, 426.544, 881.081, 992.778, 556.79, 549.59, 606.377, 176.841, 62.495, 976.632, 454.591, 158.727, 467.028};
+	test_dbl.set_arr(vec_dbl);
+	det=round(test_dbl.det());
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
+	vec_dbl={51, 51, 41, 55, 66, 76, 81, 90, 91, 93, 95, 97, 103, 200, 351, 411};
+	expect_dbl=965610;
+	test_dbl.set_arr(vec_dbl);
+	det=to_fixed(test_dbl.det(),5);
+	test_print("Matrix A.det() == " + std::to_string(expect_dbl), expect_dbl, det);
+	if (expect_dbl != det)
+		std::cout << "Matrix A = " << stringify_matrix(test_dbl) << std::endl;
+
 }
