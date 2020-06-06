@@ -617,11 +617,11 @@ template <class T> class Matrix{
 		mat.array[2]*=-1;
 	}
 
-	Matrix<T> adj()const{
+	Matrix<T> adj() const{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
-		Matrix<T> tmp_matrix(cols,rows);
-		tmp_matrix=*this;
+		Matrix<T> tmp_matrix(this->cols,this->rows);
+		tmp_matrix.set_arr(this->array);
 		if(tmp_matrix.cols == 2 && tmp_matrix.rows == 2) {
 			_adj(tmp_matrix);
 		}
@@ -866,7 +866,6 @@ template <> bool Matrix<float>::lud(std::vector<size_t> &Partition){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
-
 	}
 
 	for(i=0; i < n-1; i++){
@@ -918,7 +917,6 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
-
 	}
 
 	for(i=0; i < n-1; i++){
@@ -987,7 +985,6 @@ template <> bool Matrix<double>::lud(double &determinant){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
-
 	}
 
 	for(i=0; i < n-1; i++){
