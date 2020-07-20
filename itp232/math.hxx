@@ -6,14 +6,27 @@ template <class T> inline T epsilon (const T& v) {
 	 T e = std::numeric_limits<T>::epsilon() * 100;
 	 return v > T(1) ? v * e : e;
 }
-
-double mod(double a, double b){
-	double m = fmod(a,b);
-	return m < 0?m+b:m;
+template <typename T> bool almost_equal(T a, T b){
+		const float difference = std::fabs(a - b);
+		a = std::fabs(a);
+		b = std::fabs(b);
+		const T scaledEpsilon =std::numeric_limits<T>::epsilon() * std::max(a, b);
+		return difference <= scaledEpsilon;
 }
 
-double mod(float a, float b){
-	double m = fmod(a,b);
+
+
+
+	double mod(double a, double b){
+	double m = std::fmod(a,b);
+	return m < 0?m+b:m;
+}
+long double mod(long double a,long double b){
+	long double m = std::fmod(a,b);
+	return m < 0?m+b:m;
+	}
+float mod(float a, float b){
+	double m = std::fmod(a,b);
 	return m < 0?m+b:m;
 }
 

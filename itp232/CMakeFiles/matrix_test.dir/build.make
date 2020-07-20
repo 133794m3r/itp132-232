@@ -57,27 +57,27 @@ include CMakeFiles/matrix_test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/matrix_test.dir/flags.make
 
-CMakeFiles/matrix_test.dir/mat.cpp.o: CMakeFiles/matrix_test.dir/flags.make
-CMakeFiles/matrix_test.dir/mat.cpp.o: mat.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/macarthur/misc_proj/cplus_programs/itp232/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/matrix_test.dir/mat.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/matrix_test.dir/mat.cpp.o -c /home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp
+CMakeFiles/matrix_test.dir/matrix_test.cpp.o: CMakeFiles/matrix_test.dir/flags.make
+CMakeFiles/matrix_test.dir/matrix_test.cpp.o: matrix_test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/macarthur/misc_proj/cplus_programs/itp232/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/matrix_test.dir/matrix_test.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/matrix_test.dir/matrix_test.cpp.o -c /home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.cpp
 
-CMakeFiles/matrix_test.dir/mat.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/matrix_test.dir/mat.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp > CMakeFiles/matrix_test.dir/mat.cpp.i
+CMakeFiles/matrix_test.dir/matrix_test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/matrix_test.dir/matrix_test.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.cpp > CMakeFiles/matrix_test.dir/matrix_test.cpp.i
 
-CMakeFiles/matrix_test.dir/mat.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/matrix_test.dir/mat.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp -o CMakeFiles/matrix_test.dir/mat.cpp.s
+CMakeFiles/matrix_test.dir/matrix_test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/matrix_test.dir/matrix_test.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.cpp -o CMakeFiles/matrix_test.dir/matrix_test.cpp.s
 
 # Object files for target matrix_test
 matrix_test_OBJECTS = \
-"CMakeFiles/matrix_test.dir/mat.cpp.o"
+"CMakeFiles/matrix_test.dir/matrix_test.cpp.o"
 
 # External object files for target matrix_test
 matrix_test_EXTERNAL_OBJECTS =
 
-matrix_test: CMakeFiles/matrix_test.dir/mat.cpp.o
+matrix_test: CMakeFiles/matrix_test.dir/matrix_test.cpp.o
 matrix_test: CMakeFiles/matrix_test.dir/build.make
 matrix_test: CMakeFiles/matrix_test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/macarthur/misc_proj/cplus_programs/itp232/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable matrix_test"

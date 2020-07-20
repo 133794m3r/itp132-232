@@ -17,6 +17,7 @@ void test_arithmetic_double();
 void test_det_int();
 void test_det_double();
 void test_adj_int();
+void test_inv_int();
 //the actual driver program to do the testing.  It just calls all of them in order and prints tests.
 int main(void) {
 	/*
@@ -26,7 +27,9 @@ int main(void) {
 	test_det_int();
 	test_det_double();
 	 */
-	test_adj_int();
+	/*test_adj_int();
+	*/
+	test_inv_int();
 	return 0;
 }
 
@@ -690,41 +693,100 @@ int main(void) {
 //
 //}
 
-void test_adj_int(){
-
-	std::vector<int> input_int(4);
-	std::vector<int> output_int(4);
-	std::cout << "Matrix<int> Adjugate tests." << std::endl;
+//void test_adj_int(){
+//
+//	std::vector<int> input_int(4);
+//	std::vector<int> output_int(4);
+//	std::cout << "Matrix<int> Adjugate tests." << std::endl;
+//	std::cout << "2x2 tests." << std::endl;
+//
+//	input_int={11, 9, 94, 23};
+//	output_int={23, -9, -94, 11};
+//	matrix_int test_int(input_int,2,2);
+//	matrix_int result_int(2,2,1);
+//	matrix_int adj_int(output_int,2,2);
+//	result_int = test_int.adj();
+//	test_print("Matrix A.adj() == B", adj_int,result_int);
+//
+//	input_int={70, 97, 98, 60};
+//	test_int.set_arr(input_int);
+//	output_int={60, -97, -98, 70};
+//	adj_int.set_arr(output_int);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={9, 109, 115, 66};
+//	test_int.set_arr(input_int);
+//	output_int={66, -109, -115, 9};
+//	adj_int.set_arr(output_int);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={44, 48, 118, 21};
+//	test_int.set_arr(input_int);
+//	output_int={21, -48, -118, 44};
+//	adj_int.set_arr(output_int);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	std::cout << "3x3 tests." << std::endl;
+//	input_int={16, 26, 54, 116, 110, 61, 94, 70, 85};
+//	test_int.set_arr(input_int);
+//	output_int={5080, 1570, -4354, -4126, -3716, 5288, -2220, 1324, -1256};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={16, 26, 54, 116, 110, 61, 94, 70, 85};
+//	test_int.set_arr(input_int);
+//	output_int={5080, 1570, -4354, -4126, -3716, 5288, -2220, 1324, -1256};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={50, 117, 79, 108, 98, 75, 27, 13, 86};
+//	test_int.set_arr(input_int);
+//	output_int={7453, -9035, 1033, -7263, 2167, 4782, -1242, 2509, -7736};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	std::cout << "4x4 tests." << std::endl;
+//	input_int={88, 20, 88, 79, 90, 57, 56, 55, 40, 120, 73, 118, 51, 12, 15, 19};
+//	test_int.set_arr(input_int);
+//	output_int={7453, -9035, 1033, -7263, 2167, 4782, -1242, 2509, -7736};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={50, 117, 79, 108, 98, 75, 27, 13, 86};
+//	test_int.set_arr(input_int);
+//	output_int={-19395, 10696, -17987, 161389, -88213, 182283, 1582, -170706, 67266, 264368, -85209, -515768, 54669, -352548, 114552, 437968};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//
+//	input_int={74, 107, 62, 94, 23, 97, 115, 29, 72, 70, 106, 57, 110, 60, 36, 55};
+//	test_int.set_arr(input_int);
+//	output_int={205656, -16626, 21825, -365337, -89572, -429600, 601124, -243380, 135940, 38730, -401255, 163091, -402576, 476556, -436782, 457074};
+//	adj_int.set_arr(output_arr);
+//	result_int=test_int.adj();
+//	test_print("Matrix A.adj() == B", result_int, adj_int);
+//}
+//TODO Figure out why it's not working.
+void test_inv_int(){
+	std::vector<double> input_dbl(4);
+	std::vector<double> output_dbl(4);
+	std::cout << "Matrix<double> Inverse tests." << std::endl;
 	std::cout << "2x2 tests." << std::endl;
-
-	input_int={11, 9, 94, 23};
-	output_int={23, -9, -94, 11};
-	matrix_int test_int(input_int,2,2);
-	matrix_int result_int(2,2,1);
-	matrix_int adj_int(output_int,2,2);
-	result_int = test_int.adj();
-	test_print("Matrix A.adj() == B", adj_int,result_int);
-
-	input_int={70, 97, 98, 60};
-	test_int.set_arr(input_int);
-	output_int={60, -97, -98, 70};
-	adj_int.set_arr(output_int);
-	result_int=test_int.adj();
-	test_print("Matrix A.adj() == B", result_int, adj_int);
-
-	input_int={9, 109, 115, 66};
-	test_int.set_arr(input_int);
-	output_int={66, -109, -115, 9};
-	adj_int.set_arr(output_int);
-	result_int=test_int.adj();
-	test_print("Matrix A.adj() == B", result_int, adj_int);
-
-	input_int={44, 48, 118, 21};
-	test_int.set_arr(input_int);
-	output_int={21, -48, -118, 44};
-	adj_int.set_arr(output_int);
-	result_int=test_int.adj();
-	test_print("Matrix A.adj() == B", result_int, adj_int);
-
-	std::cout << "3x3 tests." << std::endl;
+	input_dbl={88.0, 5.0, 41.0, 113.0};
+	output_dbl={0.0116028, -0.0005134, -0.00420988, 0.00903584};
+	Matrix<double> result_dbl(2,2,1);
+	Matrix<double> inv_dbl(2,2,1);
+	Matrix<double> test_dbl(2,2,1);
+	test_dbl.set_arr(input_dbl);
+	result_dbl.set_arr(output_dbl);
+	test_dbl.inv_slow();
+	inv_dbl=to_fixed(test_dbl,5);
+	test_print("Matrix A.inv == B", result_dbl,test_dbl);
 }

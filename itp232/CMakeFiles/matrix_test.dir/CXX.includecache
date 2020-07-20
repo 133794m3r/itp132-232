@@ -6,14 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp
-iostream
--
-matrix.hxx
-/home/macarthur/misc_proj/cplus_programs/itp232/matrix.hxx
-chrono
--
-
 /home/macarthur/misc_proj/cplus_programs/itp232/math.hxx
 cmath
 -
@@ -29,4 +21,16 @@ stdexcept
 -
 math.hxx
 /home/macarthur/misc_proj/cplus_programs/itp232/math.hxx
+
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.cpp
+iostream
+-
+iomanip
+-
+matrix.hxx
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix.hxx
+matrix_test.hxx
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.hxx
+
+/home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.hxx
 

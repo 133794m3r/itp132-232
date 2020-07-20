@@ -1,1 +1,1 @@
-/usr/bin/c++   -Wall -Wextra -Wpedantic -std=c++11 -O3 -DNDEBUG -g0  -rdynamic CMakeFiles/stock_trader.dir/stock_trader.cpp.o  -o stock_trader 
+/usr/bin/c++   -Wall -Wextra -Wpedantic -g -g3   -rdynamic CMakeFiles/stock_trader.dir/stock_trader.cpp.o  -o stock_trader 

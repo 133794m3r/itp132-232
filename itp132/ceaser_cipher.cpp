@@ -10,7 +10,7 @@ typedef unsigned char uint8;
 
 void transform(char *input, unsigned int length, int shift){
 	unsigned int i=0;
-	char x;
+	unsigned char x;
 	while(i<length){
 		x=input[i];
 		//if the value is printable uppercase ASCII

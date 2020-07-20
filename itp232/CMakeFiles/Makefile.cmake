@@ -47,5 +47,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/stock_trader.dir/DependInfo.cmake"
   "CMakeFiles/hill_cipher.dir/DependInfo.cmake"
+  "CMakeFiles/matrix.dir/DependInfo.cmake"
   "CMakeFiles/matrix_test.dir/DependInfo.cmake"
   )

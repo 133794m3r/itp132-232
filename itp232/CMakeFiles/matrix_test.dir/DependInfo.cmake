@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/macarthur/misc_proj/cplus_programs/itp232/mat.cpp" "/home/macarthur/misc_proj/cplus_programs/itp232/CMakeFiles/matrix_test.dir/mat.cpp.o"
+  "/home/macarthur/misc_proj/cplus_programs/itp232/matrix_test.cpp" "/home/macarthur/misc_proj/cplus_programs/itp232/CMakeFiles/matrix_test.dir/matrix_test.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
