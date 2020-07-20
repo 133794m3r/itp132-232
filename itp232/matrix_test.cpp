@@ -17,7 +17,7 @@ void test_arithmetic_double();
 void test_det_int();
 void test_det_double();
 void test_adj_int();
-void test_inv_int();
+void test_inv_dbl();
 //the actual driver program to do the testing.  It just calls all of them in order and prints tests.
 int main(void) {
 	/*
@@ -29,7 +29,7 @@ int main(void) {
 	 */
 	/*test_adj_int();
 	*/
-	test_inv_int();
+	test_inv_dbl();
 	return 0;
 }
 
@@ -694,7 +694,6 @@ int main(void) {
 //}
 
 //void test_adj_int(){
-//
 //	std::vector<int> input_int(4);
 //	std::vector<int> output_int(4);
 //	std::cout << "Matrix<int> Adjugate tests." << std::endl;
@@ -773,8 +772,12 @@ int main(void) {
 //	result_int=test_int.adj();
 //	test_print("Matrix A.adj() == B", result_int, adj_int);
 //}
-//TODO Figure out why it's not working.
-void test_inv_int(){
+
+/* Inverting an integer matrix isn't really possible in approximate form thus only some double test are done.
+ * I do 2 2x2s, 2 3x3s, 2 4x4s, 2 5x5s.
+ * First I do the slow variant, then the fast variant.
+*/
+void test_inv_dbl(){
 	std::vector<double> input_dbl(4);
 	std::vector<double> output_dbl(4);
 	std::cout << "Matrix<double> Inverse tests." << std::endl;
@@ -789,4 +792,13 @@ void test_inv_int(){
 	test_dbl.inv_slow();
 	inv_dbl=to_fixed(test_dbl,5);
 	test_print("Matrix A.inv == B", result_dbl,test_dbl);
+
+	input_dbl={32.0, 45.0, 21.0, 55.0};
+	output_dbl={0.0674847,-0.0552147,-0.0257669,0.0392638};
+	test_dbl.set_arr(input_dbl);
+	result_dbl.set_arr(output_dbl);
+	test_dbl.inv_slow();
+	inv_dbl=to_fixed(test_dbl,7);
+	test_print("Matrix A.inv == B", result_dbl,test_dbl);
+
 }

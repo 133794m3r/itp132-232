@@ -62,20 +62,15 @@ template <typename T> std::string stringify_matrix(Matrix<T> &a){
 	output_string.reserve(rows*cols);
 	out.precision(4);
 	out << "[";
-	//output_string += "[";
+
 	for(size_t i=0; i < rows; i++) {
-		//output_string+= "[";
 		out << "[";
 		for(size_t j = 0; j < cols; j++) {
-			//output_string+=  std::to_string(to_fixed(a(i, j),3));
 			out << a(i,j);
 			out << (j == cols - 1 ? "]" : ",");
-			//output_string += (j == cols - 1 ? "]" : ",");
 		}
-		//output_string+= ((i < rows -1)? "," : "]");
 		out << ((i < rows -1)? "," : "]");
 	}
-	//return output_string;
 	return out.str();
  }
  //had to do this little hack to check for equality when using doubles/floats/long doubles.
