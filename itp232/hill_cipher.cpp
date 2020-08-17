@@ -9,5 +9,7 @@
  *
  */
 int main(){
-
+	Hill hill_instance;
+	hill_instance = Hill();
+	std::cout << hill_instance.get_enc_key() << std::endl;
 }

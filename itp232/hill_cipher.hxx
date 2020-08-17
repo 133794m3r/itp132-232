@@ -22,7 +22,7 @@ class Hill{
 	std::map <char,size_t> alphabet;
 	//std::string alphabet;
 	//these are all of the default/normal values.
-	size_t alphabet_size;
+	char alphabet_size;
 	Matrix<char> decryption_key;
 	/*
 	* it is the same here. The default chunk size is 2 to make it simpler to work though.
@@ -56,40 +56,40 @@ class Hill{
 		alphabet_size=_alphabet.size();
 
 	}
-	//in case they think this is C.
-	Hill(const Matrix<char> _key=Matrix<char>(2,2,1), char *_alphabet=NULL,size_t size=0){
-		if(_key.get_rows() != _key.get_cols()) {
-			throw std::invalid_argument("The key must be square. Thus rows and columns should be the same! key.rows="
-										+ std::to_string(_key.get_rows()) + "key.cols=" +
-										std::to_string(_key.get_cols()));
-		}
-		//if they didn't provide a key we generate one so that it can be instantly used after constructing the class.
-		if(_key[0] == _key[1] && _key[1] == _key[2] && _key[3] == _key[0]){
-			gen_key();
-		}
-		else{
-			key=_key;
-			decryption_key=key.inv_mod((char)alphabet_size);
-		}
-		if(_alphabet==NULL){
-			//const char *tmp="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			for(size_t i=0;i<26;i++){
-				alphabet[65+i]=i;
-			}
-			size=26;
-		}
-		else{
-			if(size == 0){
-				size=sizeof(_alphabet);
-			}
-			for(size_t i=0;i<size;i++){
-				alphabet[*_alphabet+i]=i;
-			}
-		}
-
-		alphabet_size=size;
-
-	}
+//	//in case they think this is C.
+//	Hill(const Matrix<char> _key=Matrix<char>(2,2,1), char *_alphabet=Null,size_t size=0){
+//		if(_key.get_rows() != _key.get_cols()) {
+//			throw std::invalid_argument("The key must be square. Thus rows and columns should be the same! key.rows="
+//										+ std::to_string(_key.get_rows()) + "key.cols=" +
+//										std::to_string(_key.get_cols()));
+//		}
+//		//if they didn't provide a key we generate one so that it can be instantly used after constructing the class.
+//		if(_key[0] == _key[1] && _key[1] == _key[2] && _key[3] == _key[0]){
+//			gen_key();
+//		}
+//		else{
+//			key=_key;
+//			decryption_key=key.inv_mod((char)alphabet_size);
+//		}
+////		if(_alphabet==NULL){
+////			//const char *tmp="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+////			for(size_t i=0;i<26;i++){
+////				alphabet[65+i]=i;
+////			}
+////			size=26;
+////		}
+////		else{
+//			if(size == 0){
+//				size=sizeof(_alphabet);
+//			}
+//			for(size_t i=0;i<size;i++){
+//				alphabet[*_alphabet+i]=i;
+//			}
+////		}
+//
+//		alphabet_size=size;
+//
+//	}
 	//all of the setters.
 	void set_alphabet(const std::string &string_alphabet){
 		//alphabet=string_alphabet;

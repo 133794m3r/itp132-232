@@ -1,1 +1,1 @@
-/usr/bin/c++   -Wall -Wextra -Wpedantic -g -g3   -rdynamic CMakeFiles/matrix_test.dir/matrix_test.cpp.o  -o matrix_test 
+/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic  -rdynamic CMakeFiles/matrix_test.dir/matrix_test.cpp.o  -o matrix_test 

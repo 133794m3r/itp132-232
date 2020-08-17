@@ -18,6 +18,7 @@ void test_det_int();
 void test_det_double();
 void test_adj_int();
 void test_inv_dbl();
+void test_inv_mod();
 //the actual driver program to do the testing.  It just calls all of them in order and prints tests.
 int main(void) {
 	/*
@@ -29,7 +30,8 @@ int main(void) {
 	 */
 	/*test_adj_int();
 	*/
-	test_inv_dbl();
+	//test_inv_dbl();
+	test_inv_mod();
 	return 0;
 }
 
@@ -791,7 +793,7 @@ void test_inv_dbl(){
 	result_dbl.set_arr(output_dbl);
 	test_dbl.inv_slow();
 	inv_dbl=to_fixed(test_dbl,5);
-	test_print("Matrix A.inv == B", result_dbl,test_dbl);
+	test_print("1 Matrix A.inv == B", result_dbl,test_dbl);
 
 	input_dbl={32.0, 45.0, 21.0, 55.0};
 	output_dbl={0.0674847,-0.0552147,-0.0257669,0.0392638};
@@ -799,6 +801,27 @@ void test_inv_dbl(){
 	result_dbl.set_arr(output_dbl);
 	test_dbl.inv_slow();
 	inv_dbl=to_fixed(test_dbl,7);
-	test_print("Matrix A.inv == B", result_dbl,test_dbl);
+	test_print("2 Matrix A.inv == B", result_dbl,test_dbl);
+
+}
+
+void test_inv_mod(){
+	Matrix<int> matrix_a(2,2,1);
+	//std::vector<char> vec = {25,22,15,13};
+	//matrix_a.set_arr(vec);
+	matrix_a[0] = 25; matrix_a[1] = 22;
+	matrix_a[2] = 15; matrix_a[3] = 13;
+	std::cout << "initial array values" << std::endl;
+	//for(int i=0;i<4;i++){
+	//	std::cout << matrix_a[i] + 65 << std::endl;
+	//}
+	std::cout << "array size and values" << matrix_a.get_array_size() << std::endl;
+std::cout << matrix_a << std::endl;
+//	std::cout << (int) matrix_a.get_array_size() << std::endl;
+	std::cout << matrix_a.inv_mod((char)26) << std::endl;
+	//for(int i=0;i<4;i++){
+	//	std::cout << matrix_a[i] + 65 << std::endl;
+	//}
+	char modulus = 26;
 
 }

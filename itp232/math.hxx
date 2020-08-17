@@ -15,9 +15,7 @@ template <typename T> bool almost_equal(T a, T b){
 }
 
 
-
-
-	double mod(double a, double b){
+double mod(double a, double b){
 	double m = std::fmod(a,b);
 	return m < 0?m+b:m;
 }

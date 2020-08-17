@@ -31,6 +31,7 @@ template <class T> class Matrix{
 	//constructor section.
 	explicit Matrix(size_t _cols, size_t _rows, T initial_value=0){
 			size_t total_elements=_rows*_cols;
+
 			size_t i=0;
 			rows=_rows;
 			cols=_cols;
@@ -38,7 +39,7 @@ template <class T> class Matrix{
 			//otherwise each push_back might result in a realloc|| destruct+construct
 			array.reserve(total_elements);
 			for(i=0;i<total_elements;++i){
-				array[i]=initial_value;
+				array.push_back(initial_value);
 			}
 	}
 
@@ -621,6 +622,7 @@ template <class T> class Matrix{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
 		Matrix<T> tmp_matrix(this->cols,this->rows);
+
 		tmp_matrix.set_arr(this->array);
 		if(tmp_matrix.cols == 2 && tmp_matrix.rows == 2) {
 			_adj(tmp_matrix);
@@ -638,6 +640,7 @@ template <class T> class Matrix{
 
 
 	template <typename U> Matrix<T> inv_mod(U m) const{
+
 		double det_M=this->det();
 		Matrix<T> inversed(cols,rows,0);
 		T det_inv=0;
@@ -654,10 +657,13 @@ template <class T> class Matrix{
 		}
 
 		size_t i=0,j=0;
-
+		char matrix_det_inv = 0;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
-				inversed.array[(i*this->cols)+j]=mod(det_inv*inversed.array[(i*this->cols)+j],m);
+				//seems it becomes an int for whatever reason which causes tempaltes to not work.
+				matrix_det_inv = det_inv * inversed.array[(i*this->cols)+j];
+				//inversed.array[(i*this->cols)+j]=mod(det_inv*inversed.array[(i*this->cols)+j],m);
+				inversed.array[(i*this->cols)+j]=mod(matrix_det_inv,m);
 			}
 		}
 		return inversed;
@@ -674,6 +680,9 @@ template <class T> class Matrix{
 		return result;
 	}
 
+	size_t get_array_size(){
+		return this->array.size();
+}	
 	~Matrix();
 	T det(void) const;
 	Matrix<T> solve_gae() const;
@@ -688,6 +697,7 @@ template <class T> class Matrix{
 	void lud_backsub(const std::vector<size_t> &partition, const std::vector<T> &right_side,std::vector<T> &solution) const;
 
 	void set_arr(std::vector<T> _arr){
+
 		if(_arr.size() != cols*rows){
 			throw std::invalid_argument("vector must be the same size as the original matrix!");
 		}
