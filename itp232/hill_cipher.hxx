@@ -11,6 +11,7 @@
 #include "vectors.hxx"
 #include "random.h"
 #include <map>
+
 //may end up making it templated to work with bytes also but not sure yet.
 //template <typename character>
 class Hill{
@@ -34,11 +35,17 @@ class Hill{
 	*/
 	unsigned int chunk_size=2;
  public:
-	Hill(const Matrix<char> &_key=Matrix<char>(2,2,1), const std::string &_alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"){
+	explicit Hill(const Matrix<char> &_key=Matrix<char>(2,2,0), const std::string &_alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"){
 		if(_key.get_rows() != _key.get_cols()){
 			throw std::invalid_argument("The key must be square. Thus rows and columns should be the same! key.rows="
 				+std::to_string(_key.get_rows())+"key.cols="+std::to_string(_key.get_cols()));
 		}
+
+		for(size_t i=0;i<_alphabet.size();i++){
+			alphabet[_alphabet[i]]=i;
+		}
+		//alphabet=_alphabet;
+		alphabet_size=_alphabet.size();
 		//if they didn't provide a key we generate one so that it can be instantly used after constructing the class.
 		if(_key[0] == _key[1] && _key[1] == _key[2] && _key[3] == _key[0]){
 			//gen_key also creates the decryption key for them too.
@@ -49,11 +56,6 @@ class Hill{
 			//have to wrap this in a try_catch just incase the key doesn't work.
 			decryption_key=key.inv_mod(static_cast<char>(alphabet_size));
 		}
-		for(size_t i=0;i<_alphabet.size();i++){
-			alphabet[_alphabet[i]]=i;
-		}
-		//alphabet=_alphabet;
-		alphabet_size=_alphabet.size();
 
 	}
 //	//in case they think this is C.
@@ -125,12 +127,29 @@ class Hill{
 		//have to seed the PRNG. We call it w/o arguments so that if it's already seeded it won't be reseeded again.
 		s_xor_128();
 		char maximum=(char)alphabet_size-1;
-		Matrix<char> key(chunk_size,chunk_size,1);
-		for(size_t i=0;i<items;i++){
-			key[i]=xorshift128((char)0,maximum);
-		}
+		Matrix<char> local_key(chunk_size,chunk_size,1);
+
+		char det_M = 0;
+		char gcd_val = -2;
+		char X;
+		char Y;
+		do {
+		//while(!(gcd_val == -1 || gcd_val == 1)) {
+
+			for (size_t i = 0; i < items; i++) {
+				local_key[i] = xorshift128((char) 0, maximum);
+			}
+			det_M = local_key.det();
+			gcd_val = gcd_fast(det_M, alphabet_size, &X, &Y);
+
+		//}
+
+		} while(!(gcd_val == -1 || gcd_val == 1));
+		this->key = local_key;
+
 		//going to have to figure out how I'm going to loop the generator until I get one that doesn't result in the inv modulus resulting in 0.
-		decryption_key=key.inv_mod((char)alphabet_size);
+		decryption_key = key.inv_mod((char) alphabet_size);
+
 	}
 	//to let them set the key from a string of characters. This'll create the Matrix and re-declare it.
 	int set_key(const std::string &string_key){
@@ -229,15 +248,36 @@ class Hill{
 	}
 	//all of the getters that someone would need from the Hill cipher class.
 	Matrix<char> get_enc_key(void){
+		size_t max = chunk_size*chunk_size;
+		for(size_t i =0;i<max;i++){
+			std::cout << (int) key[i] << std::endl;
+		}
 		return this->key;
+
+
 	}
 	Matrix<char> get_encryption_key(void){
+		size_t max = chunk_size*chunk_size;
+		std::cout << "key " << std::endl;
+		for(size_t i =0;i<max;i++){
+			std::cout << (int) key[i] << std::endl;
+		}
 		return this->key;
 	}
 	Matrix<char> get_dec_key(void){
+		size_t max = chunk_size*chunk_size;
+		std::cout << "decryption key " << std::endl;
+		for(size_t i =0;i<max;i++){
+			std::cout << (int) decryption_key[i] << std::endl;
+		}
 		return this->decryption_key;
 	}
 	Matrix<char> get_decryption_key(void){
+		size_t max = chunk_size*chunk_size;
+		std::cout << "decryption key " << std::endl;
+		for(size_t i =0;i<max;i++){
+			std::cout << (int) decryption_key[i] << std::endl;
+		}
 		return this->decryption_key;
 	}
 	/*

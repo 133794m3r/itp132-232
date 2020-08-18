@@ -18,12 +18,20 @@ endif()
 #set(CMAKE_CXX_STANDARD 11)
 
 include_directories(.)
+#add_library(libmatrix INTERFACE,
+#		math.hxx
+#		vectors.hxx
+#		matrix.hxx
+#		)
+
+#target_include_directories(project INTERFACE .)
 
 add_executable(matrix_test
-		matrix_test.cpp
 		math.hxx
-        matrix.hxx
-		vectors.hxx)
+		vectors.hxx
+		matrix.hxx
+		matrix_test.hxx
+		matrix_test.cpp)
 
 add_executable(matrix
 		mat.cpp
@@ -40,7 +48,7 @@ add_executable(hill_cipher
 
 add_executable(stock_trader
 	stock_trader.cpp
-		math.hxx
+	math.hxx
 	random.h
 	stock_trader.h
 	terminal.h)

@@ -81,8 +81,22 @@ template <class T> class Matrix{
 		//I make sure that it has this much memory to make sure it doesn't break.
 		array.reserve(input.rows*input.cols);
 		//for some reason the equal operator nor the copy operator oh well.
-		for(size_t i=0;i<input.rows*input.cols;i++){
-			array[i]=input.array[i];
+		//incase they aren't the same length.
+		if(this->array.size() != input.array.size()){
+			size_t i = 0;
+			//first set all of the values that are the same up unto the size in the current array.
+			for(i = 0; i < this->array.size(); i++){
+				array[i] = input.array[i];
+			}
+			//then finish up by pushing back the remaining values to resize the array.
+			for(;i < input.rows * input.cols; i++){
+				array.push_back(input.array[i]);
+			}
+		}
+		else {
+			for (size_t i = 0; i < input.rows * input.cols; i++) {
+				array[i] = input.array[i];
+			}
 		}
 		//same with rows.
 		rows=input.rows;
@@ -91,6 +105,7 @@ template <class T> class Matrix{
 		//return a pointer to this object.
 		return *this;
 	}
+
 	//since apparently you have to define your own copy constructor I'm doing so.
 	Matrix<T>( const Matrix<T> &matrix){
 		rows=matrix.rows;

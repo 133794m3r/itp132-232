@@ -2,6 +2,7 @@
 #define _CRYPTO_MATH_HEADER_
 #include <cmath>
 #include <limits>
+
 template <class T> inline T epsilon (const T& v) {
 	 T e = std::numeric_limits<T>::epsilon() * 100;
 	 return v > T(1) ? v * e : e;
@@ -75,7 +76,7 @@ template <typename T> T mod_inv(T a, T mod){
 		a += x;
 	}
 	gcd=gcd_fast(a,mod,&x,&y);
-	if((gcd != 1) && (gcd != -1)){
+	if(!(gcd == 1 || gcd == -1)){
 		//may make this just return 0 which is basically the same thing.
 		throw std::invalid_argument("The gcd between a and the modulus must be either 1 or -1");
 	}
