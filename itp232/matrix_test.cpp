@@ -3,7 +3,7 @@
 #include "matrix.hxx"
 //#include "vectors.hxx"
 #include "matrix_test.hxx"
-#include <itp232/matrix.hxx>
+#include <matrix.hxx>
 /*
  * By Macarthur Inbody <admin-contact@transcendental.us> 2020
  * Licensed AGPLv3
