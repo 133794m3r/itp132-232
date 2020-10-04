@@ -300,6 +300,7 @@ class Hill{
 		//create our return item.
 		std::vector<Matrix<char>> result(items);
 		std::map<char,size_t>::iterator iterator;
+
 		char item;
 		//loop over the entire input string. For now it's just a string.
 		for(size_t i=0;i<items;i++){
@@ -329,8 +330,29 @@ class Hill{
 		}
 		return result;
 	}
-	//TODO: Actually make this a function.
-	//std::string dechunk_it(std::vector<Matrix<char>> &input_data);
+
+	//Make sure that this works but who knows.
+	std::string dechunk_it(std::vector<Matrix<char>> &input_data){
+		std::string output_string;
+		size_t input_len = input_data.size();
+		size_t i;
+		size_t j;
+		size_t k=0;
+		size_t iterator = (chunk_size*chunk_size);
+		output_string.reserve(input_len*iterator);
+		for( Matrix<char> cur_arr:input_data){
+			for(i=0;i<chunk_size;i++){
+				for(j=0;j<chunk_size;j++) {
+					output_string[(k*iterator)+(j+(i*chunk_size))] = cur_arr[j + (i * chunk_size)];
+				}
+			}
+		}
+		return output_string;
+	}
+
+	Matrix<char> solve_key(std::string str1, std::string str2){
+
+	}
 };
 
 
