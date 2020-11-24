@@ -6,6 +6,7 @@
 * By Macarthur Inbody <admin-contact@transcendental.us> 2020
 * Licensed AGPLv3
 */
+
 //since by default windows doesn't like ANSI escape sequences have to enable all that.
 #ifdef _WIN32
 #include <windows.h>
@@ -43,27 +44,40 @@ bool opt_exists(char **start, char **end, const std::string opt){
 	return std::find(start,end,opt) != end;
 }
 
+//print the help string.
 void print_help(char *prog_name){
+	//output the name of the program.
 	std::cout << prog_name << " is used to do a full shift encoding/decoding on a file." << std::endl;
+	//send the ansic escape code. to start it.
 	std::cout << "Usage: \x1b" << prog_name;
+	// now reset the text.
 	std::cout << "\e[0m -i {INPUT_FILE_NAME} -o {OUTPUT_FILE_NAME} -k {SHIFT_TO_USE} -e|d Encode/Decode the input file." << std::endl;
+	//finally show them the last bit of it all.
 	std::cout << "You must have a space between the flag and option as unix style options are not supported. Also only encoding or decoding is allowed. You can also only encrypt or decrypt the input file." << std::endl;
 }
 
+//transform the input with the full ascii printable characters.
 void transform_full(std::string &input, unsigned int length, int shift){
+	//initialize variables.
 	unsigned int i=0;
 	char character;
+	//iterate over it.
 	while(i<length){
+		//shift the character code point.
 		character=input[i]+shift;
+		//above the limit. 
 		if(character > 126)
+			//so I need to handle the overflow.
 			character=32+(character - 127);
+		//if it's below the lowest. handle underflow.
 		else if(character < 32)
 			character=127 -  (32 - character);
-			
+		//update the charater in the input string.
 		input[i++]=character;
 	}
 }
 
+//c style function for if you're utilizing a char array.
 void transform_full(char *input, unsigned int length, int shift){
 	unsigned int i;
 	char character;

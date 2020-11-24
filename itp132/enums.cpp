@@ -13,6 +13,7 @@ inline double round( double val,unsigned int precision){
 		precision= static_cast<unsigned int>(pow(10, precision));
 		return round(val*precision)/precision;
 }
+
 //I have to have an iterator.
 template < typename C, C beginVal, C endVal>
 class Iterator {
@@ -33,6 +34,8 @@ class Iterator {
 		}
 		bool operator!=(const Iterator& i) { return val != i.val; }
 };
+
+//calculate the person's weight.
 void calculate_weights(double weight,const char *units){
 	//simple use of enum. Since it only works with ints
 	//I'm making everything 1000x the normal.
@@ -58,15 +61,20 @@ int main() {
 	float weight;
 	std::string line;
 	int unit;
+	//the unit we're utilizing. 
 	enum units{lb=0,kg=1,oz=2,g=3};	
+	//make sure I have an iterator for it.
 	typedef Iterator<units, units::lb, units::g> units_iterator;
-	const char *unit_str[]={"lb","oz","kg","g"};	
+	const char *unit_str[]={"lb","oz","kg","g"};
+	// prompt the person
 	std::cout << "What is your weight: ";
+	//read it into the weight variable.
 	std::cin >> weight;
 	//prompt them for chosen unit.
 	std::cout << "What unit would you like?(hit enter for lb)" << std::endl;
 	//iterate over the enum.
 	for(int cur_unit:units_iterator()){
+		//show them the options for the units numerically. 
 		std::cout << cur_unit << "=" << unit_str[cur_unit] << " ";
 	}
 	//new line it.

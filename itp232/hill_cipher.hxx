@@ -311,7 +311,7 @@ class Hill{
 					//insert into it at the correct spot the correct character.
 					//later I'll actually do the lookup part.
 					//result[i][k+(j*chunk_size)]=input_data[(i*mat_size)+(j+(k*chunk_size))];
-					item=input_data[(i*mat_size)+(j+(k*chunk_size))];
+					item=input_data[(i*mat_size)+(k+(j*chunk_size))];
 					iterator=alphabet.find(item);
 					//if we don't find it we just make it be a zero index and warn them.
 					if(iterator == alphabet.end()){
@@ -350,8 +350,50 @@ class Hill{
 		return output_string;
 	}
 
-	Matrix<char> solve_key(std::string str1, std::string str2){
+	Matrix<char> solve_key(std::string cipher_text, std::string plain_text){
+		double key_size = sqrt(cipher_text.length());
+		unsigned int cols;
+		if(cipher_text.length() != plain_text.length()){
+			throw std::invalid_argument("Ciphertext and plaintext must be the same length.");
+		}
+		if(floor(key_size) != round(key_size) && floor(key_size) != chunk_size ){
+			throw std::invalid_argument("Key must be an even square!");
+		}
+		else{
+			cols = floor(key_size);
+		}
+		int det = 0;
 
+		std::map <char,size_t>::iterator iterator;
+		Matrix<char> ct(cols,cols);
+		Matrix<char> pt(cols,cols);
+		char item;
+		for(unsigned int i=0;i < cols;i++){
+			for(unsigned int j=0;j< cols;j++){
+				item = cipher_text[j+(i*cols)];
+				iterator = alphabet.find(item);
+				if(iterator == alphabet.end()){
+					throw std::invalid_argument("Character: '"+std::to_string(item)+"' not found in alphabet.");
+				}
+				else {
+					ct[i + (j * cols)] = iterator->second;
+				}
+				item = plain_text[j+(i*cols)];
+				iterator = alphabet.find(item);
+				if(iterator == alphabet.end()){
+					throw std::invalid_argument("Character: '"+std::to_string(item)+"' not found in alphabet.");
+				}
+				else {
+
+					pt[i + (j * cols)] = iterator->second;
+				}
+			}
+		}
+		std::cout << ct << std::endl;
+		std::cout << ct << std::endl;
+		ct = ct.inv_mod(alphabet_size);
+		std::cout << "ct\n" << ct << std::endl;
+		return ct;
 	}
 };
 

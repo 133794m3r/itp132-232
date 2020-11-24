@@ -18,8 +18,8 @@ template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& 
 template <class T> class Matrix{
 
  private:
-	size_t rows;
 	size_t cols;
+	size_t rows;
 	/*
 	 * have to use a vector since C++ doesn't like raw pointers and
 	 * I give up trying to make it let me use pointers the way I want to.
@@ -27,7 +27,8 @@ template <class T> class Matrix{
 	 */
 	std::vector<T> array;
 
- public:
+
+public:
 	//constructor section.
 	explicit Matrix(size_t _cols, size_t _rows, T initial_value=0){
 			size_t total_elements=_rows*_cols;
@@ -547,7 +548,7 @@ template <class T> class Matrix{
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 
 	T _det()const{
-		return(array[0]*array[3])-(array[1]*array[2]);
+		return (array[0]*array[3])-(array[1]*array[2]);
 	}
 
 	T gae(void){
@@ -655,15 +656,19 @@ template <class T> class Matrix{
 
 
 	template <typename U> Matrix<T> inv_mod(U m) const{
-
+		std::cout << "this" << *this << std::endl;
 		double det_M=this->det();
 		Matrix<T> inversed(cols,rows,0);
 		T det_inv=0;
+
 		U det=static_cast<U>(det_M);
+		std::cout << "d1" <<  det_M << std::endl;
+		std::cout << "det " << (int) det << std::endl;
 		if(det == 0)
 			throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
 
 		inversed=this->adj();
+		std::cout << "inv " << inversed << std::endl;
 		try{
 			det_inv=mod_inv(det,m);
 		}
@@ -673,6 +678,7 @@ template <class T> class Matrix{
 
 		size_t i=0,j=0;
 		char matrix_det_inv = 0;
+		m = static_cast<char>(m);
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				//seems it becomes an int for whatever reason which causes tempaltes to not work.
@@ -725,7 +731,21 @@ template <class T> class Matrix{
 template <class T> Matrix<T>::~Matrix(){
 	this->array.clear();
 }
-
+std::ostream& operator<<(std::ostream& os, const Matrix<char> &m){
+	//int w = os.width();
+	size_t rows=m.get_rows();
+	size_t cols=m.get_cols();
+	os << "[";
+	for(size_t i=0; i < rows; i++) {
+		os << "[";
+		for(size_t j = 0; j < cols; j++) {
+			os << static_cast<int>(m(i, j)) <<(j == cols - 1 ? "]" : ",\t");
+		}
+		os <<((i < rows -1)? "," : "]");
+		os << '\n';
+	}
+	return os;
+}
 template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T> &m){
 	//int w = os.width();
 	size_t rows=m.rows;
@@ -1299,8 +1319,8 @@ template <> double Matrix<double>::det(void) const{
 
 	//if it's 2x2 I can simply do it w/o having do LUD or any other
 	//expensive operations. No reason do all of those extra operations.
-	//if(cols == 2 && rows == 2)
-	//	return _det();
+	if(cols == 2 && rows == 2)
+		return _det();
 	//since it's a const we have to create a matrix to modify.
 	Matrix<double> tmp_matrix(cols,rows);
 	tmp_matrix=*this;

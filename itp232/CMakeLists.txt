@@ -34,10 +34,10 @@ add_library(matrix SHARED
 
 set_target_properties(matrix PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(matrix_test
-#		math.hxx
-#		vectors.hxx
-#		matrix.hxx
-#		matrix_test.hxx
+		math.hxx
+		vectors.hxx
+		matrix.hxx
+		matrix_test.hxx
 		matrix_test.cpp)
 
 #target_link_libraries(matrix_test
@@ -55,6 +55,9 @@ add_executable(hill_cipher
 		hill_cipher.hxx
 		math.hxx
 		vectors.hxx)
+
+add_executable(hill_test
+		hill_test.cpp)
 
 add_executable(stock_trader
 	stock_trader.cpp

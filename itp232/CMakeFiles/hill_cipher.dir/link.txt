@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic  -rdynamic CMakeFiles/hill_cipher.dir/hill_cipher.cpp.o  -o hill_cipher 

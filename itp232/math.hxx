@@ -2,11 +2,13 @@
 #define _CRYPTO_MATH_HEADER_
 #include <cmath>
 #include <limits>
-
+//standard check to make sure that our value is still within the acceptable range for errors.
 template <class T> inline T epsilon (const T& v) {
 	 T e = std::numeric_limits<T>::epsilon() * 100;
 	 return v > T(1) ? v * e : e;
 }
+//see if the values are close enough to equal such that we should consider it so. Since
+//floating point is weird.
 template <typename T> bool almost_equal(T a, T b){
 		const float difference = std::fabs(a - b);
 		a = std::fabs(a);
@@ -15,33 +17,41 @@ template <typename T> bool almost_equal(T a, T b){
 		return difference <= scaledEpsilon;
 }
 
-
+//baisc modulus function for floating point numbers. Should've been a template honestly for these
 double mod(double a, double b){
 	double m = std::fmod(a,b);
 	return m < 0?m+b:m;
 }
+//for 16byte floats.
 long double mod(long double a,long double b){
 	long double m = std::fmod(a,b);
 	return m < 0?m+b:m;
-	}
+}
+//float version.	
 float mod(float a, float b){
 	double m = std::fmod(a,b);
 	return m < 0?m+b:m;
 }
 
+//the template for all integral types.
 template <typename T> T mod(T a, T b){
+	// Get the value after modulus and store it.
 	T m = a % b;
+	//if the value of m is negative we must convert it such that it is properly handled.
 	return m < 0?m+b:m;
 }
-
+//basic fast gcd.
 template <typename T> T gcd_fast(T a, T b, T *x, T *y){
 	if(a == 0){
 		*x=0;
 		*y=1;
 		return b;
 	}
+	//our x1 and y1 variables.
 	T x1,y1;
+	//want to cast it into the type we're given.
 	T gcd = gcd_fast(static_cast<T>((a+b)%a), a, &x1, &y1);
+	//setting the variables.
 	*x=y1-(b/a) * x1;
 	*y=x1;
 	return gcd;
@@ -75,11 +85,13 @@ template <typename T> T mod_inv(T a, T mod){
 	if(a<0) {
 		a += x;
 	}
+	//get the gcd.
 	gcd=gcd_fast(a,mod,&x,&y);
 	if(!(gcd == 1 || gcd == -1)){
 		//may make this just return 0 which is basically the same thing.
 		throw std::invalid_argument("The gcd between a and the modulus must be either 1 or -1");
 	}
+	
 	if(gcd == -1) {
 		if (x < 0)
 			return mod - x;
@@ -88,17 +100,6 @@ template <typename T> T mod_inv(T a, T mod){
 	}
 	else
 		return x % mod;
-	/*
-	 * Same with this code. I think it's something with to do with the modulus operator or something.
-	 */
-	/*
-	if((sign_a < 0) && (sign_mod < 0))
-		return -1*((x+mod)%mod);
-	else if(x < 0)
-		return (x+mod) % mod;
-	else
-		return x % mod;
-	*/
 
 }
 template <typename T> T *small_prime_factor(T n){
@@ -123,7 +124,7 @@ template <typename T> T *small_prime_factor(T n){
 		two_factors[1]=q;
 		return two_factors;
 }
-
+//basic LCM function.
 template <typename T> T fast_lcm(T a,T b){
 	T lcm;
 	T gcd;

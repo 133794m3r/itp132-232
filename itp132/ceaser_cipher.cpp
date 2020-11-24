@@ -8,9 +8,12 @@
 //to do the typedef requirement.
 typedef unsigned char uint8;
 
+//basic shifter function.
+//char array as input.
 void transform(char *input, unsigned int length, int shift){
 	unsigned int i=0;
 	unsigned char x;
+	//iterate over the string till the end.
 	while(i<length){
 		x=input[i];
 		//if the value is printable uppercase ASCII
@@ -36,7 +39,7 @@ void transform(char *input, unsigned int length, int shift){
 	}	
 
 }
-
+//c++ style string input.
 void transform(std::string &input, int shift){
 	unsigned int i=0;
 	

@@ -34,7 +34,7 @@ int main() {
 		//if we're on the second value+ add a comma.
 		if(i > 0)
 			std::cout << ",";
-		
+		//send to the output our value.
 		std::cout << r[i];
 	}
 	std::cout << "]" << std::endl;
