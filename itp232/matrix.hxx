@@ -17,9 +17,9 @@ template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& 
 //#define _CHECK_RANGE_
 template <class T> class Matrix{
 
- private:
-	size_t cols;
+private:
 	size_t rows;
+	size_t cols;
 	/*
 	 * have to use a vector since C++ doesn't like raw pointers and
 	 * I give up trying to make it let me use pointers the way I want to.
@@ -27,24 +27,22 @@ template <class T> class Matrix{
 	 */
 	std::vector<T> array;
 
-
 public:
 	//constructor section.
 	explicit Matrix(size_t _cols, size_t _rows, T initial_value=0){
-			size_t total_elements=_rows*_cols;
-
-			size_t i=0;
-			rows=_rows;
-			cols=_cols;
-			//reserve the memory necessary to construct the array, thus not having to realloc continously.
-			//otherwise each push_back might result in a realloc|| destruct+construct
-			array.reserve(total_elements);
-			for(i=0;i<total_elements;++i){
-				array.push_back(initial_value);
-			}
+		size_t total_elements=_rows*_cols;
+		size_t i;
+		rows=_rows;
+		cols=_cols;
+		//reserve the memory necessary to construct the array, thus not having to realloc continously.
+		//otherwise each push_back might result in a realloc|| destruct+construct
+		array.reserve(total_elements);
+		for(i=0;i<total_elements;++i){
+			array[i]=initial_value;
+		}
 	}
 
-	explicit Matrix(void){
+	explicit Matrix(){
 		rows=1;
 		cols=1;
 		array.push_back(T(1));
@@ -71,8 +69,7 @@ public:
 		}
 	}
 	//allow assignment operator.
-	//Matrix<T>& operator=(const Matrix<T> &input){
-	Matrix<T> operator=(const Matrix<T> &input){
+	Matrix<T>& operator=(const Matrix<T> &input){
 		//self referential assignment.
 		if(*this == input) {
 			return *this;
@@ -84,7 +81,7 @@ public:
 		//for some reason the equal operator nor the copy operator oh well.
 		//incase they aren't the same length.
 		if(this->array.size() != input.array.size()){
-			size_t i = 0;
+			size_t i;
 			//first set all of the values that are the same up unto the size in the current array.
 			for(i = 0; i < this->array.size(); i++){
 				array[i] = input.array[i];
@@ -106,7 +103,6 @@ public:
 		//return a pointer to this object.
 		return *this;
 	}
-
 	//since apparently you have to define your own copy constructor I'm doing so.
 	Matrix<T>( const Matrix<T> &matrix){
 		rows=matrix.rows;
@@ -153,18 +149,18 @@ public:
 
 	//subscript operator.
 	T &operator[](const size_t x){
-		#ifdef _CHECK_RANGE_
+	#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
 			_index_out_of_bounds("(",")",x);
-		#endif
+	#endif
 		return this->array[x];
 	}
 
 	const T &operator[](const size_t x) const{
-		#ifdef _CHECK_RANGE_
+	#ifdef _CHECK_RANGE_
 		if(x >= rows || y >= cols)
 			_index_out_of_bounds("[","]",x);
-		#endif
+	#endif
 		return this->array[x];
 	}
 
@@ -188,7 +184,7 @@ public:
 	 */
 	Matrix<T> operator+(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
-		size_t i=0,j=0;
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result[j+(this->cols*i)]=this->array[j+(this->cols*i)]+scalar;
@@ -198,7 +194,7 @@ public:
 	}
 	//friend Matrix<T> operator+(const T scalar,const Matrix<T> rhs);
 	Matrix<T> operator*(const T scalar) const{
-		size_t i=0,j=0;
+		size_t i,j;
 		Matrix<T> result(cols,rows,0);
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
@@ -210,7 +206,7 @@ public:
 
 	Matrix<T> operator-(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
-		size_t i=0,j=0;
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]-scalar;
@@ -221,7 +217,7 @@ public:
 
 	Matrix<T> operator/(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
-		size_t i=0,j=0;
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]/scalar;
@@ -232,8 +228,7 @@ public:
 
 	Matrix<T> operator%(const T scalar) const{
 		Matrix<T> result(cols,rows,0);
-		size_t i=0,j=0;
-
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result.array[j+(this->cols*i)]=mod(this->array[j+(this->cols*i)],scalar);
@@ -251,7 +246,7 @@ public:
 		}
 		Matrix<T> result(cols,rows,0);
 
-		size_t i=0,j=0;
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]+other_matrix.array[j+(this->cols*i)];
@@ -265,7 +260,7 @@ public:
 			_invalid_dim("subtraction",other_matrix);
 		}
 		Matrix result(cols,rows,0);
-		size_t i=0,j=0;
+		size_t i,j;
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
 				result.array[j+(this->cols*i)]=this->array[j+(this->cols*i)]-other_matrix.array[j+(this->cols*i)];
@@ -278,8 +273,8 @@ public:
 		if((this->cols != other_matrix.rows)){
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(other_matrix.rows)+"\r\n");
 		}
-		size_t i=0,j=0,k=0;
-		Matrix result(other_matrix.cols,this->rows,0);
+		size_t i,j,k;
+		Matrix<T> result(other_matrix.cols,this->rows,0);
 		for(i=0;i<rows;++i){
 			for(j=0;j<other_matrix.cols;j++){
 				for(k=0;k<cols;k++){
@@ -290,7 +285,7 @@ public:
 		return result;
 	}
 
-	Matrix<T> operator !(void)const{
+	Matrix<T> operator !()const{
 		//have to seperate creation and initalization for whatever reason with this.
 		Matrix<T> inverted(this->cols,this->rows,0);
 		inverted=*this;
@@ -343,7 +338,7 @@ public:
 		if((this->cols != rhs.size())){
 			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(rhs.size())+"\r\n");
 		}
-		size_t i=0,j=0;
+		size_t i,j;
 		Matrix result(1,this->rows,0);
 		for(i=0;i<rows;++i){
 			for(j=0;j<cols;j++){
@@ -366,8 +361,7 @@ public:
 	 * scalars first. Then matrices. Then finally with std::vectors.
 	 */
 	Matrix<T> &operator+=(const T scalar) {
-		size_t i=0;
-		size_t j=0;
+		size_t i,j;
 
 		for(i=0; i<rows; i++) {
 			for(j=0; j<cols; j++) {
@@ -379,8 +373,7 @@ public:
 	}
 
 	Matrix<T> &operator-=(const T scalar) {
-		size_t i=0;
-		size_t j=0;
+		size_t i,j;
 
 		for(i=0; i<rows; i++) {
 			for(j=0; j<cols; j++) {
@@ -501,7 +494,7 @@ public:
 	}
 
 	bool operator!=(const Matrix<T> &other_matrix) const{
-		return !( *this == other_matrix );
+		return *this != other_matrix;
 	}
 
 	bool operator<(const Matrix<T> &other_matrix) const{
@@ -520,7 +513,7 @@ public:
 	}
 
 	bool operator<=(const Matrix<T> &other_matrix) const{
-		return(*this < other_matrix);
+		return(*this < other_matrix) or (*this == other_matrix);
 	}
 
 	bool operator>(const Matrix<T> &other_matrix) const{
@@ -528,7 +521,7 @@ public:
 	}
 
 	bool operator>=(const Matrix<T> &other_matrix) const{
-		return !(*this < other_matrix);
+		return !(*this <= other_matrix);
 	}
 	//compared against a scalar it's always going to be false.
 	bool operator==(const T) const{
@@ -547,9 +540,76 @@ public:
 	// Output stream function for matrix
 	friend std::ostream& operator<< <T>( std::ostream &, const Matrix<T> &);
 
-	T _det()const{
-		return (array[0]*array[3])-(array[1]*array[2]);
+	double _det()const{
+		return(array[0]*array[3])-(array[2]*array[1]);
 	}
+
+		template <typename K=T> std::enable_if_t<std::is_same<float,K>::value,float> det() const{
+		if(this->cols != this->rows){
+			throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+		}
+
+		//if it's 2x2 I can simply do it w/o having do LUD or any other
+		//expensive operations. No reason do all of those extra operations.
+		if(cols == 2 && rows == 2)
+			return _det();
+		//since it's a const we have to create a matrix to modify.
+		Matrix<float> tmp_matrix(cols,rows);
+		tmp_matrix=*this;
+		double determinant=0.0;
+		if(!tmp_matrix.lud(determinant))
+			determinant=0.0;
+
+		return determinant;
+	};
+
+	template<typename K=T> typename std::enable_if_t<std::is_same<K, double>::value,double> det() const{
+		if(this->cols != this->rows){
+			throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+		}
+
+		//if it's 2x2 I can simply do it w/o having do LUD or any other
+		//expensive operations. No reason do all of those extra operations.
+		if(cols == 2 && rows == 2)
+			return _det();
+		//since it's a const we have to create a matrix to modify.
+		Matrix<double> tmp_matrix(cols,rows);
+		tmp_matrix=*this;
+		double determinant=0.0;
+		if(!tmp_matrix.lud(determinant))
+			determinant=0.0;
+
+		return determinant;
+	};
+
+	template <typename K=T> typename std::enable_if_t<std::is_integral<K>::value,double> det()const{
+		if(this->cols != this->rows){
+			throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+		}
+
+		//if it's 2x2 I can simply do it w/o having do LUD or any other
+		//expensive operations. No reason do all of those extra operations.
+
+		if(cols == 2 && rows == 2)
+			return _det();
+
+		//we create a vector so that we can then cast to a double.
+		//to keep precision this has to be done.
+		std::vector<double> vec(this->cols*this->rows);
+		for(size_t i=0;i<vec.size();i++){
+			vec[i]= static_cast<double>(this->array[i]);
+		}
+		//then we allocate the matrix.
+		Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+
+		double determinant=0;
+		bool res=tmp_matrix.lud(determinant);
+		if(!res)
+			determinant=0;
+
+		return determinant;
+	};
+
 
 	T gae(void){
 		size_t i,j,k;
@@ -569,7 +629,7 @@ public:
 			for(j=i+1;j<rows;j++){
 				double tmp=vec[j+(i*this->cols)]/vec[i+(i*this->cols)];
 				for(k=0;k<cols;k++){
-					vec[j+(k*this->cols)]=vec[j+(k*this->cols)]-tmp*vec[i+(k*this->cols)];
+					vec[j+(k*this->cols)]=vec[j+(k*this->cols)]-(tmp*vec[i+(k*this->cols)]);
 				}
 			}
 		}
@@ -577,7 +637,7 @@ public:
 		return swaps;
 	}
 
-	T gae(void)const{
+	T gae()const{
 		size_t i,j,k;
 		size_t swaps=0;
 		std::vector<T> vec=this->array;
@@ -620,6 +680,7 @@ public:
 				tmp.array[z*(rows-1)+y] = array[i*this->cols+j];
 				y++;
 			}
+			z++;
 		}
 		T cofact=tmp.det();
 		if((max_row+max_col) & 1u )
@@ -634,12 +695,11 @@ public:
 		mat.array[2]*=-1;
 	}
 
-	Matrix<T> adj() const{
+	Matrix<T> adj()const{
 		if(this->cols != this->rows)
 			throw std::invalid_argument("Matrix<T>::adj() Error: Cannot calculate Adjugate of a non-square matrix!");
-		Matrix<T> tmp_matrix(this->cols,this->rows);
-
-		tmp_matrix.set_arr(this->array);
+		Matrix<T> tmp_matrix(cols,rows);
+		tmp_matrix=*this;
 		if(tmp_matrix.cols == 2 && tmp_matrix.rows == 2) {
 			_adj(tmp_matrix);
 		}
@@ -656,35 +716,24 @@ public:
 
 
 	template <typename U> Matrix<T> inv_mod(U m) const{
-		std::cout << "this" << *this << std::endl;
 		double det_M=this->det();
 		Matrix<T> inversed(cols,rows,0);
 		T det_inv=0;
-
-		U det=static_cast<U>(det_M);
-		std::cout << "d1" <<  det_M << std::endl;
-		std::cout << "det " << (int) det << std::endl;
+		U det=static_cast<U>(mod(det_M,26.0));
 		if(det == 0)
 			throw std::invalid_argument("Matrix is Singular: Determinant is 0. No inversion is possible.");
-
 		inversed=this->adj();
-		std::cout << "inv " << inversed << std::endl;
 		try{
 			det_inv=mod_inv(det,m);
 		}
 		catch(std::string &e){
 			std::invalid_argument("Matrix is not invertible(mod "+std::to_string(m)+").");
 		}
-
 		size_t i=0,j=0;
-		char matrix_det_inv = 0;
-		m = static_cast<char>(m);
+
 		for(i=0;i<rows;i++){
 			for(j=0;j<cols;j++){
-				//seems it becomes an int for whatever reason which causes tempaltes to not work.
-				matrix_det_inv = det_inv * inversed.array[(i*this->cols)+j];
-				//inversed.array[(i*this->cols)+j]=mod(det_inv*inversed.array[(i*this->cols)+j],m);
-				inversed.array[(i*this->cols)+j]=mod(matrix_det_inv,m);
+				inversed.array[(i*this->cols)+j]=mod(det_inv*inversed.array[(i*this->cols)+j],m);
 			}
 		}
 		return inversed;
@@ -699,17 +748,31 @@ public:
 			}
 		}
 		return result;
-	}
+	};
 
-	size_t get_array_size(){
-		return this->array.size();
-}	
+	Matrix<T> mul_mod(const Matrix<T> &other_matrix, const T modulus) const{
+		Matrix<T> tmp_matrix(cols,rows,0);
+		size_t i=0,j=0,k=0;
+		if((this->cols != other_matrix.rows)){
+			throw std::invalid_argument("For Multiplication Matrix 1's columns must match Matrix 2's rows.\r\nM1.cols="+std::to_string(cols)+" M2.rows="+std::to_string(other_matrix.rows)+"\r\n");
+		}
+		for(i=0;i<this->rows;++i) {
+			for (j = 0; j < other_matrix.cols; j++) {
+				for (k = 0; k < this->cols; k++) {
+					tmp_matrix[j + (other_matrix.cols * i)] += mod(this->array[k + (i * this->cols)] * other_matrix.array[j + (k * other_matrix.cols)],static_cast<int>(modulus));
+				}
+			}
+		}
+
+		return tmp_matrix;
+	};
+
 	~Matrix();
-	T det(void) const;
+//	T det(void) const;
 	Matrix<T> solve_gae() const;
 	bool lud(double &determinate);
 	bool lud(std::vector<size_t> &P);
-	bool inv(void);
+	bool inv();
 	bool inv_slow();
 	bool solve(const std::vector<T> &right_side,std::vector<T> &solution) const;
 	//bool solve(const Matrix<T> &right_side, Matrix<T> &solution) const;
@@ -718,8 +781,8 @@ public:
 	void lud_backsub(const std::vector<size_t> &partition, const std::vector<T> &right_side,std::vector<T> &solution) const;
 
 	void set_arr(std::vector<T> _arr){
-
 		if(_arr.size() != cols*rows){
+			std::cout << "_as " << _arr.size() << "\nc*r" << cols*rows << std::endl;
 			throw std::invalid_argument("vector must be the same size as the original matrix!");
 		}
 		array=_arr;
@@ -731,48 +794,7 @@ public:
 template <class T> Matrix<T>::~Matrix(){
 	this->array.clear();
 }
-std::ostream& operator<<(std::ostream& os, const Matrix<char> &m){
-	//int w = os.width();
-	size_t rows=m.get_rows();
-	size_t cols=m.get_cols();
-	os << "[";
-	for(size_t i=0; i < rows; i++) {
-		os << "[";
-		for(size_t j = 0; j < cols; j++) {
-			os << static_cast<int>(m(i, j)) <<(j == cols - 1 ? "]" : ",\t");
-		}
-		os <<((i < rows -1)? "," : "]");
-		os << '\n';
-	}
-	return os;
-}
-template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T> &m){
-	//int w = os.width();
-	size_t rows=m.rows;
-	size_t cols=m.cols;
-	os << "[";
-	for(size_t i=0; i < rows; i++) {
-		os << "[";
-		for(size_t j = 0; j < cols; j++) {
-			os << m(i, j) <<(j == cols - 1 ? "]" : ",\t");
-		}
-		os <<((i < rows -1)? "," : "]");
-		os << '\n';
-	}
-	return os;
-}
-/*
-template <typename T> Matrix<T> Matrix<T>::operator+(T scalar,const Matrix<T> rhs){
-	Matrix<T> result(rhs.cols,rhs.rows,0);
-	size_t i=0,j=0;
-	for(i=0;i<rhs.rows;i++){
-		for(j=0;j<rhs.cols;j++){
-			result[j+(rhs.cols*i)]=rhs[j+(rhs.cols*i)]+scalar;
-		}
-	}
-	return result;
-}
- */
+
 /*
  * since I need to also support the basic operators as if they were _normal_ I have to define them like so.
  * i'm basically overloading the global operator instead of having it be part of the class. First is the arithematic operators.
@@ -783,28 +805,36 @@ template <typename T> Matrix<T> operator+(const T scalar, const Matrix<T> &rhs){
 	// enough already.
 	return rhs+scalar;
 }
+
 template <typename T> Matrix<T> operator-(const T scalar, const Matrix<T> &rhs){
 	return rhs-scalar;
 }
+
 template <typename T> Matrix<T> operator*(const T scalar, const Matrix<T> &rhs){
 	return rhs*scalar;
 }
+
 template <typename T> Matrix<T> operator/(const T scalar, const Matrix<T> &rhs){
 	return rhs/scalar;
 }
+
 //then the comparison operators.
 template <typename T> bool operator==(const T, const Matrix<T>) {
 	return false;
 }
+
 template <typename T> bool operator !=(const T, const Matrix<T>){
 	return true;
 }
+
 template <typename T> bool operator >=(const T, const Matrix<T>){
 	return false;
 }
+
 template <typename T> bool operator <=(const T, const Matrix<T>){
 	return false;
 }
+
 template<>Matrix<double> Matrix<double>::solve_gae() const{
 	if(this->rows < (this->cols -1 )){
 		throw std::invalid_argument("Matrix<double>::solve_gae() is impossible! You must have as many rows as you have variables. Rows must equal columns -1. Rows=" + std::to_string(this->rows) + " Cols=" + std::to_string(this->cols) +"\n");
@@ -892,6 +922,7 @@ template<typename T> Matrix<T> Matrix<T>::solve_gae()const{
 	}
 	return Matrix<T>(vars,rows,1);
 }
+
 //I hae to also include a float version of the same exact code due to the way that compiler works.
 template <> bool Matrix<float>::lud(std::vector<size_t> &Partition){
 	size_t i,j,k;
@@ -911,6 +942,7 @@ template <> bool Matrix<float>::lud(std::vector<size_t> &Partition){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
+
 	}
 
 	for(i=0; i < n-1; i++){
@@ -944,6 +976,7 @@ template <> bool Matrix<float>::lud(std::vector<size_t> &Partition){
 
 	return true;
 }
+
 template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 	size_t i,j,k;
 	//this is the maximal value in our array during swapping.
@@ -962,6 +995,7 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
+
 	}
 
 	for(i=0; i < n-1; i++){
@@ -995,6 +1029,7 @@ template <> bool Matrix<double>::lud(std::vector<size_t> &Partition){
 
 	return true;
 }
+
 template <typename T> bool Matrix<T>::lud(std::vector<size_t> &P){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::lud(): LUD doesn't work on a non-square matrix!");
@@ -1014,6 +1049,7 @@ template <typename T> bool Matrix<T>::lud(std::vector<size_t> &P){
 	}
 	return true;
 }
+
 template <> bool Matrix<double>::lud(double &determinant){
 
 	if(this->rows < (this->cols -1 )){
@@ -1030,6 +1066,7 @@ template <> bool Matrix<double>::lud(double &determinant){
 
 	for(i=0; i < n; i++){
 		Partition[i] = i;
+
 	}
 
 	for(i=0; i < n-1; i++){
@@ -1066,6 +1103,7 @@ template <> bool Matrix<double>::lud(double &determinant){
 
 	return true;
 }
+
 template <> bool Matrix<float>::lud(float &determinant){
 
 	if(this->rows < (this->cols -1 )){
@@ -1119,6 +1157,7 @@ template <> bool Matrix<float>::lud(float &determinant){
 
 	return true;
 }
+
 template <typename T> bool Matrix<T>::lud(double &determinant){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<T>::lud(): LUD doesn't work on a non-square matrix!");
@@ -1140,15 +1179,14 @@ template <typename T> bool Matrix<T>::lud(double &determinant){
 }
 
 //I have to break these templates out because the way that I'm going to do integer types.
-
 //this inversion takes ~O(2/3(n**3)+(1.709*(n**3))) iterations.
 template <> bool Matrix<double>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<double>::inv(): Can't invert a non-square matrix.");
 	}
-	long long int i=0, j=0, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
-	long long int i_max=0;
-	std::vector<double> P(cols);
+	size_t i=0, j=0, k,n=static_cast<size_t>(this->cols),i_pos=0,j_pos=0;
+	size_t i_max=0;
+	std::vector<size_t> P(cols);
 	//size_t j_pos,i_pos;
 	for(i=0; i < n; i++)
 		P[i] = i;
@@ -1207,13 +1245,14 @@ template <> bool Matrix<double>::inv(){
 	}
 	return true;
 }
+
 template <> bool Matrix<float>::inv(){
 	if(this->rows != this->cols){
 		throw std::invalid_argument("matrix<float>::inv(): Can't invert a non-square matrix.");
 	}
-	long long int i=0, j=0, k,n=static_cast<long long int>(this->cols),i_pos=0,j_pos=0;
-	long long int i_max=0;
-	std::vector<float> P(cols);
+	size_t i=0, j=0, k,n=static_cast<size_t>(this->cols),i_pos=0,j_pos=0;
+	size_t i_max=0;
+	std::vector<size_t> P(cols);
 
 	for(i=0; i < n; i++)
 		P[i] = i;
@@ -1272,6 +1311,7 @@ template <> bool Matrix<float>::inv(){
 	}
 	return true;
 }
+
 //for all other types we have to first cast to a double then we can use that version.
 template <typename T> bool Matrix<T>::inv(){
 	if(this->rows != this->cols){
@@ -1312,53 +1352,55 @@ template <typename T> bool Matrix<T>::inv_slow(){
 	}
 	return true;
 }
-template <> double Matrix<double>::det(void) const{
-	if(this->cols != this->rows){
-		throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
-	}
 
-	//if it's 2x2 I can simply do it w/o having do LUD or any other
-	//expensive operations. No reason do all of those extra operations.
-	if(cols == 2 && rows == 2)
-		return _det();
-	//since it's a const we have to create a matrix to modify.
-	Matrix<double> tmp_matrix(cols,rows);
-	tmp_matrix=*this;
-	double determinant=0.0;
-	if(!tmp_matrix.lud(determinant))
-		determinant=0.0;
+//template <> double Matrix<double>::det(void) const{
+//	if(this->cols != this->rows){
+//		throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+//	}
+//
+//	//if it's 2x2 I can simply do it w/o having do LUD or any other
+//	//expensive operations. No reason do all of those extra operations.
+//	//if(cols == 2 && rows == 2)
+//	//	return _det();
+//	//since it's a const we have to create a matrix to modify.
+//	Matrix<double> tmp_matrix(cols,rows);
+//	tmp_matrix=*this;
+//	double determinant=0;
+//	if(!tmp_matrix.lud(determinant))
+//		determinant=0;
+//
+//	return determinant;
+//}
+////the normal template type is here. I'm going to use gaussian elimination for every other type than double or float.
+//template <typename T> T Matrix<T>::det(void)const{
+//
+//	if(this->cols != this->rows){
+//		throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
+//	}
+//
+//	//if it's 2x2 I can simply do it w/o having do LUD or any other
+//	//expensive operations. No reason do all of those extra operations.
+//
+//	if(cols == 2 && rows == 2)
+//		return _det();
+//	//we create a vector so that we can then cast to a double.
+//	//to keep precision this has to be done.
+//	std::vector<double> vec(this->cols*this->rows);
+//	for(size_t i=0;i<vec.size();i++){
+//		vec[i]= static_cast<double>(this->array[i]);
+//	}
+//	//then we allocate the matrix.
+//	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
+//	std::cout << tmp_matrix << std::endl;
+//	double determinant=0.0;
+//
+//	bool res=tmp_matrix.lud(determinant);
+//	if(!res)
+//		determinant=0;
+//
+//	return static_cast<T>(determinant);
+//}
 
-	return determinant;
-}
-//the normal template type is here. I'm going to use gaussian elimination for every other type than double or float.
-template <typename T> T Matrix<T>::det(void)const{
-
-	if(this->cols != this->rows){
-		throw std::invalid_argument( "Matrix<double>::det() Error: Cannot calculate the determinant of a non-square matrix!");
-	}
-
-	//if it's 2x2 I can simply do it w/o having do LUD or any other
-	//expensive operations. No reason do all of those extra operations.
-
-	if(cols == 2 && rows == 2)
-		return _det();
-
-	//we create a vector so that we can then cast to a double.
-	//to keep precision this has to be done.
-	std::vector<double> vec(this->cols*this->rows);
-	for(size_t i=0;i<vec.size();i++){
-		vec[i]= static_cast<double>(this->array[i]);
-	}
-	//then we allocate the matrix.
-	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
-
-	double determinant=0;
-	bool res=tmp_matrix.lud(determinant);
-	if(!res)
-		determinant=0;
-
-	return determinant;
-}
 template <> void Matrix<double>::lud_backsub(const std::vector<size_t> &partition, const std::vector<double> &v,std::vector<double> &s) const{
 	size_t i,j,k,ip;
 	bool nonzero = false;
@@ -1396,6 +1438,7 @@ template <typename T> void Matrix<T>::lud_backsub(const std::vector<size_t> &Par
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	tmp_matrix.lud_backsub(Partition,values,solution);
 }
+
 template <> bool Matrix<double>::solve_lud(const std::vector<double> &values,std::vector<double> &solution) const{
 	Matrix<double> tmp = *this;
 	std::vector<size_t> Partition(this->rows);
@@ -1405,6 +1448,7 @@ template <> bool Matrix<double>::solve_lud(const std::vector<double> &values,std
 	}
 	return false;
 }
+
 template <> bool Matrix<double>::solve(const std::vector<double> &values,std::vector<double> &solution) const{
 	Matrix<double> tmp = *this;
 	std::vector<size_t> Partition(this->rows);
@@ -1420,11 +1464,13 @@ template <typename T> bool Matrix<T>::solve_lud(const std::vector<T> &values, st
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	return tmp_matrix.solve(values,solution);
 }
+
 template <typename T> bool Matrix<T>::solve(const std::vector<T> &values, std::vector<T> &solution) const{
 	std::vector<double> vec(this->array.begin(),this->array.end());
 	Matrix<double> tmp_matrix(vec,this->cols,this->rows);
 	return tmp_matrix.solve(values,solution);
 }
+
 //this'll be modified to basically read in a file's line later on.
 //but for now it's just here as a placeholder.
 std::vector<Matrix<char>> __chunk_it(const std::string input_data){
@@ -1448,6 +1494,38 @@ std::vector<Matrix<char>> __chunk_it(const std::string input_data){
 	}
 	return result;
 }
+
+template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T> &m){
+	//int w = os.width();
+	size_t rows=m.rows;
+	size_t cols=m.cols;
+	os << "[";
+	for(size_t i=0; i < rows; i++) {
+		os << "[";
+		for(size_t j = 0; j < cols; j++) {
+			os << m(i, j) <<(j == cols - 1 ? "]" : ",\t");
+		}
+		os <<((i < rows -1)? "," : "]");
+		os << '\n';
+	}
+	return os;
+}
+
+template <> std::ostream& operator<<(std::ostream& os, const Matrix<char> &m){
+	size_t rows=m.rows;
+	size_t cols=m.cols;
+	os << "[";
+	for(size_t i=0; i < rows; i++) {
+		os << "[";
+		for(size_t j = 0; j < cols; j++) {
+			os << static_cast<int>(m(i, j)) <<(j == cols - 1 ? "]" : ",\t");
+		}
+		os <<((i < rows -1)? "," : "]");
+		os << '\n';
+	}
+	return os;
+}
+
 typedef Matrix<char> matrix_char;
 typedef Matrix<int> matrix_int;
 typedef Matrix<unsigned int> matrix_uint;

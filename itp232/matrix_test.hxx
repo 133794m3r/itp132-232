@@ -19,7 +19,7 @@ template <typename T> void test_print(std::string input,T expected,T result){
 
 template <typename T> void test_print(std::string input, Matrix<T> &expected, Matrix<T> &result){
 	if(expected != result){
-		std::cout << "expected = " << stringify_matrix(expected) << std::endl << "but we got " << stringify_matrix(result) << std::endl;
+		std::cout << "expected = " << expected << std::endl << "but we got " << result << std::endl;
 	}
 	else{
 		std::cout << input << " test succeeded." << std::endl;
@@ -54,25 +54,6 @@ template <typename T, typename U> Matrix<T> to_fixed(const Matrix<T> &a, U preci
 	}
 	return tmp_matrix;
 }
-template <typename T> std::string stringify_matrix(Matrix<T> &a){
-	size_t rows=a.get_rows();
-	size_t cols=a.get_cols();
-	std::ostringstream out;
-	std::string output_string="";
-	output_string.reserve(rows*cols);
-	out.precision(4);
-	out << "[";
-
-	for(size_t i=0; i < rows; i++) {
-		out << "[";
-		for(size_t j = 0; j < cols; j++) {
-			out << a(i,j);
-			out << (j == cols - 1 ? "]" : ",");
-		}
-		out << ((i < rows -1)? "," : "]");
-	}
-	return out.str();
- }
  //had to do this little hack to check for equality when using doubles/floats/long doubles.
  //I'll likely have to do the _same_ thing when doing the other operators too but for now
  //I'll let the end-user deal with it.
@@ -94,7 +75,7 @@ template <typename T> bool almost_equal(const Matrix<T> &a, const Matrix<T> b){
 }
 void test_print(std::string input, Matrix<double> &expected, Matrix<double> &result){
 	if(almost_equal(expected,result)){
-		std::cout << "expected = " << stringify_matrix(expected) << std::endl << "but we got " << stringify_matrix(result) << std::endl;
+		std::cout << "expected = " << expected << std::endl << "but we got " << result << std::endl;
 	}
 	else{
 		std::cout << input << " test succeeded." << std::endl;

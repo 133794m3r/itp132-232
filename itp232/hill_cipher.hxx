@@ -1,3 +1,4 @@
+#pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
 /*
  * By Macarthur Inbody <admin-contact@transcendental.us> 2020
  * Licensed AGPLv3
@@ -11,6 +12,8 @@
 #include "vectors.hxx"
 #include "random.h"
 #include <map>
+#include <cmath>
+#include <gmpxx.h>
 
 //may end up making it templated to work with bytes also but not sure yet.
 //template <typename character>
@@ -54,7 +57,7 @@ class Hill{
 		else {
 			key = _key;
 			//have to wrap this in a try_catch just incase the key doesn't work.
-			decryption_key=key.inv_mod(static_cast<char>(alphabet_size));
+			decryption_key=key.inv_mod(static_cast<int>(alphabet_size));
 		}
 
 	}
@@ -99,8 +102,9 @@ class Hill{
 			alphabet[string_alphabet[i]]=i;
 		}
 		alphabet_size=string_alphabet.size();
-		decryption_key=key.inv_mod((char)alphabet_size);
+		decryption_key=key.inv_mod((int)alphabet_size);
 	}
+
 	//if they like pointers.
 	void set_alphabet(const char *string_alphabet=NULL,size_t size=0){
 		if(string_alphabet==NULL){
@@ -119,36 +123,35 @@ class Hill{
 			}
 		}
 		alphabet_size=size;
-		decryption_key=key.inv_mod((char)alphabet_size);
+		decryption_key=key.inv_mod((int)alphabet_size);
 	}
+
 	//if they want the program to generate the key for them.
 	void gen_key(void){
 		size_t items=chunk_size*chunk_size;
 		//have to seed the PRNG. We call it w/o arguments so that if it's already seeded it won't be reseeded again.
 		s_xor_128();
-		char maximum=(char)alphabet_size-1;
+		char maximum=alphabet_size-1;
 		Matrix<char> local_key(chunk_size,chunk_size,1);
 
-		char det_M = 0;
+		int det_M = 0;
 		char gcd_val = -2;
 		char X;
 		char Y;
+
 		do {
-		//while(!(gcd_val == -1 || gcd_val == 1)) {
-
 			for (size_t i = 0; i < items; i++) {
-				local_key[i] = xorshift128((char) 0, maximum);
+				local_key[i] = xorshift128( 0, maximum);
 			}
-			det_M = local_key.det();
-			gcd_val = gcd_fast(det_M, alphabet_size, &X, &Y);
-
-		//}
+			det_M = (int)local_key.det();
+			gcd_val = std::__gcd(det_M,(int)alphabet_size);
+			//gcd_val = gcd_fast(det_M, alphabet_size, &X, &Y);
 
 		} while(!(gcd_val == -1 || gcd_val == 1));
 		this->key = local_key;
 
 		//going to have to figure out how I'm going to loop the generator until I get one that doesn't result in the inv modulus resulting in 0.
-		decryption_key = key.inv_mod((char) alphabet_size);
+		decryption_key = key.inv_mod((int) alphabet_size);
 
 	}
 	//to let them set the key from a string of characters. This'll create the Matrix and re-declare it.
@@ -197,7 +200,7 @@ class Hill{
 				}
 			}
 		}
-		decryption_key=key.inv_mod((char)alphabet_size);
+		decryption_key=key.inv_mod((int)alphabet_size);
 		return return_code;
 	}
 	//if they are doing it like it was C.
@@ -354,6 +357,7 @@ class Hill{
 		double key_size = sqrt(cipher_text.length());
 		unsigned int cols;
 		if(cipher_text.length() != plain_text.length()){
+			std::cout << "here?" << std::endl;
 			throw std::invalid_argument("Ciphertext and plaintext must be the same length.");
 		}
 		if(floor(key_size) != round(key_size) && floor(key_size) != chunk_size ){
@@ -384,18 +388,18 @@ class Hill{
 					throw std::invalid_argument("Character: '"+std::to_string(item)+"' not found in alphabet.");
 				}
 				else {
-
 					pt[i + (j * cols)] = iterator->second;
 				}
 			}
 		}
-		std::cout << ct << std::endl;
-		std::cout << ct << std::endl;
-		ct = ct.inv_mod(alphabet_size);
-		std::cout << "ct\n" << ct << std::endl;
+		ct = ct.inv_mod((int)alphabet_size);
+		ct = ct.mul_mod(pt,alphabet_size);
+
 		return ct;
 	}
 };
 
 
 #endif //_HILL_CIPHER_H
+
+#pragma clang diagnostic pop
