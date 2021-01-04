@@ -129,6 +129,7 @@ class Inventory{
 				//see how many they own of every item and increment i.
 				if(total_owned[++i] != 0){
 					owns_something=true;
+
 					//print the item based upon it's id and bolded.
 					printf("\x1b[%dm%d\x1b[22m:",1,item->get_id());
 					
@@ -155,12 +156,13 @@ class Inventory{
 					std::cout << std::endl;						
 				}
 			}
+				owns_nothing = !(owns_something);
 			//return whether they own anything if it's still false it means they don't.
 			return owns_something;
 		}
 	
 	//this was just here for debug purposes.
-	void print_owned(void){
+	void print_owned(){
 		int i=0;
 		
 		for(unsigned int total:total_owned){
@@ -170,7 +172,9 @@ class Inventory{
 		
 		std::cout << std::endl;
 	}
-
+	bool can_sell(){
+		return owns_nothing;
+	}
 };
 //Account class.
 class Account{
@@ -245,11 +249,11 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 	//get ready to print our stuff.
 	move_and_clear_terminal(4,total_items);
 	//show the menu to them.
-	std::cout << "To exit enter zero as the amount.\r\nYou have selected ";
-	printf("\x1b[%dm%s\x1b[22m\r\n",1,item.get_name().c_str());
-	std::cout << "You currently have $" << available_funds << std::endl;
-	std::cout << "You can buy: " << can_buy <<" at $" << item.get_price() << "each.";
-	std::cout << "How many would you like to buy? \r\nAmount: ";
+	std::cout << "To exit enter zero as the amount."<< std::endl << "You have selected ";
+	printf("\x1b[%dm%s\x1b[22m",1,item.get_name().c_str());
+	std::cout << std::endl << "You currently own " << total_owned[item.get_id()] << "and with $" << available_funds << std::endl;
+	std::cout << "You can buy: " << can_buy <<" at $" << item.get_price() << " each.";
+	std::cout << "How many would you like to buy? " << std::endl << "Amount: ";
 	//get how many they want.
 	std::cin >> amount;
 	
@@ -267,6 +271,7 @@ int Inventory::purchase_item(Account &usr,Item &item,unsigned int total_items){
 		total_owned[item.get_id()]+=amount;
 		//decrease their balance by the total cost.
 		usr.balance-=total_cost;
+		owns_nothing = false;
 		//purchase acccess is good.
 		return 1;
 	}

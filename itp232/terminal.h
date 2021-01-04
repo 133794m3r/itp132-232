@@ -17,7 +17,7 @@
 		//all other devices I have use to the crappy getchar() version but it works.
 		void pause(){
 			std::cout << "Press Enter to continue ... " << std::endl;
-			char x=getchar();	
+			char x = std::getchar();
 		}
 		
 	#endif //_WIN32
@@ -47,15 +47,22 @@ template <typename T> void proper_input(T &variable){
 	* thus it'll continue the loop.
 	*/
 	while(!(std::cin >> variable)){
-		//tell them that the input is invalid.
-		std::cout << "You have entered invalid input please try again." << std::endl;
-		//clear the rest of cin.
-		std::cin.clear();
-		//ignore everything else in the stream including the new line.
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		pause();
-		move_and_clear_terminal(3,0);
-		std::cout << "\x1b[1mSelection\x1b[22m: ";
+		if(std::cin.eof()){
+			variable = -2;
+			std::cin.clear();
+			return;
+		}
+		else {
+			//tell them that the input is invalid.
+			std::cout << "You have entered invalid input please try again." << std::endl;
+			//clear the rest of cin.
+			std::cin.clear();
+			//ignore everything else in the stream including the new line.
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			pause();
+			move_and_clear_terminal(3, 0);
+			std::cout << "\x1b[1mSelection\x1b[22m: ";
+		}
 	}
 	
 }

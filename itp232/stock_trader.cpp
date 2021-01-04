@@ -1,8 +1,6 @@
 #include <iostream>
 #include "terminal.h"
 #include "stock_trader.h"
-#include <cstdio>
-#include <string>
 
 /*
 * Stock Trader CLI Application
@@ -13,7 +11,6 @@
 //costs'll be randomized each day. Goal is to have the maximum amount of money in the end.
 
 typedef std::vector<Item*> vector_ptr_item;
-typedef std::vector<int*> vector_ptr_int;
 
 //prints all items by reference.
 void print_items(vector_ptr_item &Items){
@@ -63,7 +60,7 @@ void update_prices(vector_ptr_item &Items){
 		//calculate the modifier between 0.85 and 1.15 inclusive.
 		modifier=xorshift128(0.85,1.15);
 		//what flag the item should have.
-		flag=xorshift128(0,25);
+		flag=static_cast<char>(xorshift128(0,25));
 		//6/25 ~5% chance of being a hot item.
 		if(flag >= 10 && flag <= 16){
 			flag=1;
@@ -114,28 +111,31 @@ int main(){
 	new Item("Chocolate Chip Cookies Futures",5.31), new Item("Giant Fishstick",13.31), new Item("Signed Photo of Nessie", 3.50)};
 	
 	//get the total items.
-	unsigned int total_items= static_cast<unsigned int>(items.size());
+	auto total_items= static_cast<unsigned int>(items.size());
 	
 	//prompt for name.
 	std::cout << "Please enter your name: ";
 	getline(std::cin, username);
-	
+	if(!std::cin.good()){
+		std::cerr << "\nWhen attempting to read name an error occurred\n";
+		return 1;
+	}
 	//the user will be a pointer of Account type.
-	Account *user = new Account(username,starting_balance);
+	auto *user = new Account(username,starting_balance);
 	
 	//Inventory is the same also set it up.
-	Inventory *user_inventory=new Inventory(total_items,items);
+	auto *user_inventory=new Inventory(total_items,items);
 	
-	//make sure that the colors are always what I want. White on black.
-	std::cout << "\x1b[37;40m";
+
 	//jump to the top.
 	std::cout << "\x1b[0;0H";
 	//clear all of the terminal and reset cursor to the top.
 	std::cout << "\x1b[0J" << "\x1b[0;0H";
-	
+	//make sure that the colors are always what I want. White on black.
+	std::cout << "\x1b[39;37m";
 	//tell them the startup information.
-	std::cout << "Welcome to the Trading simulator. You will play for "<< max_days << " days. The goals is to end up with the maximum money at the end of it.\r\nYou start off with $1000.00\r\nEach day there will be a list of items to buy at the start, then a list of items that people want to buy. Both will have a price listed beside them along with how many of them there are. At the end of the game any unsold items will be automatically sold for the final sale price and added to your final total" << std::endl;
-	std::cout << "The item of the day is \x1b[1mBolded\x1b[22m and also colored \x1b[93mBright Yellow\x1b[37m. This item is in high demand so the price is SKY HIGH! Also the item no one wants is also \x1b[1mBolded\x1b[22m and it's color is \x1b[31mRed\x1b[37m. That means the item is at a ROCK BOTTOM PRICE! So keep your eyes peeeled for this deals. Remember to sell \x1b[1;93mHIGH\x1b[22;37m and buy \x1b[1;93mLOW\x1b[22;37m if you can!"<< std::endl;
+	std::cout << "Welcome to the Trading simulator. You will play for "<< max_days << " days. The goals is to end up with the maximum money at the end of it." << std::endl << "You start off with $1000.00" << std::endl <<"Each day there will be a list of items to buy at the start, then a list of items that people want to buy. Both will have a price listed beside them along with how many of them there are. At the end of the game any unsold items will be automatically sold for the final sale price and added to your final total" << std::endl;
+	std::cout << "The item of the day is \x1b[1mBolded\x1b[22m and also colored \x1b[93mBright Yellow\x1b[37m. This item is in high demand so the price is SKY HIGH! Also the item no one wants is also \x1b[1mBolded\x1b[22m and it's color is \x1b[31mRed\x1b[37m. That means the item is at a ROCK BOTTOM PRICE! So keep your eyes peeled for this deals. Remember to sell \x1b[1;93mHIGH\x1b[22;37m and buy \x1b[1;31mLOW\x1b[22;37m if you can!"<< std::endl;
 	
 	//go through each of the days.
 	for(current_day=0;current_day < max_days;current_day++){
@@ -144,9 +144,9 @@ int main(){
 		//-1 means they're done with it.
 		while(selection != -1){
 			//welcome them.
-			std::cout << "Welcome to Day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;24m!";
-			std::cout << " You currently have: $" << user->get_balance() << std::endl;
-			std::cout << "\r\nHere are the items you can buy: ";
+			std::cout << "Welcome to Day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;23m!";
+			std::cout << "You currently have: $" << user->get_balance() << std::endl;
+			std::cout << std::endl << "Here are the items you can buy: ";
 			std::cout << "Select the item you want to buy pressing the respective number. To quit buying for the day enter -1." << std::endl << std::endl;
 			
 			//print all of the items.
@@ -156,6 +156,9 @@ int main(){
 			std::cout << "\x1b[1mSelection\x1b[22m:";
 			//std::cin >> selection;
 			proper_input(selection);
+			if(selection == -2){
+				return 1;
+			}
 			//if it's -1 we're done.
 			if(selection == -1){
 				selection=0;
@@ -174,14 +177,14 @@ int main(){
 					std::cout << "You tried to buy more than you could afford!" << std::endl;
 				}
 				pause();
-				move_and_clear_terminal(0,total_items);
+				move_and_clear_terminal(2,total_items);
 			}
 			else {
 				//they tried to do something other than what's valid.
 				std::cout << "Your selection: " << selection << " wasn't valid. Please try again." << std::endl;
 				//move the terminal back up and clear the old stuff.
 				pause();
-				move_and_clear_terminal(8,total_items);				
+				move_and_clear_terminal(7,total_items);
 			}
 			//evil pause thing since I don't want to prompt for something else during the loop.
 	
@@ -189,58 +192,67 @@ int main(){
 		}
 		//we're done with the day so move it up and clear it.
 		move_and_clear_terminal(7,total_items);
-		
-		//next selection.
-		while(selection != -1){
-			//end of day is when they sell things.
+		if(user_inventory->can_sell()) {
+			//next selection.
+			while (selection != -1) {
+				//end of day is when they sell things.
+				std::cout << "Welcome to the end of day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;24m!";
+				std::cout << " You currently have: $" << user->get_balance() << std::endl;
+				std::cout << "\r\nHere are the items you can sell: ";
+				std::cout
+						<< "Select the item you want to sell pressing the respective number. To quit selling for the day enter -1."
+						<< std::endl << std::endl;
+
+				//see if you own _anything_.
+				owns_something = user_inventory->print_items();
+				//prompt them for their selection.
+				std::cout << "\x1b[1mSelection:\x1b[22m";
+				proper_input(selection);
+
+				//if it's -1 then it's time to end the day.
+				if (selection == -1) {
+					selection = 0;
+					//if they don't own anything then we have less to do.
+					if (!owns_something)
+						move_and_clear_terminal(6, 0);
+
+					else
+						move_and_clear_terminal(5, total_items);
+					break;
+				}
+					//once again it's a valid selection
+				else if (selection < total_items && selection >= 0) {
+					//see if they can sell an item from inventory.
+					tx_success = user_inventory->sell_item(*user, *items[selection], total_items);
+					//yes they could.
+					if (tx_success == 1) {
+						std::cout << "You have successfully sold your items." << std::endl;
+					}
+						//nope they couldn't.
+					else if (tx_success == -1) {
+						std::cout << "You tried to sell more than you own!" << std::endl;
+					}
+				}
+					//they tried to do something invalid.
+				else
+					std::cout << "Your selection: '" << selection << "' wasn't valid. Please try again." << std::endl;
+
+				//evil pause.
+				pause();
+//system("pause");
+				//see if you own anything if not we have to do less work.
+				if (!owns_something)
+					move_and_clear_terminal(6, 0);
+				else
+					move_and_clear_terminal(5, total_items);
+			}
+		}
+		else{
 			std::cout << "Welcome to the end of day " << current_day << ", \x1b[1;3m" << username << "\x1b[22;24m!";
 			std::cout << " You currently have: $" << user->get_balance() << std::endl;
-			std::cout << "\r\nHere are the items you can sell: ";
-			std::cout << "Select the item you want to sell pressing the respective number. To quit selling for the day enter -1." << std::endl << std::endl;
-			
-			//see if you own _anything_.
-			owns_something=user_inventory->print_items();
-			//prompt them for their selection.
-			std::cout << "\x1b[1mSelection:\x1b[22m";
-			proper_input(selection);
-			
-			//if it's -1 then it's time to end the day.
-			if(selection == -1){
-				selection=0;
-				//if they don't own anything then we have less to do.
-				if(!owns_something)
-					move_and_clear_terminal(6,0);
-				
-				else
-					move_and_clear_terminal(5,total_items);
-				break;
-			}
-			//once again it's a valid selection
-			else if(selection < total_items && selection >= 0){
-				//see if they can sell an item from inventory.
-				tx_success=user_inventory->sell_item(*user,*items[selection],total_items);
-				//yes they could.
-				if(tx_success == 1){
-					std::cout << "You have successfully sold your items." << std::endl;
-				}
-				//nope they couldn't.
-				else if(tx_success == -1){
-					std::cout << "You tried to sell more than you own!" << std::endl;
-				}
-			}
-			//they tried to do something invalid.
-			else
-				std::cout << "Your selection: '" << selection << "' wasn't valid. Please try again." << std::endl;			
-			
-			//evil pause.
+			std::cout << "You don't own anything! The next day be sure to buy something so that you can sell it!" << std::endl;
 			pause();
-//system("pause");
-			//see if you own anything if not we have to do less work.
-			if(!owns_something)
-				move_and_clear_terminal(6,0);
-			
-			else
-				move_and_clear_terminal(5,total_items);			
+
 		}
 		//update all prices as a day has passed.
 		update_prices(items);
@@ -264,7 +276,7 @@ int main(){
 		std::cout << "\x1b[93;1m";
 	std::cout << final_balance << "\x1b[37;22m" << std::endl;
 	//prompt them to play again.
-	std::cout << "Try again to see how much you can wrack up!" << std::endl;
+	std::cout << "Try again to see how much you can wrack up!\1xb[0m" << std::endl;
 	
 	//cleanup my mess.
 	delete user;
