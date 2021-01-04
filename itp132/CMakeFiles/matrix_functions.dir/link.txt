@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic   CMakeFiles/matrix_functions.dir/matrix_functions.cpp.o  -o matrix_functions 

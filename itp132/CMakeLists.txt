@@ -38,3 +38,7 @@ add_executable(matrix_functions
 add_executable(vector_ops
 		vector_ops.cpp)
 
+add_executable(sort_tests
+		vectors.hxx
+		sorting_algos/sort_algos.hxx
+		sorting_algos/sort_tests.cpp)

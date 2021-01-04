@@ -4,17 +4,22 @@
 #include <valarray>
 #include <stdexcept>
 #include "math.hxx"
-template <class T> class Matrix;
-template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& );
 /*
  * By Macarthur Inbody <admin-contact@transcendental.us> 2020
  * Licensed AGPLv3
  * Matrix Class Module
  *
  */
+
+template <class T> class Matrix;
+
+template <typename T> std::ostream& operator<<( std::ostream&, const Matrix<T>& );
+
+
 //uncomment line below to do out of range checking. This costs perf and since I know i'm within ranges always
 //I have it undefined.
 //#define _CHECK_RANGE_
+
 template <class T> class Matrix{
 
 private:
@@ -611,7 +616,7 @@ public:
 	};
 
 
-	T gae(void){
+	T gae(){
 		size_t i,j,k;
 		size_t swaps=0;
 		std::vector<T> vec=this->array;

@@ -104,7 +104,7 @@ int main(){
 	//our unsorted array.
 	int int_arr[13]={2,3,4,5,6,7,10,8,9,0,1,70,75};
 	//showing that it also works with strings.
-	char str_arr[10]="93ZAzy";
+	char str_arr[10]="93ZAzyakL";
 	//double array.
 	double fp_arr[10]={1.1,2.1,3.1,4.1,5.1,6.1,0.1,-1.1,-2.1,-3.1};
 	

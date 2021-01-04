@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall -O2 -Wextra -Wpedantic   CMakeFiles/ceaser_cipher.dir/ceaser_cipher.cpp.o  -o ceaser_cipher 

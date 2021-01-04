@@ -44,7 +44,7 @@ void transform(std::string &input, int shift){
 	unsigned int i=0;
 	
 	for(char x:input){
-		x=input[i];
+		//x=input[i];
 		//if the value is printable uppercase ASCII
 		if(x>=65 && x<=90){
 			//add the shift.
