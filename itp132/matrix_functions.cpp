@@ -14,20 +14,13 @@ int main() {
 	//the int arrays.
 	int a[4]={0,0,0,0};
 	int b[4]={1,2,3,4};
-	//resulting heap object.
-	int *r;
 	
 	//float version.
 	float c[4]={2,3,4,5};
 	float d[4]={0.1,0.1,0.1,0.1};
-	//the result.
-	float *r2;
-	
+
 	//get result of ints.
-	r=matrix_add(a,b);
-	//get result of floats.
-	r2=matrix_add(c,d);
-	
+	int *r=matrix_add(a,b);
 	//output the results.
 	std::cout << "Int Example: [";
 	for(i=0;i<4;i++){
@@ -38,8 +31,8 @@ int main() {
 		std::cout << r[i];
 	}
 	std::cout << "]" << std::endl;
-	
-	
+	//get result of floats.
+	float *r2=matrix_add(c,d);
 	//do the float version.
 	std::cout << "Float Example: [";	
 	for(i=0;i<4;i++){
@@ -49,7 +42,9 @@ int main() {
 		std::cout << r2[i] << std::endl;
 	}
 	std::cout << "]" << std::endl;
-	
+
+	delete [] r;
+	delete [] r2;
 	//always return zero.
 	return 0;
 }

@@ -15,6 +15,7 @@ template <typename T, typename N> void print_arr(T *arr, N n) {
 
 int main(){
 	unsigned long long arr[10]={10,9,8,7,1,2,3,4,5,6};
+	unsigned long long arr2[10] = {10,9,8,7,1,2,3,4,5,6};
 	std::vector<int> vec={3,4,5,6,7,1,2,8,9,10};
 	std::vector<int> vec2 = vec;
 	print_arr(arr,10);
@@ -24,7 +25,11 @@ int main(){
 	bubble_sort(vec);
 	std::cout << vec;
 	vec = vec2;
+	std::cout << "merge " << std::endl;
 	merge_sort(vec);
 	std::cout << vec << std::endl;
+	std::cout << "merge arr" << std::endl;
+	merge_sort(arr2,10);
+	print_arr(arr2,10);
 	return 0;
 }

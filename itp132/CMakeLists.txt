@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 project(itp232)
+set(CMAKE_CXX_STANDARD 17)
 if(MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /W4")
 	# Default debug flags are OK
 	set(CMAKE_CXX_FLAGS_RELEASE "{CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -Wextra -Wpedantic")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 ")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -O0 ")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g2")
 
 	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -15,7 +16,7 @@ else()
 		# nothing special for gcc at the moment
 	endif()
 endif()
-set(CMAKE_CXX_STANDARD 14)
+
 
 include_directories(.)
 

@@ -31,7 +31,7 @@ char *get_opt_val(char **start, char **end, const std::string opt){
 	* If all succeeds then we return a pointer to the start of that string.
 	* otherwise we return 0 or NULL.
 	*/
-	return (iter != end && ++iter != end)?*iter:0;
+	return (iter != end && ++iter != end)?*iter:nullptr;
 }
 
 /*
@@ -49,9 +49,9 @@ void print_help(char *prog_name){
 	//output the name of the program.
 	std::cout << prog_name << " is used to do a full shift encoding/decoding on a file." << std::endl;
 	//send the ansic escape code. to start it.
-	std::cout << "Usage: \x1b" << prog_name;
+	std::cout << "Usage: \x1b[1m" << prog_name;
 	// now reset the text.
-	std::cout << "\e[0m -i {INPUT_FILE_NAME} -o {OUTPUT_FILE_NAME} -k {SHIFT_TO_USE} -e|d Encode/Decode the input file." << std::endl;
+	std::cout << "\x1b[0m -i {INPUT_FILE_NAME} -o {OUTPUT_FILE_NAME} -k {SHIFT_TO_USE} -e|d Encode/Decode the input file." << std::endl;
 	//finally show them the last bit of it all.
 	std::cout << "You must have a space between the flag and option as unix style options are not supported. Also only encoding or decoding is allowed. You can also only encrypt or decrypt the input file." << std::endl;
 }
@@ -124,7 +124,13 @@ int main(int argc, char **argv){
 	//output file string.
 	char *ofile = get_opt_val(argv,end_argv,"-o");
 	//the key.
-	shift=std::atol(get_opt_val(argv,end_argv,"-k"));
+	if(get_opt_val(argv,end_argv,"-k") != nullptr){
+		shift=std::atol(get_opt_val(argv,end_argv,"-k"));
+	}
+	else{
+		shift = 0;
+	}
+
 	if(shift == 0){
 		std::cout << "You have to specify a key and also it has to not be zero." << std::endl;
 		print_help(argv[0]);
@@ -133,7 +139,7 @@ int main(int argc, char **argv){
 	shift=(shift>95 || shift < 0)?shift % 96:shift;
 	//check to see if both input and output are set.
 	if((!ifile) || (!ofile)){
-		std::cout << "You didn't specify an input file, an output file or both. if it starts with a \"-\" make sure that you enclose the filename in double quotes(\")." << std::endl;
+		std::cout << R"(You didn't specify an input file, an output file or both. if it starts with a "-" make sure that you enclose the filename in double quotes(").)" << std::endl;
 		print_help(argv[0]);
 		return 1;
 	}
