@@ -65,3 +65,9 @@ add_executable(stock_trader
 	random.h
 	stock_trader.h
 	terminal.h)
+
+add_executable(movie_theater
+		challenges/oop/movie_theater/terminal.h
+		challenges/oop/movie_theater/movies.hxx
+		challenges/oop/movie_theater/movie_theater.hxx
+		challenges/oop/movie_theater/movie_theater.cpp)
