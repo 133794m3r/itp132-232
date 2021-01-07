@@ -71,3 +71,6 @@ add_executable(movie_theater
 		challenges/oop/movie_theater/movies.hxx
 		challenges/oop/movie_theater/movie_theater.hxx
 		challenges/oop/movie_theater/movie_theater.cpp)
+
+add_executable(vending_machine
+		challenges/oop/vending_machine/vending_machine.cpp)
