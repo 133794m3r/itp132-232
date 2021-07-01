@@ -33,38 +33,40 @@ void transform(char *input, unsigned int length, int shift){
 			if(x>=122)
 				//handle overflow.
 				x=(x-122)+96;
+
 		}
 		//add the value to the out string.
-		input[i++]=x;
+		input[i++]=static_cast<char>(x);
 	}	
 
 }
 //c++ style string input.
 void transform(std::string &input, int shift){
 	unsigned int i=0;
-	
+	unsigned char y = 0;
 	for(char x:input){
 		//x=input[i];
 		//if the value is printable uppercase ASCII
+		y = x;
 		if(x>=65 && x<=90){
 			//add the shift.
-			x+=shift;
+			y+=shift;
 			//if it's greater than 'Z'.
-			if(x>=90)
+			if(y>=90)
 				//handle overflows.
-				x=(x-90)+64;
+				y=(y-90)+64;
 		}
 		//else if it's lowercase ascii.
 		else if(x>=97 && x<=122){
 			//same thing again.
-			x+=shift;
+			y+=shift;
 			//same if it's greater than 'z'.
-			if(x>=122)
+			if(y>=122)
 				//handle overflow.
-				x=(x-122)+96;
+				y=(y-122)+96;
 		}
 		//add the value to the out string.
-		input[i++]=x;
+		input[i++]=static_cast<char>(y);
 	}	
 
 }
